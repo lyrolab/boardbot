@@ -1,0 +1,22 @@
+{
+  "name": "@samuelprak/boardbot",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@commitlint/config-conventional": "^19.8.0",
+    "commitlint": "^19.8.0",
+    "husky": "^9.1.7"
+  },
+  "scripts": {
+    "prepare": "husky",
+    "postinstall": "npm run generate-api-clients --workspace=backend && npm run generate-api-clients --workspace=frontend"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  }
+}

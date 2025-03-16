@@ -1,0 +1,416 @@
+openapi: 3.0.0
+info:
+  title: Fider API - Posts Endpoint
+  description: API endpoint for listing posts in Fider
+  version: 1.0.0
+
+servers:
+  - url: https://{tenant}.fider.io
+    variables:
+      tenant:
+        description: Your Fider tenant subdomain
+        default: app
+
+tags:
+  - name: Posts
+    description: Posts API
+  - name: Tags
+    description: Tags API
+
+paths:
+  /api/v1/tags:
+    get:
+      summary: List Tags
+      description: Retrieves a list of tags. Private Tags are only returned for users with either administrator or collaborator role.
+      tags:
+        - Tags
+      security:
+        - apiKey: []
+      responses:
+        '200':
+          description: Successfully retrieved tags
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - id
+                    - name
+                    - slug
+                    - color
+                    - isPublic
+                  properties:
+                    id:
+                      type: integer
+                      example: 8
+                    name:
+                      type: string
+                      example: "Under Consideration"
+                    slug:
+                      type: string
+                      example: "under-consideration"
+                    color:
+                      type: string
+                      example: "87BE1F"
+                    isPublic:
+                      type: boolean
+                      example: true
+        '403':
+          description: Forbidden - API Key is not present or not allowed
+        '500':
+          description: Internal Server Error
+
+  /api/v1/posts:
+    get:
+      summary: List Posts
+      description: Retrieves a list of posts with optional filtering and pagination
+      tags:
+        - Posts
+      security:
+        - apiKey: []
+      parameters:
+        - name: query
+          in: query
+          description: The search keywords
+          required: false
+          schema:
+            type: string
+        - name: view
+          in: query
+          description: The filter and order to apply
+          required: false
+          schema:
+            type: string
+            enum: 
+              - all
+              - recent
+              - my-votes
+              - most-wanted
+              - most-discussed
+              - planned
+              - started
+              - completed
+              - declined
+              - trending
+            default: all
+        - name: limit
+          in: query
+          description: The number of entries to return
+          required: false
+          schema:
+            type: integer
+            default: 30
+        - name: tags
+          in: query
+          description: The list of tags to filter by, separated by commas
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - id
+                    - number
+                    - title
+                    - slug
+                    - description
+                    - createdAt
+                    - user
+                    - hasVoted
+                    - votesCount
+                    - commentsCount
+                    - status
+                    - response
+                    - tags
+                  properties:
+                    id:
+                      type: integer
+                      example: 4315
+                    number:
+                      type: integer
+                      example: 65
+                    title:
+                      type: string
+                      example: "Open links in new tab"
+                    slug:
+                      type: string
+                      example: "open-links-in-new-tab"
+                    description:
+                      type: string
+                    createdAt:
+                      type: string
+                      format: date-time
+                    user:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        role:
+                          type: string
+                          enum: [visitor, administrator]
+                    hasVoted:
+                      type: boolean
+                    votesCount:
+                      type: integer
+                    commentsCount:
+                      type: integer
+                    status:
+                      type: string
+                      enum: [open, planned, started, completed, declined]
+                    response:
+                      type: object
+                      nullable: true
+                      properties:
+                        text:
+                          type: string
+                        respondedAt:
+                          type: string
+                          format: date-time
+                        user:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            name:
+                              type: string
+                            role:
+                              type: string
+                        original:
+                          type: object
+                          nullable: true
+                    tags:
+                      type: array
+                      items:
+                        type: string
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                        message:
+                          type: string
+        '403':
+          description: Forbidden - API Key is not present or not allowed
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal Server Error
+
+  /api/v1/posts/{number}/status:
+    put:
+      summary: Respond to a Post
+      description: Updates the status of a post and optionally adds a response text
+      tags:
+        - Posts
+      security:
+        - apiKey: []
+      parameters:
+        - name: number
+          in: path
+          description: The number of the post to update status
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - status
+              properties:
+                status:
+                  type: string
+                  description: The new status of the post
+                  enum: [open, planned, started, completed, declined, duplicate]
+                text:
+                  type: string
+                  description: An optional description of what is the status on this post
+                originalNumber:
+                  type: integer
+                  description: The number of the post to merge this into (required when status is duplicate)
+      responses:
+        '200':
+          description: Successfully updated post status
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                        message:
+                          type: string
+        '401':
+          description: Unauthorized - Authentication is required
+        '403':
+          description: Forbidden - User does not have required role (Collaborator or Administrator)
+        '404':
+          description: Post not found
+        '500':
+          description: Internal Server Error
+
+  /api/v1/posts/{number}:
+    get:
+      summary: Get Post by Number
+      description: Retrieves a specific post by its number
+      tags:
+        - Posts
+      security:
+        - apiKey: []
+      parameters:
+        - name: number
+          in: path
+          description: The number of the post to retrieve
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successfully retrieved post
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - id
+                  - number
+                  - title
+                  - slug
+                  - description
+                  - createdAt
+                  - user
+                  - hasVoted
+                  - votesCount
+                  - commentsCount
+                  - status
+                  - response
+                  - tags
+                properties:
+                  id:
+                    type: integer
+                    example: 4315
+                  number:
+                    type: integer
+                    example: 65
+                  title:
+                    type: string
+                    example: "Open links in new tab"
+                  slug:
+                    type: string
+                    example: "open-links-in-new-tab"
+                  description:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      role:
+                        type: string
+                        enum: [visitor, administrator]
+                  hasVoted:
+                    type: boolean
+                  votesCount:
+                    type: integer
+                  commentsCount:
+                    type: integer
+                  status:
+                    type: string
+                    enum: [open, planned, started, completed, declined]
+                  response:
+                    type: object
+                    nullable: true
+                    properties:
+                      text:
+                        type: string
+                      respondedAt:
+                        type: string
+                        format: date-time
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          name:
+                            type: string
+                          role:
+                            type: string
+                      original:
+                        type: object
+                        nullable: true
+                  tags:
+                    type: array
+                    items:
+                      type: string
+                  comments:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        content:
+                          type: string
+                        createdAt:
+                          type: string
+                          format: date-time
+                        user:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            name:
+                              type: string
+                            role:
+                              type: string
+        '403':
+          description: Forbidden - API Key is not present or not allowed
+        '404':
+          description: Post not found
+        '500':
+          description: Internal Server Error
+
+components:
+  securitySchemes:
+    apiKey:
+      type: http
+      scheme: bearer
+      description: Optional authentication using API key

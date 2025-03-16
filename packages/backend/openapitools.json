@@ -1,0 +1,14 @@
+{
+  "$schema": "../../node_modules/@openapitools/openapi-generator-cli/config.schema.json",
+  "spaces": 2,
+  "generator-cli": {
+    "version": "7.12.0",
+    "generators": {
+      "fider-client": {
+        "generatorName": "typescript-axios",
+        "inputSpec": "./src/clients/fider.yaml",
+        "output": "./src/modules/fider-client/"
+      }
+    }
+  }
+}

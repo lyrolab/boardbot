@@ -1,0 +1,45 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/queue/add": {
+      "post": {
+        "operationId": "QueueController_add",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QueueAddDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Queue"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "BoardBot API",
+    "description": "BoardBot API",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "QueueAddDto": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  }
+}

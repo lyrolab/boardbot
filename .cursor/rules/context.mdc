@@ -1,0 +1,14 @@
+---
+description: Context: BoardBot is an AI assistant for Product Owners that streamlines user feedback processing.
+globs: 
+alwaysApply: false
+---
+# BoardBot: AI-Powered Suggestion Management
+
+BoardBot is an AI assistant for Product Owners that streamlines user feedback processing. BoardBot helps Product Owners efficiently prioritize and enhance their product roadmap based on user input.
+
+Key features:
+
+- Auto-categorizes suggestions into predefined tags
+- Detects and removes duplicate ideas
+- Moderates content: filters bug reports and incomplete suggestions
