@@ -6,9 +6,11 @@ import { join } from "path"
 import { AppModule } from "./app.module"
 import { configureApp } from "./bootstrap/configure-app"
 
+// Set the environment to test to avoid creating the database
+process.env.NODE_ENV = "test"
+
 async function generateOpenApi() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule)
-
   configureApp(app)
 
   const config = new DocumentBuilder()

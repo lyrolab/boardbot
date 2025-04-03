@@ -4,7 +4,7 @@ import { Board } from "src/modules/board/entities/board.entity"
 import { FiderBoard } from "src/modules/fider/entities/fider-board.entity"
 import { FiderBoardFactory } from "src/modules/fider/factories/fider-board.factory"
 import { FiderBoardRepository } from "src/modules/fider/repositories/fider-board.repository"
-import { TestDatabaseModule } from "test/utils/test-database/test-database.module"
+import { SharedDatabaseModule } from "src/modules/shared-database/shared-database.module"
 
 describe("FiderBoardRepository", () => {
   let repository: FiderBoardRepository
@@ -12,7 +12,7 @@ describe("FiderBoardRepository", () => {
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
-        TestDatabaseModule.forRoot(),
+        SharedDatabaseModule.forRoot(),
         TypeOrmModule.forFeature([FiderBoard, Board]),
       ],
       providers: [FiderBoardRepository],

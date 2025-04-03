@@ -22,7 +22,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "generate-api-clients": "npx openapi-generator-cli generate && npm run format && npm run lint",
-    "generate-openapi": "nest start --entryFile ./src/generate-openapi",
+    "generate-openapi": "nest start --entryFile ./generate-openapi",
     "lint-staged": "npx lint-staged"
   },
   "dependencies": {

@@ -1,8 +1,3 @@
-import { closeTestingApplications } from "test/utils/create-testing-application"
-import { TestDatabaseModule } from "test/utils/test-database/test-database.module"
+import { SharedDatabaseModule } from "src/modules/shared-database/shared-database.module"
 
-beforeEach(() => TestDatabaseModule.clearDatabase())
-afterAll(async () => {
-  await closeTestingApplications()
-  await TestDatabaseModule.closeConnection()
-})
+beforeEach(() => SharedDatabaseModule.clearTestDatabase())

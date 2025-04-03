@@ -3,7 +3,7 @@ import { TypeOrmModule } from "@nestjs/typeorm"
 import { Post } from "src/modules/board/entities/post.entity"
 import { PostFactory } from "src/modules/board/factories/post.factory"
 import { PostRepository } from "src/modules/board/repositories/post.repository"
-import { TestDatabaseModule } from "test/utils/test-database/test-database.module"
+import { SharedDatabaseModule } from "src/modules/shared-database/shared-database.module"
 import { assertDifference } from "test/helpers/assert-difference"
 import { BoardFactory } from "src/modules/board/factories/board.factory"
 import { Board } from "src/modules/board/entities/board.entity"
@@ -14,7 +14,10 @@ describe("PostRepository", () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [TestDatabaseModule.forRoot(), TypeOrmModule.forFeature([Post])],
+      imports: [
+        SharedDatabaseModule.forRoot(),
+        TypeOrmModule.forFeature([Post]),
+      ],
       providers: [PostRepository],
     }).compile()
 

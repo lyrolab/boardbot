@@ -5,7 +5,7 @@ import { Tag } from "src/modules/board/entities/tag.entity"
 import { BoardFactory } from "src/modules/board/factories/board.factory"
 import { TagFactory } from "src/modules/board/factories/tag.factory"
 import { TagRepository } from "src/modules/board/repositories/tag.repository"
-import { TestDatabaseModule } from "test/utils/test-database/test-database.module"
+import { SharedDatabaseModule } from "src/modules/shared-database/shared-database.module"
 
 describe("TagRepository", () => {
   let repository: TagRepository
@@ -13,7 +13,10 @@ describe("TagRepository", () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [TestDatabaseModule.forRoot(), TypeOrmModule.forFeature([Tag])],
+      imports: [
+        SharedDatabaseModule.forRoot(),
+        TypeOrmModule.forFeature([Tag]),
+      ],
       providers: [TagRepository],
     }).compile()
 

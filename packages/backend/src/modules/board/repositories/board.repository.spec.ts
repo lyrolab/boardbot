@@ -9,7 +9,7 @@ import { BoardRepository } from "src/modules/board/repositories/board.repository
 import { FiderBoard } from "src/modules/fider/entities/fider-board.entity"
 import { FiderBoardFactory } from "src/modules/fider/factories/fider-board.factory"
 import { assertDifference } from "test/helpers/assert-difference"
-import { TestDatabaseModule } from "test/utils/test-database/test-database.module"
+import { SharedDatabaseModule } from "src/modules/shared-database/shared-database.module"
 
 describe("BoardRepository", () => {
   let repository: BoardRepository
@@ -17,7 +17,7 @@ describe("BoardRepository", () => {
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
-        TestDatabaseModule.forRoot(),
+        SharedDatabaseModule.forRoot(),
         TypeOrmModule.forFeature([Board]),
       ],
       providers: [BoardRepository],

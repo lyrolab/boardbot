@@ -5,12 +5,12 @@ import {
   SingleSubfactory,
 } from "@jorgebodega/typeorm-factory"
 import { BoardFactory } from "src/modules/board/factories/board.factory"
-import { TestDatabaseModule } from "test/utils/test-database/test-database.module"
+import { SharedDatabaseModule } from "src/modules/shared-database/shared-database.module"
 import { Tag } from "../entities/tag.entity"
 
 export class TagFactory extends Factory<Tag> {
   protected entity = Tag
-  protected dataSource = TestDatabaseModule.getDataSource()
+  protected dataSource = SharedDatabaseModule.getTestDataSource()
   protected attrs(): FactorizedAttrs<Tag> {
     return {
       title: "Tag",
