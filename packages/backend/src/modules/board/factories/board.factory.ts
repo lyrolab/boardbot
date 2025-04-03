@@ -1,7 +1,7 @@
 import { FactorizedAttrs, Factory } from "@jorgebodega/typeorm-factory"
 import { BoardType } from "src/modules/board/entities/board-type.enum"
 import { Board } from "src/modules/board/entities/board.entity"
-import { SharedDatabaseModule } from "src/modules/shared/database/shared-database.module"
+import { SharedDatabaseModule } from "@lyrolab/nest-shared"
 
 export class BoardFactory extends Factory<Board> {
   protected entity = Board

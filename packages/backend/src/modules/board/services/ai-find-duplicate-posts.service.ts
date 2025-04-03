@@ -1,7 +1,7 @@
+import { AiService } from "@lyrolab/nest-shared"
 import { Injectable } from "@nestjs/common"
 import { generateObject, generateText } from "ai"
 import { uniqBy } from "lodash"
-import { AiService } from "src/modules/shared/ai/services/ai.service"
 import { Post } from "src/modules/board/entities/post.entity"
 import { BasePost } from "src/modules/board/models/base-post"
 import { BoardClientInterface } from "src/modules/board/models/board-client.interface"

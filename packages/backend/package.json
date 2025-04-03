@@ -23,12 +23,16 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "generate-api-clients": "npx openapi-generator-cli generate && npm run format && npm run lint",
     "generate-openapi": "nest start --entryFile ./generate-openapi",
-    "lint-staged": "npx lint-staged"
+    "lint-staged": "npx lint-staged",
+    "typeorm": "typeorm-ts-node-commonjs -d ./src/data-source.ts",
+    "db:migrate": "npm run typeorm -- migration:run",
+    "db:generate": "npm run typeorm -- migration:generate ./src/migrations/ && eslint src/migrations/* --fix"
   },
   "dependencies": {
     "@ai-sdk/openai": "^1.2.5",
     "@jorgebodega/typeorm-factory": "^2.1.0",
     "@keyv/redis": "^4.3.1",
+    "@lyrolab/nest-shared": "^0.0.1",
     "@nestjs/axios": "^4.0.0",
     "@nestjs/bullmq": "^11.0.2",
     "@nestjs/cache-manager": "^3.0.0",

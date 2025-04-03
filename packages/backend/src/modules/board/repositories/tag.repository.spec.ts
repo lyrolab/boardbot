@@ -5,7 +5,7 @@ import { Tag } from "src/modules/board/entities/tag.entity"
 import { BoardFactory } from "src/modules/board/factories/board.factory"
 import { TagFactory } from "src/modules/board/factories/tag.factory"
 import { TagRepository } from "src/modules/board/repositories/tag.repository"
-import { SharedDatabaseModule } from "src/modules/shared-database/shared-database.module"
+import { SharedDatabaseModule } from "@lyrolab/nest-shared"
 
 describe("TagRepository", () => {
   let repository: TagRepository

@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common"
 import { DiscoveryModule } from "@nestjs/core"
 import { TypeOrmModule } from "@nestjs/typeorm"
-import { AiModule } from "src/modules/shared/ai/ai.module"
+import { AiModule } from "@lyrolab/nest-shared"
 import { BoardController } from "src/modules/board/controllers/board.controller"
 import { TagController } from "src/modules/board/controllers/tag.controller"
 import { Board } from "src/modules/board/entities/board.entity"
@@ -18,7 +18,7 @@ import { BoardSyncService } from "src/modules/board/services/board-sync.service"
 import { BoardService } from "src/modules/board/services/board.service"
 import { PostService } from "src/modules/board/services/post.service"
 import { TagService } from "src/modules/board/services/tag.service"
-import { QueueModule } from "src/modules/shared/queue/queue.module"
+import { QueueModule } from "@lyrolab/nest-shared"
 
 @Module({
   imports: [

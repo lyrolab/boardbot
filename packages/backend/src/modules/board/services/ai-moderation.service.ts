@@ -1,6 +1,6 @@
+import { AiService } from "@lyrolab/nest-shared"
 import { Injectable } from "@nestjs/common"
 import { generateText } from "ai"
-import { AiService } from "src/modules/shared/ai/services/ai.service"
 import { Post } from "src/modules/board/entities/post.entity"
 import {
   ModerationDecision,

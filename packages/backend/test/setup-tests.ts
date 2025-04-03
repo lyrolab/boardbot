@@ -1,3 +1,3 @@
-import { SharedDatabaseModule } from "src/modules/shared-database/shared-database.module"
+import { SharedDatabaseModule } from "@lyrolab/nest-shared"
 
 beforeEach(() => SharedDatabaseModule.clearTestDatabase())

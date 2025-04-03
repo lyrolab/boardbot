@@ -1,4 +1,4 @@
-import { SharedDatabaseModule } from "src/modules/shared-database/shared-database.module"
+import { SharedDatabaseModule } from "@lyrolab/nest-shared"
 import { DataSource, EntityTarget } from "typeorm"
 
 export async function assertDifference<T>(
