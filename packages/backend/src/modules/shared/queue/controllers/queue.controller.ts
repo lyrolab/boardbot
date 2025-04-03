@@ -1,5 +1,5 @@
 import { Body, Controller, Post } from "@nestjs/common"
-import { QueueService } from "src/modules/queue/services/queue.service"
+import { QueueService } from "src/modules/shared/queue/services/queue.service"
 import { QueueAddDto } from "../models/dto/queue-add.dto"
 
 @Controller("queue")

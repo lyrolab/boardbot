@@ -4,9 +4,9 @@ import {
   syncBoardJobSchema,
 } from "src/modules/board/jobs/sync-board.job"
 import { BoardRepository } from "src/modules/board/repositories/board.repository"
-import { JobProcessor } from "src/modules/queue/decorators/queue.decorator"
-import { JobProcessorInterface } from "src/modules/queue/models/job-processor-interface"
-import { QueueService } from "src/modules/queue/services/queue.service"
+import { JobProcessor } from "src/modules/shared/queue/decorators/queue.decorator"
+import { JobProcessorInterface } from "src/modules/shared/queue/models/job-processor-interface"
+import { QueueService } from "src/modules/shared/queue/services/queue.service"
 
 @Injectable()
 @JobProcessor(SyncAllBoardsJob.JOB_NAME)

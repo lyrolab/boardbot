@@ -7,7 +7,7 @@ import {
 import { PostProcessingStatus } from "src/modules/board/entities/post-processing-status.enum"
 import { Post } from "src/modules/board/entities/post.entity"
 import { BoardFactory } from "src/modules/board/factories/board.factory"
-import { SharedDatabaseModule } from "src/modules/shared-database/shared-database.module"
+import { SharedDatabaseModule } from "src/modules/shared/database/shared-database.module"
 
 export class PostFactory extends Factory<Post> {
   protected entity = Post

@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common"
 import { generateObject, generateText } from "ai"
 import { uniqBy } from "lodash"
-import { AiService } from "src/modules/ai/services/ai.service"
+import { AiService } from "src/modules/shared/ai/services/ai.service"
 import { Post } from "src/modules/board/entities/post.entity"
 import { BasePost } from "src/modules/board/models/base-post"
 import { BoardClientInterface } from "src/modules/board/models/board-client.interface"
@@ -70,7 +70,7 @@ export class AiFindDuplicatePostsService {
     `
 
     const result = await generateObject({
-      model: this.aiService.chat,
+      model: this.aiService.model,
       system,
       prompt,
       schema: z.object({
@@ -123,7 +123,7 @@ ${"```"}
     `
 
     const result = await generateText({
-      model: this.aiService.chat,
+      model: this.aiService.model,
       system,
       prompt,
     })

@@ -5,7 +5,7 @@ import {
   SingleSubfactory,
 } from "@jorgebodega/typeorm-factory"
 import { BoardFactory } from "src/modules/board/factories/board.factory"
-import { SharedDatabaseModule } from "src/modules/shared-database/shared-database.module"
+import { SharedDatabaseModule } from "src/modules/shared/database/shared-database.module"
 import { Tag } from "../entities/tag.entity"
 
 export class TagFactory extends Factory<Tag> {

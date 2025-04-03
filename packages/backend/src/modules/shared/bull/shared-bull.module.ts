@@ -1,8 +1,8 @@
 import { BullModule } from "@nestjs/bullmq"
 import { DynamicModule, Module } from "@nestjs/common"
 import { ConfigModule } from "@nestjs/config"
-import { SharedRedisModule } from "../shared-redis/shared-redis.module"
-import { RedisConfig } from "../shared-redis/redis.config"
+import { SharedRedisModule } from "../redis/shared-redis.module"
+import { RedisConfig } from "../redis/redis.config"
 
 @Module({})
 export class SharedBullModule {
@@ -10,7 +10,7 @@ export class SharedBullModule {
     return {
       module: SharedBullModule,
       imports: [
-        SharedRedisModule.forRoot(),
+        SharedRedisModule,
         BullModule.forRootAsync({
           imports: [ConfigModule],
           inject: [RedisConfig],

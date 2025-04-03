@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common"
 import { generateText } from "ai"
-import { AiService } from "src/modules/ai/services/ai.service"
+import { AiService } from "src/modules/shared/ai/services/ai.service"
 import { Post } from "src/modules/board/entities/post.entity"
 import {
   ModerationDecision,
@@ -51,7 +51,7 @@ ACCEPTED
     `
 
     const result = await generateText({
-      model: this.aiService.chat,
+      model: this.aiService.model,
       system,
       prompt,
     })

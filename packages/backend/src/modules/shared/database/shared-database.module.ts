@@ -100,7 +100,6 @@ export class SharedDatabaseModule implements OnModuleDestroy {
     }
   }
 
-  // Test helper methods
   static getTestDataSource(): DataSource {
     return this.testDataSource
   }

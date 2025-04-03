@@ -1,9 +1,9 @@
 import { InjectQueue, Processor, WorkerHost } from "@nestjs/bullmq"
 import { DiscoveryService } from "@nestjs/core"
 import { Job, Queue } from "bullmq"
-import { JobProcessor } from "src/modules/queue/decorators/queue.decorator"
-import { JobProcessorInterface } from "src/modules/queue/models/job-processor-interface"
-import { DEFAULT_QUEUE } from "src/modules/queue/queue.constants"
+import { JobProcessor } from "src/modules/shared/queue/decorators/queue.decorator"
+import { JobProcessorInterface } from "src/modules/shared/queue/models/job-processor-interface"
+import { DEFAULT_QUEUE } from "src/modules/shared/queue/queue.constants"
 
 @Processor(DEFAULT_QUEUE, { concurrency: 100 })
 export class QueueProcessor extends WorkerHost {

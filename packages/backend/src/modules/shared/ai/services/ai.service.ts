@@ -26,7 +26,7 @@ export class AiService {
     })
   }
 
-  get chat() {
+  get model() {
     return this.openrouterChat
   }
 
