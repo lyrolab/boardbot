@@ -24,12 +24,12 @@ const data = {
       items: [
         {
           title: "Boards",
-          url: "#",
+          url: "/app/boards",
           isActive: true,
         },
         {
           title: "Posts",
-          url: "#",
+          url: "/app/posts",
         },
       ],
     },
@@ -46,7 +46,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         />
       </SidebarHeader>
       <SidebarContent>
-        {/* We create a SidebarGroup for each parent. */}
         {data.navMain.map((item) => (
           <SidebarGroup key={item.title}>
             <SidebarGroupLabel>{item.title}</SidebarGroupLabel>

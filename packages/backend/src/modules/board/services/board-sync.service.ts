@@ -2,10 +2,12 @@ import { Injectable } from "@nestjs/common"
 import { Board } from "src/modules/board/entities/board.entity"
 import { PostProcessingStatus } from "src/modules/board/entities/post-processing-status.enum"
 import { Post } from "src/modules/board/entities/post.entity"
+import { BaseTag } from "src/modules/board/models/base-tag"
 import { BoardClientInterface } from "src/modules/board/models/board-client.interface"
 import { PostRepository } from "src/modules/board/repositories/post.repository"
 import { AiFindDuplicatePostsService } from "src/modules/board/services/ai-find-duplicate-posts.service"
 import { AiModerationService } from "src/modules/board/services/ai-moderation.service"
+import { AiTagAssignmentService } from "src/modules/board/services/ai-tag-assignment.service"
 import { BoardService } from "src/modules/board/services/board.service"
 import { PostService } from "src/modules/board/services/post.service"
 import { TagService } from "src/modules/board/services/tag.service"
@@ -17,6 +19,7 @@ export class BoardSyncService {
     private readonly tagService: TagService,
     private readonly aiFindDuplicatePostsService: AiFindDuplicatePostsService,
     private readonly aiModerationService: AiModerationService,
+    private readonly aiTagAssignmentService: AiTagAssignmentService,
     private readonly postService: PostService,
     private readonly postRepository: PostRepository,
   ) {}
@@ -35,17 +38,17 @@ export class BoardSyncService {
     // fetch pending posts
     const pendingPosts = await this.postRepository.findPending(board.id)
     for (const post of pendingPosts) {
-      const updatedPost = await this.syncPost(client, post)
-
-      if (updatedPost.decision) {
-        await client.applyDecision(post.externalId, updatedPost.decision)
-      }
+      await this.syncPost(client, post, tags)
     }
 
     return posts
   }
 
-  async syncPost(client: BoardClientInterface, post: Post) {
+  async syncPost(
+    client: BoardClientInterface,
+    post: Post,
+    availableTags: BaseTag[],
+  ) {
     const decision = post.decision ?? {}
 
     // detect multiple suggestions
@@ -54,7 +57,7 @@ export class BoardSyncService {
       decision.moderation = moderation
     }
 
-    // // find duplicate posts
+    // find duplicate posts
     if (!decision.duplicatePosts) {
       const duplicatePosts = await this.aiFindDuplicatePostsService.forPost(
         client,
@@ -63,10 +66,16 @@ export class BoardSyncService {
       decision.duplicatePosts = duplicatePosts
     }
 
-    console.log("post", post.title)
-    console.log("decision", decision)
+    // assign tags
+    if (!decision.tagAssignment) {
+      const tagAssignment = await this.aiTagAssignmentService.forPost(
+        post,
+        availableTags,
+      )
+      decision.tagAssignment = tagAssignment
+    }
 
-    post.processingStatus = PostProcessingStatus.COMPLETED
+    post.processingStatus = PostProcessingStatus.AWAITING_MANUAL_REVIEW
     post.decision = decision
 
     return this.postRepository.update(post)

@@ -9,7 +9,7 @@ import {
 import { FiderBoard } from "src/modules/fider/entities/fider-board.entity"
 import { postsGet } from "src/modules/fider/models/fider/client/posts-get"
 import { tagsGet } from "src/modules/fider/models/fider/client/tags-get"
-import { PostDecision } from "src/modules/board/models/post-decision"
+import { PostDecision } from "src/modules/board/models/dto/post-decision.dto"
 import { postsStatusPut } from "src/modules/fider/models/fider/client/posts-status-put"
 import { postDecisionsData } from "src/modules/board/data/post-decision.data"
 import { toBasePost } from "src/modules/fider/models/fider/mappers/to-base-post"
@@ -59,7 +59,7 @@ export class FiderBoardClient implements BoardClientInterface {
     basePostId: string,
     decision: PostDecision,
   ): Promise<void> {
-    if (decision.moderation?.status === "rejected") {
+    if (decision.moderation?.decision === "rejected") {
       await postsStatusPut({
         configuration: this.configuration,
         postId: +basePostId,
@@ -72,7 +72,7 @@ export class FiderBoardClient implements BoardClientInterface {
     }
 
     if (
-      decision.duplicatePosts?.status === "duplicate" &&
+      decision.duplicatePosts?.decision === "duplicate" &&
       decision.duplicatePosts.duplicatePostExternalIds.length > 0
     ) {
       await postsStatusPut({

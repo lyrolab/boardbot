@@ -1,7 +1,7 @@
+import { AiModule, QueueModule } from "@lyrolab/nest-shared"
 import { Module } from "@nestjs/common"
 import { DiscoveryModule } from "@nestjs/core"
 import { TypeOrmModule } from "@nestjs/typeorm"
-import { AiModule } from "@lyrolab/nest-shared"
 import { BoardController } from "src/modules/board/controllers/board.controller"
 import { TagController } from "src/modules/board/controllers/tag.controller"
 import { Board } from "src/modules/board/entities/board.entity"
@@ -14,15 +14,16 @@ import { PostRepository } from "src/modules/board/repositories/post.repository"
 import { TagRepository } from "src/modules/board/repositories/tag.repository"
 import { AiFindDuplicatePostsService } from "src/modules/board/services/ai-find-duplicate-posts.service"
 import { AiModerationService } from "src/modules/board/services/ai-moderation.service"
+import { AiTagAssignmentService } from "src/modules/board/services/ai-tag-assignment.service"
 import { BoardSyncService } from "src/modules/board/services/board-sync.service"
 import { BoardService } from "src/modules/board/services/board.service"
-import { PostService } from "src/modules/board/services/post.service"
+import { PostSyncService } from "src/modules/board/services/post-sync.service"
 import { TagService } from "src/modules/board/services/tag.service"
-import { QueueModule } from "@lyrolab/nest-shared"
-
+import { PostController } from "./controllers/post.controller"
+import { PostService } from "./services/post.service"
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Board, Tag, Post]),
+    TypeOrmModule.forFeature([Board, Post, Tag]),
     DiscoveryModule,
     QueueModule,
     AiModule,
@@ -39,8 +40,10 @@ import { QueueModule } from "@lyrolab/nest-shared"
     SyncBoardJob,
     TagRepository,
     TagService,
+    AiTagAssignmentService,
+    PostSyncService,
   ],
-  exports: [BoardRepository, TagService],
-  controllers: [BoardController, TagController],
+  exports: [BoardRepository, TagService, BoardService],
+  controllers: [BoardController, PostController, TagController],
 })
 export class BoardModule {}

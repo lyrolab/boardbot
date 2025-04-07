@@ -1,7 +1,12 @@
-import { BoardsApi } from "@/clients/backend-client"
+import {
+  BoardCreateRequestDto,
+  BoardGetOneResponse,
+  BoardsApi,
+} from "@/clients/backend-client"
 import { GeneralFormValues } from "@/modules/board/components/GeneralSettings/schema"
 import { configuration } from "@/modules/core/queries/clientConfiguration"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { AxiosResponse } from "axios"
 
 export const useBoards = () =>
   useQuery({
@@ -21,6 +26,23 @@ export const useBoard = (boardId: string) =>
         .then(({ data }) => data),
   })
 
+export const useCreateBoard = ({
+  onSuccess,
+}: {
+  onSuccess: (response: AxiosResponse<BoardGetOneResponse>) => void
+}) => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (data: BoardCreateRequestDto) =>
+      new BoardsApi(configuration).boardControllerCreateBoard(data),
+    onSuccess: async (response) => {
+      await queryClient.invalidateQueries({ queryKey: ["boards"] })
+      onSuccess(response)
+    },
+  })
+}
+
 export const useUpdateBoard = (boardId: string) => {
   const queryClient = useQueryClient()
 
@@ -32,6 +54,31 @@ export const useUpdateBoard = (boardId: string) => {
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["boards", boardId] })
+    },
+  })
+}
+
+export function useDeleteBoard() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (boardId: string) => {
+      await new BoardsApi(configuration).boardControllerDeleteBoard(boardId)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["boards"] })
+    },
+  })
+}
+
+export const useSyncBoard = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (boardId: string) =>
+      new BoardsApi(configuration).boardControllerSyncBoard(boardId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["boards"] })
     },
   })
 }

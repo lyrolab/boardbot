@@ -1,8 +1,5 @@
 "use client"
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -13,31 +10,39 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { useCreateFiderBoard } from "../../queries/fider-board"
+import { FiderForm } from "./FiderForm"
+import { Skeleton } from "@/components/ui/skeleton"
+import {
+  IntegrationFormValues,
+  useBoardIntegrationForm,
+} from "./useBoardIntegrationForm"
 
-const integrationFormSchema = z.object({
-  baseUrl: z.string().url({
-    message: "Please enter a valid URL.",
-  }),
-  apiKey: z.string().min(1, {
-    message: "API key is required.",
-  }),
-})
+interface IntegrationSettingsProps {
+  boardId: string
+}
 
-type IntegrationFormValues = z.infer<typeof integrationFormSchema>
+export default function IntegrationSettings({
+  boardId,
+}: IntegrationSettingsProps) {
+  const createFiderBoard = useCreateFiderBoard(boardId)
+  const { form, isLoading } = useBoardIntegrationForm(boardId)
 
-export default function IntegrationSettings() {
-  const form = useForm<IntegrationFormValues>({
-    resolver: zodResolver(integrationFormSchema),
-    defaultValues: {
-      baseUrl: "",
-      apiKey: "",
-    },
-  })
+  async function onSubmit(data: IntegrationFormValues) {
+    if (data.vendor === "fider") {
+      await createFiderBoard.mutateAsync(data.settings)
+    }
+  }
 
-  function onSubmit(data: IntegrationFormValues) {
-    // TODO: Implement integration update mutation
-    console.log(data)
+  if (isLoading) {
+    return <Skeleton className="h-[400px] w-full" />
   }
 
   return (
@@ -52,41 +57,36 @@ export default function IntegrationSettings() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
             control={form.control}
-            name="baseUrl"
+            name="vendor"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Base URL</FormLabel>
-                <FormControl>
-                  <Input placeholder="https://api.vendor.com" {...field} />
-                </FormControl>
+                <FormLabel>Vendor</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a vendor" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="fider">Fider</SelectItem>
+                  </SelectContent>
+                </Select>
                 <FormDescription>
-                  The base URL of your feedback vendor&apos;s API.
+                  Choose your feedback management platform.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="apiKey"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>API Key</FormLabel>
-                <FormControl>
-                  <Input
-                    type="password"
-                    placeholder="Enter your API key"
-                    {...field}
-                  />
-                </FormControl>
-                <FormDescription>
-                  Your feedback vendor&apos;s API key for authentication.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type="submit">Save changes</Button>
+
+          {form.watch("vendor") === "fider" && <FiderForm form={form} />}
+
+          <Button type="submit" disabled={createFiderBoard.isPending}>
+            {createFiderBoard.isPending ? "Saving..." : "Save changes"}
+          </Button>
         </form>
       </Form>
     </div>

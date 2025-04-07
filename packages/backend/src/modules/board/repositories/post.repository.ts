@@ -11,14 +11,38 @@ export type PostInput = Pick<Post, "externalId" | "title" | "description">
 export class PostRepository {
   constructor(
     @InjectRepository(Post)
-    private readonly postRepository: Repository<Post>,
+    private readonly repository: Repository<Post>,
   ) {}
+
+  async findAll() {
+    return this.repository.find({
+      relations: ["board"],
+      order: {
+        createdAt: "DESC",
+      },
+    })
+  }
+
+  async findById(id: string) {
+    return this.repository.findOne({
+      where: { id },
+      relations: ["board"],
+    })
+  }
+
+  async findByIdOrFail(id: string) {
+    const post = await this.repository.findOneOrFail({
+      where: { id },
+      relations: ["board"],
+    })
+    return post
+  }
 
   async createOrUpdateByExternalId(
     boardId: string,
     posts: PostInput[],
   ): Promise<void> {
-    const existingPosts = await this.postRepository.find({
+    const existingPosts = await this.repository.find({
       where: {
         board: { id: boardId },
         externalId: In(posts.map((post) => post.externalId)),
@@ -29,7 +53,7 @@ export class PostRepository {
     for (const postInput of posts) {
       const post =
         existingPostsMap[postInput.externalId] ||
-        this.postRepository.create({
+        this.repository.create({
           ...postInput,
           board: { id: boardId },
         })
@@ -37,12 +61,12 @@ export class PostRepository {
       post.title = postInput.title
       post.description = postInput.description
 
-      await this.postRepository.save(post)
+      await this.repository.save(post)
     }
   }
 
   async findPending(boardId: string) {
-    return this.postRepository.find({
+    return this.repository.find({
       where: {
         board: { id: boardId },
         processingStatus: PostProcessingStatus.PENDING,
@@ -55,6 +79,6 @@ export class PostRepository {
   }
 
   async update(post: Post) {
-    return this.postRepository.save(post)
+    return this.repository.save(post)
   }
 }

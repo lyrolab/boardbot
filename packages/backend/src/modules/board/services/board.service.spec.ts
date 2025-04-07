@@ -57,13 +57,12 @@ describe("BoardService", () => {
       boardRepositoryMock.findAll.mockResolvedValue([board])
 
       const boards = await service.getBoards()
-      expect(boards.data).toHaveLength(1)
-      const boardResult = boards.data[0]
+      expect(boards.length).toBe(1)
+      const boardResult = boards[0]
 
       expect(boardResult.id).toBe(board.id)
       expect(boardResult.title).toBe(board.title)
       expect(boardResult.description).toBe(board.description)
-      expect(boardResult.vendor).toBe(BoardVendorEnum.FIDER)
       expect(boardResult.createdAt).toBe(board.createdAt)
       expect(boardResult.updatedAt).toBe(board.updatedAt)
     })
@@ -85,8 +84,7 @@ describe("BoardService", () => {
 
       const result = await service.getBoard(boardId)
 
-      expect(result.data.id).toBe("1")
-      expect(result.data.vendor).toBe(BoardVendorEnum.FIDER)
+      expect(result.id).toBe("1")
       expect(boardRepositoryMock.findOneOrFail).toHaveBeenCalledWith(boardId)
     })
   })

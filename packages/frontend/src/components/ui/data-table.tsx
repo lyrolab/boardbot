@@ -1,10 +1,13 @@
 "use client"
 
+import * as React from "react"
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
+  getExpandedRowModel,
+  ExpandedState,
 } from "@tanstack/react-table"
 
 import {
@@ -25,11 +28,24 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const [expanded, setExpanded] = React.useState<ExpandedState>({})
+
   const table = useReactTable({
     data,
     columns,
+    state: {
+      expanded,
+    },
+    onExpandedChange: setExpanded,
+    getRowCanExpand: () => true,
     getCoreRowModel: getCoreRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
   })
+
+  const expandedColumn = React.useMemo(
+    () => columns.find((col) => col.id === "expanded"),
+    [columns],
+  )
 
   return (
     <div className="rounded-md border">
@@ -55,16 +71,28 @@ export function DataTable<TData, TValue>({
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
+              <React.Fragment key={row.id}>
+                <TableRow data-state={row.getIsSelected() && "selected"}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+                {row.getIsExpanded() && expandedColumn?.cell && (
+                  <TableRow>
+                    <TableCell colSpan={columns.length} className="p-0">
+                      {flexRender(
+                        expandedColumn.cell,
+                        row.getVisibleCells()[0].getContext(),
+                      )}
+                    </TableCell>
+                  </TableRow>
+                )}
+              </React.Fragment>
             ))
           ) : (
             <TableRow>

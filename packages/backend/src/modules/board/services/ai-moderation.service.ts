@@ -5,8 +5,7 @@ import { Post } from "src/modules/board/entities/post.entity"
 import {
   ModerationDecision,
   ModerationReason,
-  postDecisionKeys,
-} from "src/modules/board/models/post-decision"
+} from "src/modules/board/models/dto/post-decision.dto"
 
 const rejectedRegex = /REJECTED(?:: (.*))?/
 
@@ -32,9 +31,11 @@ Then, for each reason, determine if the post should be rejected for that reason.
 
 If the post should be rejected, answer with:
 REJECTED: <reason>
+REASONING: <detailed explanation of why the post was rejected>
 
 If the post should not be rejected, answer with:
 ACCEPTED
+REASONING: <detailed explanation of why the post was accepted>
 
 Example:
 
@@ -43,6 +44,7 @@ This post suggests to create playlists.
 - is_a_question: This post is not a question about the application.
 
 ACCEPTED
+REASONING: The post contains a single, clear suggestion about creating playlists. It is well-formatted and follows all posting guidelines.
     `
 
     const prompt = `
@@ -58,18 +60,33 @@ ACCEPTED
 
     console.log("result", result.text)
 
-    if (result.text.includes("ACCEPTED")) return { status: "accepted" }
+    const reasoningMatch = result.text.match(/REASONING: (.*?)(?:\n|$)/s)
+    const reasoning = reasoningMatch
+      ? reasoningMatch[1].trim()
+      : "No reasoning provided"
+
+    if (result.text.includes("ACCEPTED"))
+      return {
+        decision: "accepted",
+        reasoning,
+      }
 
     const rejectedMatch = result.text.match(rejectedRegex)
     if (
       rejectedMatch &&
-      postDecisionKeys.includes(rejectedMatch[1] as ModerationReason)
+      Object.values(ModerationReason).includes(
+        rejectedMatch[1] as ModerationReason,
+      )
     )
       return {
-        status: "rejected",
+        decision: "rejected",
         reason: rejectedMatch[1] as ModerationReason,
+        reasoning,
       }
 
-    return { status: "unknown" }
+    return {
+      decision: "unknown",
+      reasoning: "Unable to determine if post should be accepted or rejected",
+    }
   }
 }

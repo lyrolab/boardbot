@@ -5,7 +5,7 @@ import { uniqBy } from "lodash"
 import { Post } from "src/modules/board/entities/post.entity"
 import { BasePost } from "src/modules/board/models/base-post"
 import { BoardClientInterface } from "src/modules/board/models/board-client.interface"
-import { DuplicatePostsDecision } from "src/modules/board/models/post-decision"
+import { DuplicatePostsDecision } from "src/modules/board/models/dto/post-decision.dto"
 import { parse } from "yaml"
 import { z } from "zod"
 
@@ -49,10 +49,14 @@ export class AiFindDuplicatePostsService {
     )
 
     return {
-      status: duplicatePosts.length > 0 ? "duplicate" : "not_duplicate",
+      decision: duplicatePosts.length > 0 ? "duplicate" : "not_duplicate",
       duplicatePostExternalIds: duplicatePosts.map(
         ({ externalId }) => externalId,
       ),
+      reasoning:
+        duplicatePosts.length > 0
+          ? `Found ${duplicatePosts.length} duplicate post(s) that match the original suggestion.`
+          : "No duplicate posts were found that match the original suggestion.",
     }
   }
 
@@ -75,6 +79,7 @@ export class AiFindDuplicatePostsService {
       prompt,
       schema: z.object({
         queries: z.array(z.string()),
+        reasoning: z.string(),
       }),
     })
 
@@ -92,16 +97,16 @@ You must output in YAML format.
 
 Expected output:
 - postId: <postId>
-  reasoning: <reasoning>
+  reasoning: <detailed explanation of why this post is or is not a duplicate>
   isDuplicate: <true|false>
 
 Example:
 ${"```"}
 - postId: 1
-  reasoning: This post has a similar title and description to the original post.
+  reasoning: This post is an exact duplicate as it suggests the same playlist feature with very similar wording and implementation details.
   isDuplicate: true
 - postId: 2
-  reasoning: This post is related to networking, while the original post is about playlists.
+  reasoning: While this post also discusses features related to music, it focuses on networking capabilities rather than playlist management.
   isDuplicate: false
 ${"```"}
 `

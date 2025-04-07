@@ -1,4 +1,4 @@
-import { ModerationReason } from "src/modules/board/models/post-decision"
+import { ModerationReason } from "src/modules/board/models/dto/post-decision.dto"
 
 type PostDecisionData = {
   description: string

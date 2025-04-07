@@ -1,6 +1,6 @@
 import { Board } from "src/modules/board/entities/board.entity"
 import { PostProcessingStatus } from "src/modules/board/entities/post-processing-status.enum"
-import { PostDecision } from "src/modules/board/models/post-decision"
+import { PostDecision } from "src/modules/board/models/dto/post-decision.dto"
 import {
   Column,
   CreateDateColumn,

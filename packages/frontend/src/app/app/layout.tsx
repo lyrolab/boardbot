@@ -1,29 +1,58 @@
 "use client"
 
-import * as React from "react"
 import { AppSidebar } from "@/components/app-sidebar"
 import {
   Breadcrumb,
-  BreadcrumbList,
   BreadcrumbItem,
   BreadcrumbLink,
-  BreadcrumbSeparator,
+  BreadcrumbList,
   BreadcrumbPage,
+  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import {
   BreadcrumbProvider,
   useBreadcrumb,
 } from "@/components/ui/breadcrumb/context"
 import {
-  SidebarProvider,
   SidebarInset,
+  SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { ModeToggle } from "@/modules/core/components/ModeToggle"
 import { Separator } from "@radix-ui/react-separator"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import {
+  MutationCache,
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query"
+import * as React from "react"
+import { toast } from "sonner"
+import { isAxiosError } from "axios"
 
-const queryClient = new QueryClient()
+function formatError(error: unknown) {
+  if (isAxiosError<{ message: string }>(error)) {
+    return error.response?.data?.message || "An error occurred"
+  }
+  return "An error occurred"
+}
+
+const queryClient = new QueryClient({
+  queryCache: new QueryCache({
+    onError: (error, query) => {
+      if (query.meta?.showErrorToast) {
+        toast.error(formatError(error))
+      }
+    },
+  }),
+  mutationCache: new MutationCache({
+    onError: (error, variables, context, mutation) => {
+      if (mutation.meta?.showErrorToast) {
+        toast.error(formatError(error))
+      }
+    },
+  }),
+})
 
 function BreadcrumbNav() {
   const { items } = useBreadcrumb()

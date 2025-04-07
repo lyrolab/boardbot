@@ -1,4 +1,4 @@
-import { PostDecision } from "src/modules/board/models/post-decision"
+import { PostDecision } from "src/modules/board/models/dto/post-decision.dto"
 import { BasePost } from "./base-post"
 import { BaseTag } from "./base-tag"
 
