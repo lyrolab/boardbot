@@ -98,10 +98,10 @@ export const columns: ColumnDef<PostGet>[] = [
     cell: ({ row }) => <StatusCell post={row.original} />,
   },
   {
-    accessorKey: "createdAt",
+    accessorKey: "postCreatedAt",
     header: "Created",
     cell: ({ row }) => {
-      const date = row.getValue("createdAt") as string
+      const date = row.getValue("postCreatedAt") as string
       return format(new Date(date), "MMM d, yyyy")
     },
   },

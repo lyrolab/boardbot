@@ -1,4 +1,5 @@
 import * as React from "react"
+import { usePathname } from "next/navigation"
 
 import {
   Sidebar,
@@ -25,7 +26,6 @@ const data = {
         {
           title: "Boards",
           url: "/app/boards",
-          isActive: true,
         },
         {
           title: "Posts",
@@ -37,6 +37,8 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const pathname = usePathname()
+
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -53,7 +55,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <SidebarMenu>
                 {item.items.map((item) => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild isActive={item.isActive}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={pathname.startsWith(item.url)}
+                    >
                       <a href={item.url}>{item.title}</a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>

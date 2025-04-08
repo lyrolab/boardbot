@@ -5,7 +5,10 @@ import { Post } from "src/modules/board/entities/post.entity"
 import { keyBy } from "lodash"
 import { PostProcessingStatus } from "src/modules/board/entities/post-processing-status.enum"
 
-export type PostInput = Pick<Post, "externalId" | "title" | "description">
+export type PostInput = Pick<
+  Post,
+  "externalId" | "title" | "description" | "postCreatedAt"
+>
 
 @Injectable()
 export class PostRepository {
@@ -14,19 +17,19 @@ export class PostRepository {
     private readonly repository: Repository<Post>,
   ) {}
 
-  async findAll() {
+  async findAllByExternalIds(boardId: string, externalIds: string[]) {
     return this.repository.find({
+      where: { board: { id: boardId }, externalId: In(externalIds) },
       relations: ["board"],
-      order: {
-        createdAt: "DESC",
-      },
     })
   }
 
-  async findById(id: string) {
-    return this.repository.findOne({
-      where: { id },
+  async findAll(boardIds?: string[]) {
+    return this.repository.find({
+      where:
+        boardIds && boardIds.length > 0 ? { board: { id: In(boardIds) } } : {},
       relations: ["board"],
+      order: { postCreatedAt: "DESC" },
     })
   }
 
@@ -60,6 +63,7 @@ export class PostRepository {
 
       post.title = postInput.title
       post.description = postInput.description
+      post.postCreatedAt = postInput.postCreatedAt
 
       await this.repository.save(post)
     }

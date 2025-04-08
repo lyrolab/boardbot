@@ -13,4 +13,16 @@ export const postDecisionsData: Record<ModerationReason, PostDecisionData> = {
     description:
       "This post is a question about the application. Please post it on our Discord instead.",
   },
+  is_spam_or_inappropriate: {
+    description:
+      "This post contains spam, offensive content, or inappropriate material. Please ensure your suggestions are respectful and constructive.",
+  },
+  is_advertisement: {
+    description:
+      "This post appears to be promotional or advertising content. Please only submit product suggestions or feedback.",
+  },
+  is_bug_report: {
+    description:
+      "This post appears to be a bug report. Please submit bug reports through our dedicated bug reporting system instead.",
+  },
 }

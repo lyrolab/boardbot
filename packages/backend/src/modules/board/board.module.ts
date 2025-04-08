@@ -19,11 +19,17 @@ import { BoardSyncService } from "src/modules/board/services/board-sync.service"
 import { BoardService } from "src/modules/board/services/board.service"
 import { PostSyncService } from "src/modules/board/services/post-sync.service"
 import { TagService } from "src/modules/board/services/tag.service"
+import { BoardContextController } from "./controllers/board-context.controller"
 import { PostController } from "./controllers/post.controller"
+import { BoardContextRepository } from "./repositories/board-context.repository"
+import { BoardContextService } from "./services/board-context.service"
 import { PostService } from "./services/post.service"
+import { BoardContext } from "src/modules/board/entities/board-context.entity"
+import { AiTagDescriptionService } from "src/modules/board/services/ai-tag-description.service"
+
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Board, Post, Tag]),
+    TypeOrmModule.forFeature([Board, Post, Tag, BoardContext]),
     DiscoveryModule,
     QueueModule,
     AiModule,
@@ -41,9 +47,17 @@ import { PostService } from "./services/post.service"
     TagRepository,
     TagService,
     AiTagAssignmentService,
+    AiTagDescriptionService,
     PostSyncService,
+    BoardContextService,
+    BoardContextRepository,
   ],
-  exports: [BoardRepository, TagService, BoardService],
-  controllers: [BoardController, PostController, TagController],
+  exports: [BoardRepository, TagService, BoardService, PostService],
+  controllers: [
+    BoardController,
+    PostController,
+    TagController,
+    BoardContextController,
+  ],
 })
 export class BoardModule {}

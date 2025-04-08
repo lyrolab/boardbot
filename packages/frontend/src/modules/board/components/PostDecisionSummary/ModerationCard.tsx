@@ -19,17 +19,14 @@ interface ModerationCardProps {
 const getStatusConfig = (decision: "accepted" | "rejected" | "unknown") => {
   const config = {
     accepted: {
-      color: "bg-green-500",
       icon: CheckCircle,
       text: "Accepted",
     },
     rejected: {
-      color: "bg-red-500",
       icon: AlertCircle,
       text: "Rejected",
     },
     unknown: {
-      color: "bg-yellow-500",
       icon: HelpCircle,
       text: "Unknown",
     },
@@ -49,7 +46,7 @@ export function ModerationCard({ decision }: ModerationCardProps) {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <statusConfig.icon className={`h-5 w-5 ${statusConfig.color}`} />
+          <statusConfig.icon size={20} />
           Moderation
         </CardTitle>
       </CardHeader>

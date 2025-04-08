@@ -10,6 +10,17 @@ export class TagRepository {
     private readonly tagRepository: Repository<Tag>,
   ) {}
 
+  async findOneOrFail(tagId: string) {
+    return this.tagRepository.findOneOrFail({
+      where: { id: tagId },
+      relations: {
+        board: {
+          context: true,
+        },
+      },
+    })
+  }
+
   async findAllByBoardId(boardId: string) {
     return this.tagRepository.find({
       where: {

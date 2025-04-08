@@ -4,4 +4,5 @@ export interface BasePost {
   description: string
   createdAt: Date
   tags: string[]
+  upvotes: number
 }

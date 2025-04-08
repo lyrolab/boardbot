@@ -32,7 +32,10 @@ export default function TagList({ boardId }: { boardId: string }) {
 
   return (
     <form onSubmit={onSubmit} className="space-y-4">
-      <DataTable columns={createColumns(control)} data={response?.data ?? []} />
+      <DataTable
+        columns={createColumns(control, boardId)}
+        data={response?.data ?? []}
+      />
       <div className="flex justify-end">
         <Button type="submit" loading={updateTags.isPending}>
           Save changes

@@ -8,6 +8,7 @@ import { assertDifference } from "test/helpers/assert-difference"
 import { BoardFactory } from "src/modules/board/factories/board.factory"
 import { Board } from "src/modules/board/entities/board.entity"
 import { PostProcessingStatus } from "src/modules/board/entities/post-processing-status.enum"
+
 describe("PostRepository", () => {
   let repository: PostRepository
   let board: Board
@@ -50,7 +51,7 @@ describe("PostRepository", () => {
       )
 
       // Verify posts were created
-      const createdPosts = await repository["postRepository"].find({
+      const createdPosts = await repository["repository"].find({
         where: {
           externalId: "new_post_1",
         },
@@ -81,7 +82,7 @@ describe("PostRepository", () => {
       )
 
       // Verify post was updated
-      const updatedPostFromDb = await repository["postRepository"].findOne({
+      const updatedPostFromDb = await repository["repository"].findOne({
         where: { id: existingPost.id },
       })
       expect(updatedPostFromDb).toBeDefined()
@@ -116,7 +117,7 @@ describe("PostRepository", () => {
       )
 
       // Verify existing post was updated
-      const updatedPost = await repository["postRepository"].findOne({
+      const updatedPost = await repository["repository"].findOne({
         where: { id: existingPost.id },
       })
       expect(updatedPost).toBeDefined()
@@ -125,7 +126,7 @@ describe("PostRepository", () => {
       }
 
       // Verify new post was created
-      const newPost = await repository["postRepository"].findOne({
+      const newPost = await repository["repository"].findOne({
         where: { externalId: "new_mixed_post" },
       })
       expect(newPost).toBeDefined()

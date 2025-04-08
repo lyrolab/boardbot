@@ -2,14 +2,30 @@ import { PostsApi } from "@/clients/backend-client"
 import { configuration } from "@/modules/core/queries/clientConfiguration"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
-export const usePosts = () =>
-  useQuery({
-    queryKey: ["posts"],
+export const usePosts = (boardIds?: string[]) => {
+  return useQuery({
+    queryKey: ["posts", { boardIds }],
     queryFn: () =>
       new PostsApi(configuration)
-        .postControllerGetPosts()
+        .postControllerGetPosts(
+          boardIds && boardIds.length > 0 ? boardIds.join(",") : undefined,
+        )
         .then(({ data }) => data),
   })
+}
+
+export const usePost = (postId?: string) => {
+  return useQuery({
+    queryKey: ["post", postId],
+    queryFn: () =>
+      postId
+        ? new PostsApi(configuration)
+            .postControllerGetPost(postId)
+            .then(({ data }) => data)
+        : Promise.reject(),
+    enabled: Boolean(postId),
+  })
+}
 
 export const useSyncPost = () => {
   const queryClient = useQueryClient()

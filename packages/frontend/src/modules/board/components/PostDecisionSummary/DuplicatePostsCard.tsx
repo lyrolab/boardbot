@@ -1,49 +1,60 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { DuplicatePostsDecision } from "@/clients/backend-client"
+import { DuplicatePostsDecision, PostGet } from "@/clients/backend-client"
 import { Badge } from "@/components/ui/badge"
-import { Copy, FileText } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
-import { Button } from "@/components/ui/button"
-import { ChevronDown } from "lucide-react"
+import { DuplicatePostCard } from "@/modules/board/components/PostDecisionSummary/DuplicatePostCard"
+import { DecisionHeader } from "@/modules/board/components/PostDecisionSummary/ui/DecisionHeader"
+import { ChevronDown, Copy, FileText } from "lucide-react"
 
 interface DuplicatePostsCardProps {
   decision: DuplicatePostsDecision
+  relatedPosts: PostGet[]
+}
+
+type StatusConfig = {
+  variant: "destructive" | "default" | "secondary"
+  text: string
+  color?: string
 }
 
 const getStatusConfig = (
   decision: "duplicate" | "not_duplicate" | "unknown",
-) => {
+): StatusConfig => {
   const config = {
     duplicate: {
       variant: "destructive" as const,
-      text: "Duplicate Found",
+      text: "Duplicate found",
     },
     not_duplicate: {
       variant: "default" as const,
-      text: "No Duplicates",
+      text: "No duplicates",
     },
     unknown: {
       variant: "secondary" as const,
       text: "Unknown",
     },
   }
-  return config[decision]
+  return config[decision] || config.unknown
 }
 
-export function DuplicatePostsCard({ decision }: DuplicatePostsCardProps) {
+export function DuplicatePostsCard({
+  decision,
+  relatedPosts,
+}: DuplicatePostsCardProps) {
   const statusConfig = getStatusConfig(decision.decision)
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Copy className="h-5 w-5" />
-          Duplicate Detection
-        </CardTitle>
+        <DecisionHeader
+          icon={<Copy size={20} color={statusConfig.color} />}
+          title="Duplicate Detection"
+        />
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex items-center gap-2">
@@ -51,18 +62,18 @@ export function DuplicatePostsCard({ decision }: DuplicatePostsCardProps) {
           <Badge variant={statusConfig.variant}>{statusConfig.text}</Badge>
         </div>
 
-        {decision.duplicatePostExternalIds.length > 0 && (
+        {decision.duplicatePosts.length > 0 && (
           <div className="space-y-2">
-            <span className="font-medium">Duplicate Posts:</span>
+            <div className="font-medium">Duplicate posts:</div>
             <div className="space-y-2">
-              {decision.duplicatePostExternalIds.map((id) => (
-                <div
-                  key={id}
-                  className="flex items-center gap-2 rounded-md border p-2"
-                >
-                  <FileText className="h-4 w-4" />
-                  <span className="text-sm">{id}</span>
-                </div>
+              {decision.duplicatePosts.map((duplicatePost) => (
+                <DuplicatePostCard
+                  key={duplicatePost.externalId}
+                  post={relatedPosts.find(
+                    (post) => post.externalId === duplicatePost.externalId,
+                  )}
+                  duplicatePost={duplicatePost}
+                />
               ))}
             </div>
           </div>

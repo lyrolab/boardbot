@@ -43,7 +43,11 @@ function BoardActions({ board }: { board: BoardGet }) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => router.push(`/boards/${board.id}`)}>
+          <DropdownMenuItem
+            onClick={() =>
+              router.push(`/app/boards/${board.id}/settings/general`)
+            }
+          >
             Settings
           </DropdownMenuItem>
           <DropdownMenuItem

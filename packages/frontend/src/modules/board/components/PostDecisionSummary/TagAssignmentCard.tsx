@@ -1,27 +1,34 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { TagAssignmentDecision } from "@/clients/backend-client"
 import { Badge } from "@/components/ui/badge"
-import { Tag, AlertCircle, CheckCircle } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
-import { Button } from "@/components/ui/button"
-import { ChevronDown } from "lucide-react"
+import { AlertCircle, CheckCircle, ChevronDown, Tag } from "lucide-react"
+import { DecisionHeader } from "./ui/DecisionHeader"
+import { useTags } from "@/modules/board/queries/tags"
 
 interface TagAssignmentCardProps {
+  boardId: string
   decision: TagAssignmentDecision
 }
 
-export function TagAssignmentCard({ decision }: TagAssignmentCardProps) {
+export function TagAssignmentCard({
+  boardId,
+  decision,
+}: TagAssignmentCardProps) {
+  const { data: tags, status } = useTags(boardId)
+
+  if (status === "pending") return <div>Loading...</div>
+  if (status === "error") return <div>Error</div>
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Tag className="h-5 w-5" />
-          Tag Assignment
-        </CardTitle>
+        <DecisionHeader icon={<Tag size={20} />} title="Tag Assignment" />
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex items-center gap-2">
@@ -45,11 +52,11 @@ export function TagAssignmentCard({ decision }: TagAssignmentCardProps) {
 
         {decision.tagIds.length > 0 && (
           <div className="space-y-2">
-            <span className="font-medium">Assigned Tags:</span>
+            <div className="font-medium">Assigned Tags:</div>
             <div className="flex flex-wrap gap-2">
               {decision.tagIds.map((tagId) => (
                 <Badge key={tagId} variant="outline">
-                  {tagId}
+                  {tags.data.find((tag) => tag.externalId === tagId)?.title}
                 </Badge>
               ))}
             </div>

@@ -9,6 +9,9 @@ import { DuplicatePostsDecision } from "src/modules/board/models/dto/post-decisi
 import { parse } from "yaml"
 import { z } from "zod"
 
+const MAX_POSTS_PER_QUERY = 6
+const MAX_POSTS_FOR_DUPLICATE_CHECK = 30
+
 const duplicatePostSchema = z.object({
   postId: z.coerce.string(),
   reasoning: z.string(),
@@ -32,32 +35,22 @@ export class AiFindDuplicatePostsService {
   ): Promise<DuplicatePostsDecision> {
     const queries = await this.generateQueriesPrompt(post)
 
-    const queryResults = await Promise.all(
+    const rawQueryResults = await Promise.all(
       queries.map((query) => client.queryPosts(query)),
     )
-    const postResults = uniqBy(queryResults.flat(), "externalId").filter(
+
+    const queryResults = rawQueryResults
+      .map((posts) => posts.sort((a, b) => b.upvotes - a.upvotes))
+      .map((posts) => posts.slice(0, MAX_POSTS_PER_QUERY))
+      .flat()
+      .sort((a, b) => b.upvotes - a.upvotes)
+      .slice(0, MAX_POSTS_FOR_DUPLICATE_CHECK)
+
+    const postResults = uniqBy(queryResults, "externalId").filter(
       ({ externalId }) => externalId !== post.externalId,
     )
 
-    const duplicatePostIds = await this.findDuplicatePostsPrompt(
-      post,
-      postResults,
-    )
-
-    const duplicatePosts = postResults.filter((post) =>
-      duplicatePostIds.includes(post.externalId),
-    )
-
-    return {
-      decision: duplicatePosts.length > 0 ? "duplicate" : "not_duplicate",
-      duplicatePostExternalIds: duplicatePosts.map(
-        ({ externalId }) => externalId,
-      ),
-      reasoning:
-        duplicatePosts.length > 0
-          ? `Found ${duplicatePosts.length} duplicate post(s) that match the original suggestion.`
-          : "No duplicate posts were found that match the original suggestion.",
-    }
+    return this.findDuplicatePostsPrompt(post, postResults)
   }
 
   private async generateQueriesPrompt(post: Post) {
@@ -86,7 +79,10 @@ export class AiFindDuplicatePostsService {
     return result.object.queries
   }
 
-  private async findDuplicatePostsPrompt(post: Post, postResults: BasePost[]) {
+  private async findDuplicatePostsPrompt(
+    post: Post,
+    postResults: BasePost[],
+  ): Promise<DuplicatePostsDecision> {
     const system = `You are a helpful assistant that is tasked with finding duplicate posts on a board.
 You will be given a post with a title and description.
 You will also be given a list of posts that were found via the board search API.
@@ -136,17 +132,38 @@ ${"```"}
     const response = result.text.match(/```(?:yaml|yml)?([\s\S]*)```/)
     if (!response) {
       console.error("No response found")
-      return []
+      return {
+        status: "failed",
+        decision: "unknown",
+        duplicatePosts: [],
+        reasoning: "Failed to parse AI response",
+      }
     }
 
     try {
       const parsedResponse = duplicatePostListSchema.parse(parse(response[1]))
-      return parsedResponse
-        .filter(({ isDuplicate }) => isDuplicate)
-        .map(({ postId }) => postId)
+      const duplicates = parsedResponse.filter(({ isDuplicate }) => isDuplicate)
+
+      return {
+        status: "success",
+        decision: duplicates.length > 0 ? "duplicate" : "not_duplicate",
+        duplicatePosts: duplicates.map(({ postId, reasoning }) => ({
+          externalId: postId,
+          reasoning,
+        })),
+        reasoning:
+          duplicates.length > 0
+            ? `Found ${duplicates.length} duplicate post(s) that match the original suggestion.`
+            : "No duplicate posts were found that match the original suggestion.",
+      }
     } catch (error) {
       console.error("Error parsing response", error)
-      return []
+      return {
+        status: "failed",
+        decision: "unknown",
+        duplicatePosts: [],
+        reasoning: "Failed to parse AI response",
+      }
     }
   }
 }

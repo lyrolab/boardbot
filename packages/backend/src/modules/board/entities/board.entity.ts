@@ -1,6 +1,7 @@
 import { BoardType } from "src/modules/board/entities/board-type.enum"
 import { FiderBoard } from "src/modules/fider/entities/fider-board.entity"
 import { Tag } from "./tag.entity"
+import { BoardContext } from "./board-context.entity"
 import {
   Column,
   CreateDateColumn,
@@ -28,6 +29,9 @@ export class Board {
 
   @OneToOne(() => FiderBoard, (fiderBoard) => fiderBoard.board)
   fiderBoard?: FiderBoard
+
+  @OneToOne(() => BoardContext, (context) => context.board)
+  context?: BoardContext
 
   @OneToMany(() => Tag, (tag) => tag.board, { cascade: true })
   tags: Tag[]

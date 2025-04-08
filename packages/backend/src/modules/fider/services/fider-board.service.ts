@@ -45,7 +45,7 @@ export class FiderBoardService implements BoardInterface {
     // Test the connection by attempting to fetch posts
     const client = this.fiderBoardClientFactory.create(testBoard)
     try {
-      await client.fetchNewPosts()
+      await client.syncPosts()
     } catch (error) {
       throw new UnauthorizedException(
         "Failed to connect to Fider. Please check your base URL and API key.",

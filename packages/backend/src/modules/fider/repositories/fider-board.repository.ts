@@ -36,7 +36,6 @@ export class FiderBoardRepository {
         board: { id: boardId },
         baseUrl: createDto.baseUrl,
         apiKey: createDto.apiKey,
-        lastFetchedAt: new Date(),
       })
     } else {
       fiderBoard.baseUrl = createDto.baseUrl
@@ -44,5 +43,9 @@ export class FiderBoardRepository {
     }
 
     return this.fiderBoardRepository.save(fiderBoard)
+  }
+
+  async updateLastFetchedAt(boardId: string, lastFetchedAt: Date) {
+    await this.fiderBoardRepository.update(boardId, { lastFetchedAt })
   }
 }

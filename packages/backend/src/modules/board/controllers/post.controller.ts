@@ -5,11 +5,13 @@ import {
   Param,
   ParseUUIDPipe,
   Post,
+  Query,
 } from "@nestjs/common"
-import { ApiOperation, ApiParam, ApiTags } from "@nestjs/swagger"
-import { toPostsGetResponse } from "src/modules/board/models/dto/posts-get.response.dto"
+import { ApiOperation, ApiParam, ApiQuery, ApiTags } from "@nestjs/swagger"
 import { PostSyncService } from "../services/post-sync.service"
 import { PostService } from "../services/post.service"
+import { toPostGetResponse } from "src/modules/board/models/dto/post-get.response.dto"
+import { toPostsGetResponse } from "src/modules/board/models/dto/posts-get.response.dto"
 
 @ApiTags("posts")
 @Controller("posts")
@@ -21,9 +23,24 @@ export class PostController {
 
   @Get()
   @ApiOperation({ summary: "Get all posts across all boards" })
-  async getPosts() {
-    const posts = await this.postService.findAll()
+  @ApiQuery({
+    name: "boardIds",
+    required: false,
+    description: "Filter posts by board IDs",
+  })
+  async getPosts(@Query("boardIds") boardIds?: string) {
+    const posts = await this.postService.findAll(
+      boardIds ? boardIds.split(",") : undefined,
+    )
     return toPostsGetResponse(posts)
+  }
+
+  @Get(":postId")
+  @ApiOperation({ summary: "Get a post by ID" })
+  @ApiParam({ name: "postId", description: "The ID of the post to get" })
+  async getPost(@Param("postId", new ParseUUIDPipe()) postId: string) {
+    const { post, relatedPosts } = await this.postService.findById(postId)
+    return toPostGetResponse(post, relatedPosts)
   }
 
   @Post(":postId/sync")

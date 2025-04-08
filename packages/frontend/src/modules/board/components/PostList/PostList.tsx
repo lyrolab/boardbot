@@ -2,21 +2,13 @@ import { DataTable } from "@/components/ui/data-table"
 import { Skeleton } from "@/components/ui/skeleton"
 import { columns } from "@/modules/board/components/PostList/columns"
 import { usePosts } from "@/modules/board/queries/posts"
-import { usePostDecisionDrawer } from "../../store/postDecisionDrawer"
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerClose,
-} from "@/components/ui/drawer"
-import { Button } from "@/components/ui/button"
-import { X } from "lucide-react"
-import { PostDecisionSummary } from "./PostDecisionSummary/PostDecisionSummary"
+import { BoardFilter } from "./BoardFilter"
+import { useFiltersStore } from "../../store/filters"
+import { PostDecisionDrawer } from "./PostDecisionDrawer"
 
 export default function PostList() {
-  const { data: response, isLoading } = usePosts()
-  const { isOpen, selectedPost, closeDrawer } = usePostDecisionDrawer()
+  const { filters } = useFiltersStore()
+  const { data: response, isLoading } = usePosts(filters.selectedBoards)
 
   if (isLoading) {
     return (
@@ -30,28 +22,13 @@ export default function PostList() {
   return (
     <>
       <div className="space-y-4">
+        <div className="flex justify-between items-center">
+          <BoardFilter />
+        </div>
         <DataTable columns={columns} data={response?.data ?? []} />
       </div>
 
-      <Drawer open={isOpen} onOpenChange={closeDrawer}>
-        <DrawerContent>
-          <div className="mx-auto w-full max-w-4xl">
-            <DrawerHeader className="flex items-center justify-between">
-              <DrawerTitle>Post Decision</DrawerTitle>
-              <DrawerClose asChild>
-                <Button variant="ghost" size="icon">
-                  <X className="h-4 w-4" />
-                </Button>
-              </DrawerClose>
-            </DrawerHeader>
-            {selectedPost?.decision && (
-              <div className="p-4">
-                <PostDecisionSummary decision={selectedPost.decision} />
-              </div>
-            )}
-          </div>
-        </DrawerContent>
-      </Drawer>
+      <PostDecisionDrawer />
     </>
   )
 }

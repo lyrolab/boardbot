@@ -5,6 +5,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -32,6 +33,10 @@ export class Post {
 
   @ManyToOne(() => Board, (board) => board.posts)
   board: Board
+
+  @Index()
+  @Column()
+  postCreatedAt: Date
 
   @CreateDateColumn()
   createdAt: Date

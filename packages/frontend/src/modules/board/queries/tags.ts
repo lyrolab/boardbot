@@ -1,4 +1,7 @@
-import { BoardsApi } from "@/clients/backend-client"
+import {
+  TagGenerateDescriptionResponseDto,
+  TagsApi,
+} from "@/clients/backend-client"
 import { configuration } from "@/modules/core/queries/clientConfiguration"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
@@ -6,7 +9,7 @@ export const useTags = (boardId: string) =>
   useQuery({
     queryKey: ["boards", boardId, "tags"],
     queryFn: () =>
-      new BoardsApi(configuration)
+      new TagsApi(configuration)
         .tagControllerGetTags(boardId)
         .then(({ data }) => data),
   })
@@ -20,9 +23,29 @@ export const useUpdateTags = (boardId: string) => {
         id: string
         description: string
       }[],
-    ) => new BoardsApi(configuration).tagControllerPutTags(boardId, { tags }),
+    ) => new TagsApi(configuration).tagControllerPutTags(boardId, { tags }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["boards", boardId, "tags"] })
+    },
+  })
+}
+
+type UseGenerateTagDescriptionParams = {
+  tagId: string
+  onSuccess?: (data: TagGenerateDescriptionResponseDto) => void
+}
+
+export function useGenerateTagDescription({
+  tagId,
+  onSuccess,
+}: UseGenerateTagDescriptionParams) {
+  return useMutation({
+    mutationFn: async () =>
+      new TagsApi(configuration)
+        .tagControllerGenerateDescription(tagId)
+        .then(({ data }) => data),
+    onSuccess: (data) => {
+      onSuccess?.(data)
     },
   })
 }

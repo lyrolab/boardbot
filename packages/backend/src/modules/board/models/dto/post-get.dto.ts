@@ -13,6 +13,8 @@ export class PostGet {
   processingStatus: PostProcessingStatus
   decision?: PostDecision
   board: BoardGet
+  postCreatedAt: Date
+  externalId: string
   createdAt: Date
   updatedAt: Date
 }
@@ -25,6 +27,8 @@ export function toPostGet(post: Post): PostGet {
     processingStatus: post.processingStatus,
     decision: post.decision ?? undefined,
     board: toBoardGet(post.board),
+    postCreatedAt: post.postCreatedAt,
+    externalId: post.externalId,
     createdAt: post.createdAt,
     updatedAt: post.updatedAt,
   }

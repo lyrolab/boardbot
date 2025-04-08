@@ -21,6 +21,6 @@ export class PostSyncService {
     const client = this.boardService.getClientForBoard(board)
     const tags = await client.fetchTags()
 
-    await this.boardSyncService.syncPost(client, post, tags)
+    await this.boardSyncService.syncPost(client, board, post, tags)
   }
 }

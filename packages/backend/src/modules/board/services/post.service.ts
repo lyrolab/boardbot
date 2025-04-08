@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common"
+import { Injectable } from "@nestjs/common"
 import { BasePost } from "src/modules/board/models/base-post"
 import {
   PostInput,
@@ -14,16 +14,25 @@ export class PostService {
     private readonly tagService: TagService,
   ) {}
 
-  async findAll() {
-    return this.postRepository.findAll()
+  async findAll(boardIds?: string[]) {
+    return this.postRepository.findAll(boardIds)
   }
 
-  async findById(id: string): Promise<Post> {
-    const post = await this.postRepository.findById(id)
-    if (!post) {
-      throw new NotFoundException(`Post with ID "${id}" not found`)
+  async findById(id: string): Promise<{ post: Post; relatedPosts: Post[] }> {
+    const post = await this.postRepository.findByIdOrFail(id)
+    const relatedPostIds =
+      post.decision?.duplicatePosts?.duplicatePosts?.map(
+        ({ externalId: id }) => id,
+      ) ?? []
+    const relatedPosts = await this.postRepository.findAllByExternalIds(
+      post.board.id,
+      relatedPostIds,
+    )
+
+    return {
+      post,
+      relatedPosts,
     }
-    return post
   }
 
   async update(post: Post): Promise<Post> {
@@ -39,6 +48,7 @@ export class PostService {
       externalId: post.externalId,
       title: post.title,
       description: post.description,
+      postCreatedAt: post.createdAt,
     }))
 
     return this.postRepository.createOrUpdateByExternalId(boardId, postsToSync)

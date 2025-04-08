@@ -8,8 +8,16 @@ const sidebarNavItems = [
     href: "./general",
   },
   {
+    title: "Context",
+    href: "./context",
+  },
+  {
     title: "Integration",
     href: "./integration",
+  },
+  {
+    title: "Tags",
+    href: "./tags",
   },
 ]
 

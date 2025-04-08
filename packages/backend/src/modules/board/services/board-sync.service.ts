@@ -32,20 +32,21 @@ export class BoardSyncService {
     await this.tagService.syncTagsForBoard(board.id, tags)
 
     // sync posts
-    const posts = await client.fetchNewPosts()
-    await this.postService.createOrUpdateByExternalId(board.id, posts)
+    const posts = await client.syncPosts()
+    // await this.postService.createOrUpdateByExternalId(board.id, posts)
 
-    // fetch pending posts
-    const pendingPosts = await this.postRepository.findPending(board.id)
-    for (const post of pendingPosts) {
-      await this.syncPost(client, post, tags)
-    }
+    // // fetch pending posts
+    // const pendingPosts = await this.postRepository.findPending(board.id)
+    // for (const post of pendingPosts) {
+    //   await this.syncPost(client, post, tags)
+    // }
 
     return posts
   }
 
   async syncPost(
     client: BoardClientInterface,
+    board: Board,
     post: Post,
     availableTags: BaseTag[],
   ) {
@@ -64,6 +65,32 @@ export class BoardSyncService {
         post,
       )
       decision.duplicatePosts = duplicatePosts
+
+      // If duplicates were found, fetch and save them
+      if (
+        duplicatePosts?.decision === "duplicate" &&
+        duplicatePosts.duplicatePosts.length > 0
+      ) {
+        try {
+          const duplicateBasePosts = await Promise.all(
+            duplicatePosts.duplicatePosts.map(({ externalId: id }) =>
+              client.fetchPost(id),
+            ),
+          )
+          await this.postService.createOrUpdateByExternalId(
+            board.id,
+            duplicateBasePosts,
+          )
+        } catch (error) {
+          console.error(error)
+          decision.duplicatePosts = {
+            status: "failed",
+            decision: "unknown",
+            duplicatePosts: [],
+            reasoning: "Failed to fetch duplicate posts",
+          }
+        }
+      }
     }
 
     // assign tags

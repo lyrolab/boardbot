@@ -13,6 +13,9 @@ const rejectedRegex = /REJECTED(?:: (.*))?/
 /// Reasons for rejecting a post:
 /// - Contains multiple suggestions. Note that each suggestion must be a different post.
 /// - Is a question about the application.
+/// - Contains spam, offensive content, or inappropriate material.
+/// - Contains promotional or advertising content.
+/// - Reports a bug or technical issue instead of making a suggestion.
 @Injectable()
 export class AiModerationService {
   constructor(private readonly aiService: AiService) {}
@@ -25,6 +28,9 @@ You will be given a post with a title and description.
 Here are the reasons for rejecting a post:
 - multiple_suggestions: Contains multiple suggestions. Note that each suggestion must be a different post.
 - is_a_question: Is a question about the application.
+- is_spam_or_inappropriate: Contains spam, offensive content, or inappropriate material.
+- is_advertisement: Contains promotional or advertising content.
+- is_bug_report: Reports a bug or technical issue instead of making a suggestion.
 
 First, list all suggestions in the post. Note that a post generally contains one suggestion, but it can contain multiple if the user did not respect the rules.
 Then, for each reason, determine if the post should be rejected for that reason.

@@ -13,6 +13,6 @@ export const usePostDecisionDrawer = create<PostDecisionDrawerStore>()(
     isOpen: false,
     selectedPost: null,
     openDrawer: (post: PostGet) => set({ isOpen: true, selectedPost: post }),
-    closeDrawer: () => set({ isOpen: false, selectedPost: null }),
+    closeDrawer: () => set({ isOpen: false }),
   }),
 )
