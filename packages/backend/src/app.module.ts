@@ -1,9 +1,10 @@
-import { AiModule } from "@lyrolab/nest-shared"
-import { SharedBullModule } from "@lyrolab/nest-shared"
-import { SharedCacheModule } from "@lyrolab/nest-shared"
-import { SharedDatabaseModule } from "@lyrolab/nest-shared"
-import { QueueModule } from "@lyrolab/nest-shared"
-import { SharedRedisModule } from "@lyrolab/nest-shared"
+import { SharedAiModule } from "@lyrolab/nest-shared/ai"
+import { SharedBullModule } from "@lyrolab/nest-shared/bull"
+import { SharedCacheModule } from "@lyrolab/nest-shared/cache"
+import { SharedDatabaseModule } from "@lyrolab/nest-shared/database"
+import { SharedQueueModule } from "@lyrolab/nest-shared/queue"
+import { SharedRedisModule } from "@lyrolab/nest-shared/redis"
+import { SharedHealthModule } from "@lyrolab/nest-shared/health"
 import { Module } from "@nestjs/common"
 import { ConfigModule } from "@nestjs/config"
 import { join } from "path"
@@ -22,8 +23,9 @@ import { FiderModule } from "src/modules/fider/fider.module"
     SharedRedisModule.forRoot(),
     SharedBullModule.forRoot(),
     SharedCacheModule.forRoot(),
-    QueueModule,
-    AiModule,
+    SharedQueueModule,
+    SharedHealthModule,
+    SharedAiModule,
     BoardModule,
     FiderModule,
   ],
