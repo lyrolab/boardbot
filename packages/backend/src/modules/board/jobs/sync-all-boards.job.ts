@@ -4,9 +4,11 @@ import {
   syncBoardJobSchema,
 } from "src/modules/board/jobs/sync-board.job"
 import { BoardRepository } from "src/modules/board/repositories/board.repository"
-import { JobProcessor } from "@lyrolab/nest-shared"
-import { JobProcessorInterface } from "@lyrolab/nest-shared"
-import { QueueService } from "@lyrolab/nest-shared"
+import {
+  JobProcessor,
+  JobProcessorInterface,
+  QueueService,
+} from "@lyrolab/nest-shared/queue"
 
 @Injectable()
 @JobProcessor(SyncAllBoardsJob.JOB_NAME)

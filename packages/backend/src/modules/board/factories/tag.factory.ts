@@ -5,7 +5,7 @@ import {
   SingleSubfactory,
 } from "@jorgebodega/typeorm-factory"
 import { BoardFactory } from "src/modules/board/factories/board.factory"
-import { SharedDatabaseModule } from "@lyrolab/nest-shared"
+import { SharedDatabaseModule } from "@lyrolab/nest-shared/database"
 import { Tag } from "../entities/tag.entity"
 
 export class TagFactory extends Factory<Tag> {

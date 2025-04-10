@@ -6,7 +6,7 @@ import {
 } from "@jorgebodega/typeorm-factory"
 import { BoardFactory } from "src/modules/board/factories/board.factory"
 import { FiderBoard } from "src/modules/fider/entities/fider-board.entity"
-import { SharedDatabaseModule } from "@lyrolab/nest-shared"
+import { SharedDatabaseModule } from "@lyrolab/nest-shared/database"
 
 export class FiderBoardFactory extends Factory<FiderBoard> {
   protected entity = FiderBoard

@@ -1,4 +1,5 @@
-import { AiModule, QueueModule } from "@lyrolab/nest-shared"
+import { SharedAiModule } from "@lyrolab/nest-shared/ai"
+import { SharedQueueModule } from "@lyrolab/nest-shared/queue"
 import { Module } from "@nestjs/common"
 import { DiscoveryModule } from "@nestjs/core"
 import { TypeOrmModule } from "@nestjs/typeorm"
@@ -31,8 +32,8 @@ import { AiTagDescriptionService } from "src/modules/board/services/ai-tag-descr
   imports: [
     TypeOrmModule.forFeature([Board, Post, Tag, BoardContext]),
     DiscoveryModule,
-    QueueModule,
-    AiModule,
+    SharedQueueModule,
+    SharedAiModule,
   ],
   providers: [
     AiFindDuplicatePostsService,

@@ -1,4 +1,4 @@
-import { AiService } from "@lyrolab/nest-shared"
+import { AiService } from "@lyrolab/nest-shared/ai"
 import { Injectable } from "@nestjs/common"
 import { generateObject, generateText } from "ai"
 import { uniqBy } from "lodash"

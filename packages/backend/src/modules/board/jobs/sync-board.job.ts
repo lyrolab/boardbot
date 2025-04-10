@@ -2,8 +2,7 @@ import { Injectable } from "@nestjs/common"
 import { Job } from "bullmq"
 import { BoardRepository } from "src/modules/board/repositories/board.repository"
 import { BoardSyncService } from "src/modules/board/services/board-sync.service"
-import { JobProcessor } from "@lyrolab/nest-shared"
-import { JobProcessorInterface } from "@lyrolab/nest-shared"
+import { JobProcessor, JobProcessorInterface } from "@lyrolab/nest-shared/queue"
 import { z } from "zod"
 
 export const syncBoardJobSchema = z.object({
