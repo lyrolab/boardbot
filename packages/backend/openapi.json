@@ -1,0 +1,1236 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/queue/add": {
+      "post": {
+        "operationId": "QueueController_add",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QueueAddDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": ["Queue"]
+      }
+    },
+    "/boards": {
+      "get": {
+        "operationId": "BoardController_getBoards",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BoardsGetResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BoardsGetResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get all boards",
+        "tags": ["Boards"]
+      },
+      "post": {
+        "operationId": "BoardController_createBoard",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BoardCreateRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BoardGetOneResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BoardGetOneResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create a new board",
+        "tags": ["Boards"]
+      }
+    },
+    "/boards/{boardId}": {
+      "get": {
+        "operationId": "BoardController_getBoard",
+        "parameters": [
+          {
+            "name": "boardId",
+            "required": true,
+            "in": "path",
+            "description": "The ID of the board to retrieve",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BoardGetOneResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BoardGetOneResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get a board by ID",
+        "tags": ["Boards"]
+      },
+      "put": {
+        "operationId": "BoardController_updateBoard",
+        "parameters": [
+          {
+            "name": "boardId",
+            "required": true,
+            "in": "path",
+            "description": "The ID of the board to update",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BoardPutRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BoardGetOneResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update a board by ID",
+        "tags": ["Boards"]
+      },
+      "delete": {
+        "operationId": "BoardController_deleteBoard",
+        "parameters": [
+          {
+            "name": "boardId",
+            "required": true,
+            "in": "path",
+            "description": "The ID of the board to delete",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Delete a board by ID",
+        "tags": ["Boards"]
+      }
+    },
+    "/boards/{boardId}/sync": {
+      "post": {
+        "operationId": "BoardController_syncBoard",
+        "parameters": [
+          {
+            "name": "boardId",
+            "required": true,
+            "in": "path",
+            "description": "The ID of the board to sync",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Sync a board by ID",
+        "tags": ["Boards"]
+      }
+    },
+    "/posts": {
+      "get": {
+        "operationId": "PostController_getPosts",
+        "parameters": [
+          {
+            "name": "boardIds",
+            "required": false,
+            "in": "query",
+            "description": "Filter posts by board IDs",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostsGetResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get all posts across all boards",
+        "tags": ["posts"]
+      }
+    },
+    "/posts/{postId}": {
+      "get": {
+        "operationId": "PostController_getPost",
+        "parameters": [
+          {
+            "name": "postId",
+            "required": true,
+            "in": "path",
+            "description": "The ID of the post to get",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostGetResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get a post by ID",
+        "tags": ["posts"]
+      }
+    },
+    "/posts/{postId}/sync": {
+      "post": {
+        "operationId": "PostController_syncPost",
+        "parameters": [
+          {
+            "name": "postId",
+            "required": true,
+            "in": "path",
+            "description": "The ID of the post to sync",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Sync a post by ID",
+        "tags": ["posts"]
+      }
+    },
+    "/posts/{postId}/apply-decision": {
+      "post": {
+        "operationId": "PostController_applyDecision",
+        "parameters": [
+          {
+            "name": "postId",
+            "required": true,
+            "in": "path",
+            "description": "The ID of the post to apply the decision to",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplyDecisionRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Apply a decision to a post",
+        "tags": ["posts"]
+      }
+    },
+    "/tags/{tagId}/generate-description": {
+      "post": {
+        "operationId": "TagController_generateDescription",
+        "parameters": [
+          {
+            "name": "tagId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagGenerateDescriptionResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Tags"]
+      }
+    },
+    "/boards/{boardId}/tags": {
+      "get": {
+        "operationId": "TagController_getTags",
+        "parameters": [
+          {
+            "name": "boardId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagsGetResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Tags"]
+      },
+      "put": {
+        "operationId": "TagController_putTags",
+        "parameters": [
+          {
+            "name": "boardId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TagsPutRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": ["Tags"]
+      }
+    },
+    "/boards/{boardId}/context": {
+      "get": {
+        "operationId": "BoardContextController_getBoardContext",
+        "parameters": [
+          {
+            "name": "boardId",
+            "required": true,
+            "in": "path",
+            "description": "Board ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BoardContextGetDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get board context",
+        "tags": ["Board Context"]
+      },
+      "put": {
+        "operationId": "BoardContextController_updateBoardContext",
+        "parameters": [
+          {
+            "name": "boardId",
+            "required": true,
+            "in": "path",
+            "description": "Board ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BoardContextPutRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BoardContext"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update board context",
+        "tags": ["Board Context"]
+      }
+    },
+    "/boards/{boardId}/fider-board": {
+      "post": {
+        "operationId": "FiderBoardController_createOrUpdate",
+        "parameters": [
+          {
+            "name": "boardId",
+            "required": true,
+            "in": "path",
+            "description": "The ID of the board to set",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FiderBoardCreateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiderBoard"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create or update a Fider board",
+        "tags": ["Fider Boards"]
+      },
+      "get": {
+        "operationId": "FiderBoardController_getByBoardId",
+        "parameters": [
+          {
+            "name": "boardId",
+            "required": true,
+            "in": "path",
+            "description": "The ID of the board to get",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get a Fider board by board ID",
+        "tags": ["Fider Boards"]
+      }
+    }
+  },
+  "info": {
+    "title": "BoardBot API",
+    "description": "BoardBot API",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "QueueAddDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "BoardGet": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "vendor": {
+            "type": "string",
+            "nullable": true,
+            "enum": ["fider"]
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "description",
+          "vendor",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "BoardsGetResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BoardGet"
+            }
+          }
+        },
+        "required": ["data"]
+      },
+      "BoardGetOneResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/BoardGet"
+          }
+        },
+        "required": ["data"]
+      },
+      "BoardPutRequestDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 2
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": ["title", "description"]
+      },
+      "BoardCreateRequestDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The name of the board",
+            "example": "My Board"
+          }
+        },
+        "required": ["name"]
+      },
+      "ModerationDecisionEnum": {
+        "type": "string",
+        "enum": ["accepted", "rejected", "unknown"]
+      },
+      "ModerationReasonEnum": {
+        "type": "string",
+        "enum": [
+          "multiple_suggestions",
+          "is_a_question",
+          "is_spam_or_inappropriate",
+          "is_advertisement",
+          "is_bug_report",
+          "is_not_understandable"
+        ]
+      },
+      "ModerationDecision": {
+        "type": "object",
+        "properties": {
+          "decision": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ModerationDecisionEnum"
+              }
+            ]
+          },
+          "reason": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ModerationReasonEnum"
+              }
+            ]
+          },
+          "reasoning": {
+            "type": "string"
+          }
+        },
+        "required": ["decision", "reasoning"]
+      },
+      "DuplicatePostsDecisionStatusEnum": {
+        "type": "string",
+        "enum": ["success", "failed"]
+      },
+      "DuplicatePostsDecisionEnum": {
+        "type": "string",
+        "enum": ["duplicate", "not_duplicate", "unknown"]
+      },
+      "DuplicatePost": {
+        "type": "object",
+        "properties": {
+          "externalId": {
+            "type": "string"
+          },
+          "reasoning": {
+            "type": "string"
+          }
+        },
+        "required": ["externalId", "reasoning"]
+      },
+      "DuplicatePostsDecision": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DuplicatePostsDecisionStatusEnum"
+              }
+            ]
+          },
+          "decision": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DuplicatePostsDecisionEnum"
+              }
+            ]
+          },
+          "duplicatePosts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DuplicatePost"
+            }
+          },
+          "reasoning": {
+            "type": "string"
+          }
+        },
+        "required": ["status", "decision", "duplicatePosts", "reasoning"]
+      },
+      "TagAssignmentDecisionStatusEnum": {
+        "type": "string",
+        "enum": ["success", "failed"]
+      },
+      "TagAssignmentDecision": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TagAssignmentDecisionStatusEnum"
+              }
+            ]
+          },
+          "tagIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "reasoning": {
+            "type": "string"
+          }
+        },
+        "required": ["status", "tagIds", "reasoning"]
+      },
+      "PostDecision": {
+        "type": "object",
+        "properties": {
+          "moderation": {
+            "$ref": "#/components/schemas/ModerationDecision"
+          },
+          "duplicatePosts": {
+            "$ref": "#/components/schemas/DuplicatePostsDecision"
+          },
+          "tagAssignment": {
+            "$ref": "#/components/schemas/TagAssignmentDecision"
+          }
+        }
+      },
+      "PostGet": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "processingStatus": {
+            "type": "string",
+            "enum": ["pending", "awaiting_manual_review", "completed", "failed"]
+          },
+          "decision": {
+            "$ref": "#/components/schemas/PostDecision"
+          },
+          "board": {
+            "$ref": "#/components/schemas/BoardGet"
+          },
+          "postCreatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "externalId": {
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "description",
+          "processingStatus",
+          "board",
+          "postCreatedAt",
+          "externalId",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "PostsGetResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PostGet"
+            }
+          }
+        },
+        "required": ["data"]
+      },
+      "IncludesGetDto": {
+        "type": "object",
+        "properties": {
+          "posts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PostGet"
+            }
+          }
+        },
+        "required": ["posts"]
+      },
+      "PostGetResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/PostGet"
+          },
+          "includes": {
+            "$ref": "#/components/schemas/IncludesGetDto"
+          }
+        },
+        "required": ["data", "includes"]
+      },
+      "ApplyModerationDecision": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "enum": [
+              "multiple_suggestions",
+              "is_a_question",
+              "is_spam_or_inappropriate",
+              "is_advertisement",
+              "is_bug_report",
+              "is_not_understandable"
+            ]
+          }
+        }
+      },
+      "ApplyDuplicatePostsDecision": {
+        "type": "object",
+        "properties": {
+          "duplicatePostExternalId": {
+            "type": "string"
+          }
+        }
+      },
+      "ApplyTagAssignmentDecision": {
+        "type": "object",
+        "properties": {
+          "tagIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ApplyDecisionRequestDto": {
+        "type": "object",
+        "properties": {
+          "moderation": {
+            "$ref": "#/components/schemas/ApplyModerationDecision"
+          },
+          "duplicatePosts": {
+            "$ref": "#/components/schemas/ApplyDuplicatePostsDecision"
+          },
+          "tagAssignment": {
+            "$ref": "#/components/schemas/ApplyTagAssignmentDecision"
+          }
+        }
+      },
+      "TagGenerateDescriptionResponseDto": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": ["description"]
+      },
+      "TagGet": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "externalId": {
+            "type": "string"
+          }
+        },
+        "required": ["id", "title", "description", "externalId"]
+      },
+      "TagsGetResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagGet"
+            }
+          }
+        },
+        "required": ["data"]
+      },
+      "TagPut": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": ["id", "description"]
+      },
+      "TagsPutRequestDto": {
+        "type": "object",
+        "properties": {
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagPut"
+            }
+          }
+        },
+        "required": ["tags"]
+      },
+      "BoardContextGetDto": {
+        "type": "object",
+        "properties": {
+          "productDescription": {
+            "type": "string"
+          },
+          "productGoals": {
+            "type": "string"
+          }
+        },
+        "required": ["productDescription", "productGoals"]
+      },
+      "BoardContextPutRequestDto": {
+        "type": "object",
+        "properties": {
+          "productDescription": {
+            "type": "string"
+          },
+          "productGoals": {
+            "type": "string"
+          }
+        }
+      },
+      "FiderBoard": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "board": {
+            "$ref": "#/components/schemas/Board"
+          },
+          "boardId": {
+            "type": "string"
+          },
+          "baseUrl": {
+            "type": "string"
+          },
+          "apiKey": {
+            "type": "string"
+          },
+          "lastFetchedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "board",
+          "boardId",
+          "baseUrl",
+          "apiKey",
+          "lastFetchedAt",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "BoardContext": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "productDescription": {
+            "type": "string"
+          },
+          "productGoals": {
+            "type": "string"
+          },
+          "board": {
+            "$ref": "#/components/schemas/Board"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "productDescription",
+          "productGoals",
+          "board",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "Tag": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "externalId": {
+            "type": "string"
+          },
+          "board": {
+            "$ref": "#/components/schemas/Board"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "description",
+          "externalId",
+          "board",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "Post": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "externalId": {
+            "type": "string"
+          },
+          "processingStatus": {
+            "type": "string",
+            "enum": ["pending", "awaiting_manual_review", "completed", "failed"]
+          },
+          "decision": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PostDecision"
+              }
+            ]
+          },
+          "board": {
+            "$ref": "#/components/schemas/Board"
+          },
+          "postCreatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "description",
+          "externalId",
+          "processingStatus",
+          "decision",
+          "board",
+          "postCreatedAt",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "Board": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["feedback"]
+          },
+          "fiderBoard": {
+            "$ref": "#/components/schemas/FiderBoard"
+          },
+          "context": {
+            "$ref": "#/components/schemas/BoardContext"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tag"
+            }
+          },
+          "posts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Post"
+            }
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "description",
+          "type",
+          "tags",
+          "posts",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "FiderBoardCreateDto": {
+        "type": "object",
+        "properties": {
+          "baseUrl": {
+            "type": "string"
+          },
+          "apiKey": {
+            "type": "string"
+          }
+        },
+        "required": ["baseUrl", "apiKey"]
+      }
+    }
+  }
+}

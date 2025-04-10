@@ -16,7 +16,7 @@ async function bootstrap() {
     origin: configService.get("FRONTEND_URL"),
     credentials: true,
   })
-  await app.listen(+configService.get("PORT"))
+  await app.listen(+(configService.get("PORT") || 3000))
 }
 
 void bootstrap()

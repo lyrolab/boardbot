@@ -13,7 +13,7 @@
   },
   "scripts": {
     "prepare": "husky",
-    "postinstall": "npm run generate-api-clients --workspace=backend && npm run generate-api-clients --workspace=frontend",
+    "generate-api-clients": "npm run generate-api-clients --workspace=backend && npm run generate-api-clients --workspace=frontend",
     "lint-staged": "lint-staged"
   },
   "commitlint": {

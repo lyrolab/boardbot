@@ -1,0 +1,11 @@
+nameOverride: boardbot
+components:
+  backend:
+    enabled: true
+    image:
+      repository: ghcr.io/lyrolab/boardbot-backend
+    secretName: boardbot-secret
+  frontend:
+    enabled: true
+    image:
+      repository: ghcr.io/lyrolab/boardbot-frontend
