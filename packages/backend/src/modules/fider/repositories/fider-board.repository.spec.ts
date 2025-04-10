@@ -4,7 +4,7 @@ import { Board } from "src/modules/board/entities/board.entity"
 import { FiderBoard } from "src/modules/fider/entities/fider-board.entity"
 import { FiderBoardFactory } from "src/modules/fider/factories/fider-board.factory"
 import { FiderBoardRepository } from "src/modules/fider/repositories/fider-board.repository"
-import { SharedDatabaseModule } from "@lyrolab/nest-shared"
+import { SharedDatabaseModule } from "@lyrolab/nest-shared/database"
 
 describe("FiderBoardRepository", () => {
   let repository: FiderBoardRepository
