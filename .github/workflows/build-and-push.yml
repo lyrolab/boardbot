@@ -9,7 +9,7 @@ on:
       - 'packages/backend/**'
       - 'packages/frontend/**'
       - 'k8s/**'
-      - '.github/workflows/build-and-push-backend.yml'
+      - '.github/workflows/build-and-push.yml'
   release:
     types: [published]
   workflow_dispatch:

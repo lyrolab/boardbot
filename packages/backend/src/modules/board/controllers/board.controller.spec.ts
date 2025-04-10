@@ -1,10 +1,12 @@
 import { createMock } from "@golevelup/ts-jest"
 import { Test, TestingModule } from "@nestjs/testing"
 import { BoardController } from "src/modules/board/controllers/board.controller"
-import { BoardGet } from "src/modules/board/models/dto/board-get.dto"
+import { Board } from "src/modules/board/entities/board.entity"
+import { BoardFactory } from "src/modules/board/factories/board.factory"
 import { BoardPutRequestDto } from "src/modules/board/models/dto/board-put.request.dto"
 import { BoardVendorEnum } from "src/modules/board/models/dto/board-vendor-enum.dto"
 import { BoardService } from "src/modules/board/services/board.service"
+import { FiderBoardFactory } from "src/modules/fider/factories/fider-board.factory"
 import { v4 } from "uuid"
 
 describe("BoardController", () => {
@@ -25,50 +27,65 @@ describe("BoardController", () => {
 
   describe("getBoards", () => {
     it("should return all boards", async () => {
-      const mockBoards: BoardGet[] = [
-        {
-          id: "1",
-          title: "Board 1",
-          description: "Description 1",
-          vendor: BoardVendorEnum.FIDER,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          id: "2",
-          title: "Board 2",
-          description: "Description 2",
-          vendor: null,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
+      const mockBoards: Board[] = [
+        await new BoardFactory().make({
+          fiderBoard: await new FiderBoardFactory().make(),
+        }),
+        await new BoardFactory().make({
+          fiderBoard: await new FiderBoardFactory().make(),
+        }),
       ]
 
-      service.getBoards.mockResolvedValue({ data: mockBoards })
+      service.getBoards.mockResolvedValue(mockBoards)
 
       const result = await controller.getBoards()
-      expect(result).toEqual({ data: mockBoards })
+      expect(result).toEqual({
+        data: [
+          {
+            id: mockBoards[0].id,
+            title: mockBoards[0].title,
+            description: mockBoards[0].description,
+            vendor: BoardVendorEnum.FIDER,
+            createdAt: mockBoards[0].createdAt,
+            updatedAt: mockBoards[0].updatedAt,
+          },
+          {
+            id: mockBoards[1].id,
+            title: mockBoards[1].title,
+            description: mockBoards[1].description,
+            vendor: BoardVendorEnum.FIDER,
+            createdAt: mockBoards[1].createdAt,
+            updatedAt: mockBoards[1].updatedAt,
+          },
+        ],
+      })
       expect(service.getBoards).toHaveBeenCalled()
     })
   })
 
   describe("getBoard", () => {
     it("should return a single board by id", async () => {
-      const mockBoard: BoardGet = {
-        id: "1",
-        title: "Board 1",
-        description: "Description 1",
-        vendor: BoardVendorEnum.FIDER,
+      const mockBoard: Board = await new BoardFactory().make({
+        id: v4(),
+        fiderBoard: await new FiderBoardFactory().make(),
         createdAt: new Date(),
         updatedAt: new Date(),
-      }
-      const boardId = "1"
+      })
 
-      service.getBoard.mockResolvedValue({ data: mockBoard })
+      service.getBoard.mockResolvedValue(mockBoard)
 
-      const result = await controller.getBoard(boardId)
-      expect(result).toEqual({ data: mockBoard })
-      expect(service.getBoard).toHaveBeenCalledWith(boardId)
+      const result = await controller.getBoard(mockBoard.id)
+      expect(result).toEqual({
+        data: {
+          id: mockBoard.id,
+          title: mockBoard.title,
+          description: mockBoard.description,
+          vendor: BoardVendorEnum.FIDER,
+          createdAt: mockBoard.createdAt,
+          updatedAt: mockBoard.updatedAt,
+        },
+      })
+      expect(service.getBoard).toHaveBeenCalledWith(mockBoard.id)
     })
   })
 

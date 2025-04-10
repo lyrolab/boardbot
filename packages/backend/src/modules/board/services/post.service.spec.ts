@@ -33,6 +33,7 @@ describe("PostService", () => {
           description: "Description 1",
           createdAt: new Date(),
           tags: [],
+          upvotes: 0,
         },
         {
           externalId: "external-id-2",
@@ -40,6 +41,7 @@ describe("PostService", () => {
           description: "Description 2",
           createdAt: new Date(),
           tags: [],
+          upvotes: 0,
         },
       ]
 
@@ -48,11 +50,13 @@ describe("PostService", () => {
           externalId: "external-id-1",
           title: "Post 1",
           description: "Description 1",
+          postCreatedAt: basePosts[0].createdAt,
         },
         {
           externalId: "external-id-2",
           title: "Post 2",
           description: "Description 2",
+          postCreatedAt: basePosts[1].createdAt,
         },
       ]
 
