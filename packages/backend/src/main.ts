@@ -16,7 +16,8 @@ async function bootstrap() {
     origin: configService.get("FRONTEND_URL"),
     credentials: true,
   })
-  await app.listen(+(configService.get("PORT") || 3000))
+  app.enableShutdownHooks()
+  await app.listen(+configService.get("PORT", 3000))
 }
 
 void bootstrap()

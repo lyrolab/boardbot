@@ -11,5 +11,6 @@ COPY packages/backend ./packages/backend
 WORKDIR /usr/src/app/packages/backend
 
 RUN npm run build
+RUN rm .env.development
 EXPOSE 3000
 CMD ["node", "dist/main"]
