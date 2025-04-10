@@ -5,6 +5,6 @@ components:
     image:
       repository: ghcr.io/lyrolab/boardbot-backend
   frontend:
-    enabled: false
+    enabled: true
     image:
       repository: ghcr.io/lyrolab/boardbot-frontend
