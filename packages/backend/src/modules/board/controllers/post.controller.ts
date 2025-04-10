@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
@@ -12,6 +13,7 @@ import { PostSyncService } from "../services/post-sync.service"
 import { PostService } from "../services/post.service"
 import { toPostGetResponse } from "src/modules/board/models/dto/post-get.response.dto"
 import { toPostsGetResponse } from "src/modules/board/models/dto/posts-get.response.dto"
+import { ApplyDecisionRequestDto } from "src/modules/board/models/dto/apply-decision.request.dto"
 
 @ApiTags("posts")
 @Controller("posts")
@@ -51,5 +53,18 @@ export class PostController {
     @Param("postId", new ParseUUIDPipe()) postId: string,
   ): Promise<void> {
     await this.postSyncService.syncPost(postId)
+  }
+
+  @Post(":postId/apply-decision")
+  @ApiOperation({ summary: "Apply a decision to a post" })
+  @ApiParam({
+    name: "postId",
+    description: "The ID of the post to apply the decision to",
+  })
+  async applyDecision(
+    @Param("postId", new ParseUUIDPipe()) postId: string,
+    @Body() body: ApplyDecisionRequestDto,
+  ): Promise<void> {
+    await this.postSyncService.applyDecision(postId, body)
   }
 }

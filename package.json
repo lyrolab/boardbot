@@ -8,11 +8,13 @@
   "devDependencies": {
     "@commitlint/config-conventional": "^19.8.0",
     "commitlint": "^19.8.0",
-    "husky": "^9.1.7"
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.0"
   },
   "scripts": {
     "prepare": "husky",
-    "postinstall": "npm run generate-api-clients --workspace=backend && npm run generate-api-clients --workspace=frontend"
+    "postinstall": "npm run generate-api-clients --workspace=backend && npm run generate-api-clients --workspace=frontend",
+    "lint-staged": "lint-staged"
   },
   "commitlint": {
     "extends": [

@@ -13,6 +13,7 @@ export enum ModerationReason {
   IS_SPAM_OR_INAPPROPRIATE = "is_spam_or_inappropriate",
   IS_ADVERTISEMENT = "is_advertisement",
   IS_BUG_REPORT = "is_bug_report",
+  IS_NOT_UNDERSTANDABLE = "is_not_understandable",
 }
 
 export class ModerationDecision {

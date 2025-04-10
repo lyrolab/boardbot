@@ -16,6 +16,7 @@ const rejectedRegex = /REJECTED(?:: (.*))?/
 /// - Contains spam, offensive content, or inappropriate material.
 /// - Contains promotional or advertising content.
 /// - Reports a bug or technical issue instead of making a suggestion.
+/// - Contains content that is not understandable, not in English, or has incomplete words.
 @Injectable()
 export class AiModerationService {
   constructor(private readonly aiService: AiService) {}
@@ -31,6 +32,7 @@ Here are the reasons for rejecting a post:
 - is_spam_or_inappropriate: Contains spam, offensive content, or inappropriate material.
 - is_advertisement: Contains promotional or advertising content.
 - is_bug_report: Reports a bug or technical issue instead of making a suggestion.
+- is_not_understandable: Contains content that is not understandable or has incomplete words. All suggestions must be in English.
 
 First, list all suggestions in the post. Note that a post generally contains one suggestion, but it can contain multiple if the user did not respect the rules.
 Then, for each reason, determine if the post should be rejected for that reason.

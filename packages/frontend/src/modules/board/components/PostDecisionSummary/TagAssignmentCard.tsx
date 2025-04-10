@@ -10,6 +10,11 @@ import {
 import { AlertCircle, CheckCircle, ChevronDown, Tag } from "lucide-react"
 import { DecisionHeader } from "./ui/DecisionHeader"
 import { useTags } from "@/modules/board/queries/tags"
+import { useFormContext } from "react-hook-form"
+import {
+  InputMultiSelect,
+  InputMultiSelectTrigger,
+} from "@/components/ui/input-multiselect"
 
 interface TagAssignmentCardProps {
   boardId: string
@@ -21,9 +26,20 @@ export function TagAssignmentCard({
   decision,
 }: TagAssignmentCardProps) {
   const { data: tags, status } = useTags(boardId)
+  const { watch, setValue } = useFormContext()
+  const selectedTagIds = watch("tagAssignment.tagIds") || []
 
   if (status === "pending") return <div>Loading...</div>
   if (status === "error") return <div>Error</div>
+
+  const tagOptions = tags.data.map((tag) => ({
+    value: tag.externalId,
+    label: tag.title,
+  }))
+
+  const handleTagChange = (values: string[]) => {
+    setValue("tagAssignment.tagIds", values)
+  }
 
   return (
     <Card>
@@ -50,18 +66,17 @@ export function TagAssignmentCard({
           </Badge>
         </div>
 
-        {decision.tagIds.length > 0 && (
-          <div className="space-y-2">
-            <div className="font-medium">Assigned Tags:</div>
-            <div className="flex flex-wrap gap-2">
-              {decision.tagIds.map((tagId) => (
-                <Badge key={tagId} variant="outline">
-                  {tags.data.find((tag) => tag.externalId === tagId)?.title}
-                </Badge>
-              ))}
-            </div>
-          </div>
-        )}
+        <div className="space-y-2">
+          <div className="font-medium">Assigned Tags:</div>
+          <InputMultiSelect
+            options={tagOptions}
+            value={selectedTagIds}
+            onValueChange={handleTagChange}
+            placeholder="Select tags..."
+          >
+            {(props) => <InputMultiSelectTrigger {...props} />}
+          </InputMultiSelect>
+        </div>
 
         <Collapsible>
           <CollapsibleTrigger asChild>

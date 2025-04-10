@@ -23,6 +23,10 @@ export const postDecisionsData: Record<ModerationReason, PostDecisionData> = {
   },
   is_bug_report: {
     description:
-      "This post appears to be a bug report. Please submit bug reports through our dedicated bug reporting system instead.",
+      "This post appears to be a bug report. Please submit bug reports in our Discord server instead.",
+  },
+  is_not_understandable: {
+    description:
+      "This post contains content that is not understandable, not in English, or has incomplete words. Please ensure your suggestions are clear and complete.",
   },
 }

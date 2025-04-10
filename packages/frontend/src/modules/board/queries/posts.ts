@@ -1,4 +1,4 @@
-import { PostsApi } from "@/clients/backend-client"
+import { ApplyDecisionRequestDto, PostsApi } from "@/clients/backend-client"
 import { configuration } from "@/modules/core/queries/clientConfiguration"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
@@ -36,5 +36,12 @@ export const useSyncPost = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] })
     },
+  })
+}
+
+export const useApplyDecision = (postId: string) => {
+  return useMutation({
+    mutationFn: (decision: ApplyDecisionRequestDto) =>
+      new PostsApi(configuration).postControllerApplyDecision(postId, decision),
   })
 }

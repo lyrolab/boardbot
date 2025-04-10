@@ -1,6 +1,9 @@
+import { postDecisionsData } from "src/modules/board/data/post-decision.data"
+import { BasePost } from "src/modules/board/models/base-post"
 import { BaseTag } from "src/modules/board/models/base-tag"
 import { BoardClientInterface } from "src/modules/board/models/board-client.interface"
-import { BasePost } from "src/modules/board/models/base-post"
+import { ApplyDecisionRequestDto } from "src/modules/board/models/dto/apply-decision.request.dto"
+import { PostService } from "src/modules/board/services/post.service"
 import {
   ApiV1PostsGet200ResponseInner,
   ApiV1PostsGetViewEnum,
@@ -8,15 +11,13 @@ import {
   Configuration,
 } from "src/modules/fider-client"
 import { FiderBoard } from "src/modules/fider/entities/fider-board.entity"
-import { postsGet } from "src/modules/fider/models/fider/client/posts-get"
-import { tagsGet } from "src/modules/fider/models/fider/client/tags-get"
-import { PostDecision } from "src/modules/board/models/dto/post-decision.dto"
-import { postsStatusPut } from "src/modules/fider/models/fider/client/posts-status-put"
-import { postDecisionsData } from "src/modules/board/data/post-decision.data"
-import { toBasePost } from "src/modules/fider/models/fider/mappers/to-base-post"
 import { postGet } from "src/modules/fider/models/fider/client/post-get"
+import { postsGet } from "src/modules/fider/models/fider/client/posts-get"
+import { postsStatusPut } from "src/modules/fider/models/fider/client/posts-status-put"
+import { tagsGet } from "src/modules/fider/models/fider/client/tags-get"
+import { addTagToPost } from "src/modules/fider/models/fider/client/tags-put"
+import { toBasePost } from "src/modules/fider/models/fider/mappers/to-base-post"
 import { FiderBoardRepository } from "src/modules/fider/repositories/fider-board.repository"
-import { PostService } from "src/modules/board/services/post.service"
 
 const MAX_POSTS_TO_FETCH = 100
 const statusesToIgnore = ["declined", "completed", "duplicate"]
@@ -110,9 +111,9 @@ export class FiderBoardClient implements BoardClientInterface {
 
   async applyDecision(
     basePostId: string,
-    decision: PostDecision,
+    decision: ApplyDecisionRequestDto,
   ): Promise<void> {
-    if (decision.moderation?.decision === "rejected") {
+    if (decision.moderation?.reason) {
       await postsStatusPut({
         configuration: this.configuration,
         postId: +basePostId,
@@ -124,15 +125,12 @@ export class FiderBoardClient implements BoardClientInterface {
       return
     }
 
-    if (
-      decision.duplicatePosts?.decision === "duplicate" &&
-      decision.duplicatePosts.duplicatePosts.length > 0
-    ) {
+    if (decision.duplicatePosts?.duplicatePostExternalId) {
       await postsStatusPut({
         configuration: this.configuration,
         postId: +basePostId,
         status: "duplicate",
-        originalNumber: +decision.duplicatePosts.duplicatePosts[0].externalId,
+        originalNumber: +decision.duplicatePosts.duplicatePostExternalId,
       })
       return
     }
@@ -148,6 +146,18 @@ export class FiderBoardClient implements BoardClientInterface {
         postId: +basePostId,
         status: "open",
       })
+    }
+
+    if (decision.tagAssignment?.tagIds) {
+      await Promise.all(
+        decision.tagAssignment.tagIds.map((tagId) =>
+          addTagToPost({
+            configuration: this.configuration,
+            tagId: +tagId,
+            postId: +basePostId,
+          }),
+        ),
+      )
     }
   }
 }

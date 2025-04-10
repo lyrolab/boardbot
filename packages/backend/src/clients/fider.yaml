@@ -408,6 +408,106 @@ paths:
         '500':
           description: Internal Server Error
 
+  /api/v1/posts/{number}/tags/{slug}:
+    post:
+      summary: Tag a Post
+      description: Adds a tag to a specific post
+      tags:
+        - Tags
+      security:
+        - apiKey: []
+      parameters:
+        - name: number
+          in: path
+          description: The number of the post to add the tag
+          required: true
+          schema:
+            type: integer
+        - name: slug
+          in: path
+          description: The slug of the tag to be added
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully tagged the post
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                        message:
+                          type: string
+        '403':
+          description: Forbidden - API Key is not present or not allowed
+        '404':
+          description: Post or tag not found
+        '500':
+          description: Internal Server Error
+    delete:
+      summary: Untag a Post
+      description: Removes a tag from a specific post
+      tags:
+        - Tags
+      security:
+        - apiKey: []
+      parameters:
+        - name: number
+          in: path
+          description: The number of the post to remove the tag
+          required: true
+          schema:
+            type: integer
+        - name: slug
+          in: path
+          description: The slug of the tag to be removed
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully untagged the post
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                        message:
+                          type: string
+        '403':
+          description: Forbidden - API Key is not present or not allowed
+        '404':
+          description: Post or tag not found
+        '500':
+          description: Internal Server Error
+
 components:
   securitySchemes:
     apiKey:

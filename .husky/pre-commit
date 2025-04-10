@@ -1,1 +1,1 @@
-npm run lint-staged --ws
+npm run lint-staged

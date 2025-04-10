@@ -1,5 +1,4 @@
 import { DuplicatePostsDecision, PostGet } from "@/clients/backend-client"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import {
@@ -9,75 +8,81 @@ import {
 } from "@/components/ui/collapsible"
 import { DuplicatePostCard } from "@/modules/board/components/PostDecisionSummary/DuplicatePostCard"
 import { DecisionHeader } from "@/modules/board/components/PostDecisionSummary/ui/DecisionHeader"
-import { ChevronDown, Copy, FileText } from "lucide-react"
+import { ChevronDown, Copy } from "lucide-react"
+import { useFormContext } from "react-hook-form"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Label } from "@/components/ui/label"
+import { FormField } from "@/components/ui/form"
+import { FormItem } from "@/components/ui/form"
+import { FormLabel } from "@/components/ui/form"
+import { FormControl } from "@/components/ui/form"
 
 interface DuplicatePostsCardProps {
   decision: DuplicatePostsDecision
   relatedPosts: PostGet[]
 }
 
-type StatusConfig = {
-  variant: "destructive" | "default" | "secondary"
-  text: string
-  color?: string
-}
-
-const getStatusConfig = (
-  decision: "duplicate" | "not_duplicate" | "unknown",
-): StatusConfig => {
-  const config = {
-    duplicate: {
-      variant: "destructive" as const,
-      text: "Duplicate found",
-    },
-    not_duplicate: {
-      variant: "default" as const,
-      text: "No duplicates",
-    },
-    unknown: {
-      variant: "secondary" as const,
-      text: "Unknown",
-    },
-  }
-  return config[decision] || config.unknown
-}
-
 export function DuplicatePostsCard({
   decision,
   relatedPosts,
 }: DuplicatePostsCardProps) {
-  const statusConfig = getStatusConfig(decision.decision)
+  const form = useFormContext()
 
   return (
     <Card>
       <CardHeader>
-        <DecisionHeader
-          icon={<Copy size={20} color={statusConfig.color} />}
-          title="Duplicate Detection"
-        />
+        <DecisionHeader icon={<Copy size={20} />} title="Duplicate Detection" />
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="flex items-center gap-2">
-          <span className="font-medium">Status:</span>
-          <Badge variant={statusConfig.variant}>{statusConfig.text}</Badge>
-        </div>
+        <FormField
+          control={form.control}
+          name="duplicatePosts.selectedDuplicateId"
+          render={({ field }) => (
+            <FormItem className="space-y-3">
+              <FormLabel>Duplicate Post</FormLabel>
+              <FormControl>
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  className="space-y-4"
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="not_duplicate" id="not_duplicate" />
+                    <Label htmlFor="not_duplicate">No duplicates found</Label>
+                  </div>
 
-        {decision.duplicatePosts.length > 0 && (
-          <div className="space-y-2">
-            <div className="font-medium">Duplicate posts:</div>
-            <div className="space-y-2">
-              {decision.duplicatePosts.map((duplicatePost) => (
-                <DuplicatePostCard
-                  key={duplicatePost.externalId}
-                  post={relatedPosts.find(
-                    (post) => post.externalId === duplicatePost.externalId,
-                  )}
-                  duplicatePost={duplicatePost}
-                />
-              ))}
-            </div>
-          </div>
-        )}
+                  {decision.duplicatePosts.map((duplicatePost) => {
+                    const post = relatedPosts.find(
+                      (p) => p.externalId === duplicatePost.externalId,
+                    )
+                    if (!post) return null
+
+                    return (
+                      <div
+                        key={duplicatePost.externalId}
+                        className="flex items-start space-x-2"
+                      >
+                        <RadioGroupItem
+                          value={duplicatePost.externalId}
+                          id={duplicatePost.externalId}
+                        />
+                        <Label
+                          htmlFor={duplicatePost.externalId}
+                          className="font-normal"
+                        >
+                          <DuplicatePostCard
+                            post={post}
+                            duplicatePost={duplicatePost}
+                          />
+                        </Label>
+                      </div>
+                    )
+                  })}
+                </RadioGroup>
+              </FormControl>
+            </FormItem>
+          )}
+        />
 
         <Collapsible>
           <CollapsibleTrigger asChild>

@@ -19,7 +19,7 @@ export class PostRepository {
 
   async findAllByExternalIds(boardId: string, externalIds: string[]) {
     return this.repository.find({
-      where: { board: { id: boardId }, externalId: In(externalIds) },
+      where: { externalId: In(externalIds) },
       relations: ["board"],
     })
   }

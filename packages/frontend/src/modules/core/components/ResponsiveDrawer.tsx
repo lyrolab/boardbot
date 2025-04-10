@@ -1,6 +1,7 @@
 import { useMediaQuery } from "@/hooks/useMediaQuery"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
 import { ReactNode } from "react"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 interface ResponsiveDrawerProps {
   children: ReactNode
@@ -25,7 +26,7 @@ export function ResponsiveDrawer({
         className={className}
         onOpenAutoFocus={(event) => event.preventDefault()}
       >
-        {children}
+        <ScrollArea className="h-full">{children}</ScrollArea>
       </SheetContent>
     </Sheet>
   )

@@ -1,4 +1,4 @@
-import { PostDecision } from "src/modules/board/models/dto/post-decision.dto"
+import { ApplyDecisionRequestDto } from "src/modules/board/models/dto/apply-decision.request.dto"
 import { BasePost } from "./base-post"
 import { BaseTag } from "./base-tag"
 
@@ -24,5 +24,8 @@ export interface BoardClientInterface {
    */
   queryPosts(query: string): Promise<BasePost[]>
 
-  applyDecision(basePostId: string, decision: PostDecision): Promise<void>
+  applyDecision(
+    basePostId: string,
+    decision: ApplyDecisionRequestDto,
+  ): Promise<void>
 }
