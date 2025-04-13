@@ -18,7 +18,7 @@ export class BoardRepository {
   async findOneOrFail(boardId: string) {
     return this.boardRepository.findOneOrFail({
       where: { id: boardId },
-      relations: ["fiderBoard", "tags"],
+      relations: ["fiderBoard", "tags", "context"],
       order: {
         tags: {
           createdAt: "ASC",

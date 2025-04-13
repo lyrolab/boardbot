@@ -18,7 +18,6 @@ import { AiModerationService } from "src/modules/board/services/ai-moderation.se
 import { AiTagAssignmentService } from "src/modules/board/services/ai-tag-assignment.service"
 import { BoardSyncService } from "src/modules/board/services/board-sync.service"
 import { BoardService } from "src/modules/board/services/board.service"
-import { PostSyncService } from "src/modules/board/services/post-sync.service"
 import { TagService } from "src/modules/board/services/tag.service"
 import { BoardContextController } from "./controllers/board-context.controller"
 import { PostController } from "./controllers/post.controller"
@@ -30,6 +29,8 @@ import { AiTagDescriptionService } from "src/modules/board/services/ai-tag-descr
 import { PostDuplicateDetectionService } from "src/modules/board/services/posts/post-duplicate-detection.service"
 import { PostModerationService } from "src/modules/board/services/posts/post-moderation.service"
 import { PostTagAssignmentService } from "src/modules/board/services/posts/post-tag-assignment.service"
+import { PostSyncService } from "src/modules/board/services/posts/post-sync.service"
+import { ProcessPostJob } from "src/modules/board/jobs/process-post.job"
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { PostTagAssignmentService } from "src/modules/board/services/posts/post-
     PostDuplicateDetectionService,
     PostModerationService,
     PostTagAssignmentService,
+    ProcessPostJob,
   ],
   exports: [BoardRepository, TagService, BoardService, PostService],
   controllers: [

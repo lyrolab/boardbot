@@ -41,7 +41,7 @@ export class ModerationDecision {
   @ApiProperty({
     type: String,
   })
-  reasoning: string
+  reasoning?: string
 }
 
 export class DuplicatePost {
@@ -53,7 +53,7 @@ export class DuplicatePost {
   /**
    * The reasoning of the duplicate post
    */
-  reasoning: string
+  reasoning?: string
 }
 
 export class DuplicatePostsDecision {
@@ -84,7 +84,7 @@ export class DuplicatePostsDecision {
   /**
    * The AI reasoning
    */
-  reasoning: string
+  reasoning?: string
 }
 
 export class TagAssignmentDecision {
@@ -105,5 +105,5 @@ export class TagAssignmentDecision {
   /**
    * The AI reasoning
    */
-  reasoning: string
+  reasoning?: string
 }

@@ -3,7 +3,6 @@ import { keyBy } from "lodash"
 import { BaseTag } from "src/modules/board/models/base-tag"
 import { TagGenerateDescriptionResponseDto } from "src/modules/board/models/dto/tag-generate-description.response.dto"
 import { TagPut } from "src/modules/board/models/dto/tag-put.dto"
-import { toTagsGetResponse } from "src/modules/board/models/dto/tags-get.response.dto"
 import {
   BoardRepository,
   TagInput,
@@ -20,8 +19,7 @@ export class TagService {
   ) {}
 
   async findAllByBoardId(boardId: string) {
-    const tags = await this.tagRepository.findAllByBoardId(boardId)
-    return toTagsGetResponse(tags)
+    return this.tagRepository.findAllByBoardId(boardId)
   }
 
   async putAllByBoardId(boardId: string, tags: TagPut[]) {
@@ -45,7 +43,7 @@ export class TagService {
     const tagsToSet: TagInput[] = tags.map((tag) => ({
       id: tagsByExternalId[tag.id]?.id,
       title: tag.name,
-      description: "",
+      description: tagsByExternalId[tag.id]?.description || "",
       externalId: tag.id,
     }))
 

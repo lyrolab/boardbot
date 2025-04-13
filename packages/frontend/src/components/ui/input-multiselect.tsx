@@ -54,6 +54,7 @@ export const InputMultiSelect: React.FC<{
   className?: string
   style?: React.CSSProperties
   children: (v: InputMultiSelectProvided) => React.ReactNode
+  selectAllEnabled?: boolean
 }> = ({
   options,
   value = [],
@@ -63,6 +64,7 @@ export const InputMultiSelect: React.FC<{
   disabled = false,
   className,
   children,
+  selectAllEnabled = true,
   ...restProps
 }) => {
   const [selectedValue, setSelectedValue] = React.useState<string[]>(value)
@@ -101,7 +103,7 @@ export const InputMultiSelect: React.FC<{
   }, [isPopoverOpen, selectedValue, value])
 
   return (
-    <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+    <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen} modal>
       <PopoverTrigger asChild>
         {children({
           options,
@@ -127,25 +129,27 @@ export const InputMultiSelect: React.FC<{
           <CommandInput placeholder="Search..." />
           <CommandList className="max-h-[unset] overflow-y-hidden">
             <CommandEmpty>No results found.</CommandEmpty>
-            <CommandGroup>
-              <CommandItem
-                key="all"
-                onSelect={toggleAll}
-                className="cursor-pointer"
-              >
-                <div
-                  className={cn(
-                    "mr-1 flex h-4 w-4 items-center justify-center rounded-md border border-muted-foreground/50",
-                    selectedValue.length === options.length
-                      ? "bg-primary text-primary-foreground"
-                      : "opacity-50 [&_svg]:invisible",
-                  )}
+            {selectAllEnabled && (
+              <CommandGroup>
+                <CommandItem
+                  key="all"
+                  onSelect={toggleAll}
+                  className="cursor-pointer"
                 >
-                  <CheckIcon className="h-3.5 w-3.5" />
-                </div>
-                <span className="text-muted-foreground">Select All</span>
-              </CommandItem>
-            </CommandGroup>
+                  <div
+                    className={cn(
+                      "mr-1 flex h-4 w-4 items-center justify-center rounded-md border border-muted-foreground/50",
+                      selectedValue.length === options.length
+                        ? "bg-primary text-primary-foreground"
+                        : "opacity-50 [&_svg]:invisible",
+                    )}
+                  >
+                    <CheckIcon className="h-3.5 w-3.5" />
+                  </div>
+                  <span className="text-muted-foreground">Select All</span>
+                </CommandItem>
+              </CommandGroup>
+            )}
             <CommandSeparator />
             <CommandGroup className="max-h-[20rem] min-h-[10rem] overflow-y-auto">
               {options.map((option) => {

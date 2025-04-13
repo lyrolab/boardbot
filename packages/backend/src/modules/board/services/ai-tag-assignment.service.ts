@@ -2,9 +2,19 @@ import { AiService } from "@lyrolab/nest-shared/ai"
 import { Injectable } from "@nestjs/common"
 import { generateObject } from "ai"
 import { Post } from "src/modules/board/entities/post.entity"
-import { BaseTag } from "src/modules/board/models/base-tag"
+import { Tag } from "src/modules/board/entities/tag.entity"
+import {
+  boardContextForPrompt,
+  BoardContextForPrompt,
+} from "src/modules/board/models/board-context/for-prompt"
 import { TagAssignmentDecision } from "src/modules/board/models/dto/post-decision.dto"
 import { z } from "zod"
+
+type ForPostParams = {
+  post: Post
+  availableTags: Tag[]
+  context: BoardContextForPrompt
+}
 
 const tagAssignmentSchema = z.object({
   tagIds: z.array(z.string()),
@@ -21,10 +31,11 @@ const tagAssignmentSchema = z.object({
 export class AiTagAssignmentService {
   constructor(private readonly aiService: AiService) {}
 
-  async forPost(
-    post: Post,
-    availableTags: BaseTag[],
-  ): Promise<TagAssignmentDecision> {
+  async forPost({
+    post,
+    availableTags,
+    context,
+  }: ForPostParams): Promise<TagAssignmentDecision> {
     const system = `
 You are a helpful assistant that is tasked with assigning tags to posts on a board.
 You will be given:
@@ -43,6 +54,9 @@ Multiple tags can be assigned if appropriate, but avoid over-tagging.
 You must output a response containing:
 - tagIds: Array of selected tag IDs
 - reasoning: A brief explanation of why these tags were chosen
+
+Here is some context about the product:
+${boardContextForPrompt(context)}
 `
 
     const prompt = `
@@ -55,7 +69,8 @@ ${availableTags
   .map(
     (tag) => `
 ID: ${tag.id}
-Name: ${tag.name}
+Name: ${tag.title}
+Description: ${tag.description}
 `,
   )
   .join("\n")}

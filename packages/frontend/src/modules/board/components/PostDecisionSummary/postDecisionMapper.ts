@@ -61,7 +61,7 @@ export function mapDecisionToFormData(
       ? {
           selectedDuplicateId:
             post.decision.duplicatePosts.duplicatePosts.length > 0
-              ? post.decision.duplicatePosts.duplicatePosts[0].externalId
+              ? post.decision.duplicatePosts.duplicatePosts[0].id
               : "not_duplicate",
         }
       : undefined,

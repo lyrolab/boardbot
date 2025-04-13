@@ -370,22 +370,32 @@
         "tags": ["Boards"]
       }
     },
-    "/posts": {
-      "get": {
-        "operationId": "PostController_getPosts",
-        "parameters": [
-          {
-            "name": "boardIds",
-            "required": false,
-            "in": "query",
-            "description": "Filter posts by board IDs",
-            "schema": {
-              "type": "string"
+    "/posts/search": {
+      "post": {
+        "operationId": "PostController_searchPosts",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostsSearchRequestDto"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
+            "description": "Returns paginated posts with cursor for next page",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostsGetResponse"
+                }
+              }
+            }
+          },
+          "201": {
             "description": "",
             "content": {
               "application/json": {
@@ -396,7 +406,7 @@
             }
           }
         },
-        "summary": "Get all posts across all boards",
+        "summary": "Search for posts across all boards with cursor pagination",
         "tags": ["posts"]
       }
     },
@@ -803,9 +813,46 @@
         },
         "required": ["name"]
       },
+      "PostProcessingStatusEnum": {
+        "type": "string",
+        "enum": ["pending", "awaiting_manual_review", "completed", "failed"],
+        "description": "Filter posts by processing statuses"
+      },
+      "PostsSearchRequestDto": {
+        "type": "object",
+        "properties": {
+          "statuses": {
+            "description": "Filter posts by processing statuses",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PostProcessingStatusEnum"
+            }
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Cursor for pagination (typically the ID of the last post from previous page)"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of posts to return",
+            "default": 20,
+            "minimum": 1,
+            "maximum": 100
+          },
+          "boardIds": {
+            "description": "Filter posts by board IDs",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        }
+      },
       "ModerationDecisionEnum": {
         "type": "string",
-        "enum": ["accepted", "rejected", "unknown"]
+        "enum": ["accepted", "rejected", "unknown"],
+        "description": "The decision of the moderation"
       },
       "ModerationReasonEnum": {
         "type": "string",
@@ -816,12 +863,14 @@
           "is_advertisement",
           "is_bug_report",
           "is_not_understandable"
-        ]
+        ],
+        "description": "The reason of the moderation"
       },
       "ModerationDecision": {
         "type": "object",
         "properties": {
           "decision": {
+            "description": "The decision of the moderation",
             "allOf": [
               {
                 "$ref": "#/components/schemas/ModerationDecisionEnum"
@@ -829,6 +878,7 @@
             ]
           },
           "reason": {
+            "description": "The reason of the moderation",
             "allOf": [
               {
                 "$ref": "#/components/schemas/ModerationReasonEnum"
@@ -836,35 +886,41 @@
             ]
           },
           "reasoning": {
-            "type": "string"
+            "type": "string",
+            "description": "The AI reasoning"
           }
         },
-        "required": ["decision", "reasoning"]
+        "required": ["decision"]
       },
       "DuplicatePostsDecisionStatusEnum": {
         "type": "string",
-        "enum": ["success", "failed"]
+        "enum": ["success", "failed"],
+        "description": "The status of the duplicate posts decision"
       },
       "DuplicatePostsDecisionEnum": {
         "type": "string",
-        "enum": ["duplicate", "not_duplicate", "unknown"]
+        "enum": ["duplicate", "not_duplicate", "unknown"],
+        "description": "The decision of the duplicate posts"
       },
       "DuplicatePost": {
         "type": "object",
         "properties": {
           "id": {
-            "type": "string"
+            "type": "string",
+            "description": "The ID of the duplicate post"
           },
           "reasoning": {
-            "type": "string"
+            "type": "string",
+            "description": "The reasoning of the duplicate post"
           }
         },
-        "required": ["id", "reasoning"]
+        "required": ["id"]
       },
       "DuplicatePostsDecision": {
         "type": "object",
         "properties": {
           "status": {
+            "description": "The status of the duplicate posts decision",
             "allOf": [
               {
                 "$ref": "#/components/schemas/DuplicatePostsDecisionStatusEnum"
@@ -872,6 +928,7 @@
             ]
           },
           "decision": {
+            "description": "The decision of the duplicate posts",
             "allOf": [
               {
                 "$ref": "#/components/schemas/DuplicatePostsDecisionEnum"
@@ -879,25 +936,29 @@
             ]
           },
           "duplicatePosts": {
+            "description": "List of duplicate posts with their reasoning",
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/DuplicatePost"
             }
           },
           "reasoning": {
-            "type": "string"
+            "type": "string",
+            "description": "The AI reasoning"
           }
         },
-        "required": ["status", "decision", "duplicatePosts", "reasoning"]
+        "required": ["status", "decision", "duplicatePosts"]
       },
       "TagAssignmentDecisionStatusEnum": {
         "type": "string",
-        "enum": ["success", "failed"]
+        "enum": ["success", "failed"],
+        "description": "The status of the tag assignment"
       },
       "TagAssignmentDecision": {
         "type": "object",
         "properties": {
           "status": {
+            "description": "The status of the tag assignment",
             "allOf": [
               {
                 "$ref": "#/components/schemas/TagAssignmentDecisionStatusEnum"
@@ -905,16 +966,18 @@
             ]
           },
           "tagIds": {
+            "description": "The tag IDs",
             "type": "array",
             "items": {
               "type": "string"
             }
           },
           "reasoning": {
-            "type": "string"
+            "type": "string",
+            "description": "The AI reasoning"
           }
         },
-        "required": ["status", "tagIds", "reasoning"]
+        "required": ["status", "tagIds"]
       },
       "PostDecision": {
         "type": "object",
@@ -933,6 +996,13 @@
       "PostGet": {
         "type": "object",
         "properties": {
+          "processingStatus": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PostProcessingStatusEnum"
+              }
+            ]
+          },
           "id": {
             "type": "string"
           },
@@ -941,10 +1011,6 @@
           },
           "description": {
             "type": "string"
-          },
-          "processingStatus": {
-            "type": "string",
-            "enum": ["pending", "awaiting_manual_review", "completed", "failed"]
           },
           "decision": {
             "$ref": "#/components/schemas/PostDecision"
@@ -969,10 +1035,10 @@
           }
         },
         "required": [
+          "processingStatus",
           "id",
           "title",
           "description",
-          "processingStatus",
           "board",
           "postCreatedAt",
           "externalId",
@@ -988,14 +1054,19 @@
             "items": {
               "$ref": "#/components/schemas/PostGet"
             }
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true
           }
         },
-        "required": ["data"]
+        "required": ["data", "nextCursor"]
       },
       "IncludesGetDto": {
         "type": "object",
         "properties": {
           "posts": {
+            "description": "The related posts",
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/PostGet"
@@ -1016,54 +1087,9 @@
         },
         "required": ["data", "includes"]
       },
-      "ApplyModerationDecision": {
-        "type": "object",
-        "properties": {
-          "reason": {
-            "type": "string",
-            "enum": [
-              "multiple_suggestions",
-              "is_a_question",
-              "is_spam_or_inappropriate",
-              "is_advertisement",
-              "is_bug_report",
-              "is_not_understandable"
-            ]
-          }
-        }
-      },
-      "ApplyDuplicatePostsDecision": {
-        "type": "object",
-        "properties": {
-          "duplicatePostExternalId": {
-            "type": "string"
-          }
-        }
-      },
-      "ApplyTagAssignmentDecision": {
-        "type": "object",
-        "properties": {
-          "tagIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        }
-      },
       "ApplyDecisionRequestDto": {
         "type": "object",
-        "properties": {
-          "moderation": {
-            "$ref": "#/components/schemas/ApplyModerationDecision"
-          },
-          "duplicatePosts": {
-            "$ref": "#/components/schemas/ApplyDuplicatePostsDecision"
-          },
-          "tagAssignment": {
-            "$ref": "#/components/schemas/ApplyTagAssignmentDecision"
-          }
-        }
+        "properties": {}
       },
       "TagGenerateDescriptionResponseDto": {
         "type": "object",
@@ -1151,227 +1177,9 @@
           }
         }
       },
-      "FiderBoard": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "board": {
-            "$ref": "#/components/schemas/Board"
-          },
-          "boardId": {
-            "type": "string"
-          },
-          "baseUrl": {
-            "type": "string"
-          },
-          "apiKey": {
-            "type": "string"
-          },
-          "lastFetchedAt": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "updatedAt": {
-            "format": "date-time",
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "board",
-          "boardId",
-          "baseUrl",
-          "apiKey",
-          "lastFetchedAt",
-          "createdAt",
-          "updatedAt"
-        ]
-      },
       "BoardContext": {
         "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "productDescription": {
-            "type": "string"
-          },
-          "productGoals": {
-            "type": "string"
-          },
-          "board": {
-            "$ref": "#/components/schemas/Board"
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "updatedAt": {
-            "format": "date-time",
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "productDescription",
-          "productGoals",
-          "board",
-          "createdAt",
-          "updatedAt"
-        ]
-      },
-      "Tag": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "title": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "externalId": {
-            "type": "string"
-          },
-          "board": {
-            "$ref": "#/components/schemas/Board"
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "updatedAt": {
-            "format": "date-time",
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "title",
-          "description",
-          "externalId",
-          "board",
-          "createdAt",
-          "updatedAt"
-        ]
-      },
-      "Post": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "title": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "externalId": {
-            "type": "string"
-          },
-          "processingStatus": {
-            "type": "string",
-            "enum": ["pending", "awaiting_manual_review", "completed", "failed"]
-          },
-          "decision": {
-            "nullable": true,
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/PostDecision"
-              }
-            ]
-          },
-          "board": {
-            "$ref": "#/components/schemas/Board"
-          },
-          "postCreatedAt": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "updatedAt": {
-            "format": "date-time",
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "title",
-          "description",
-          "externalId",
-          "processingStatus",
-          "decision",
-          "board",
-          "postCreatedAt",
-          "createdAt",
-          "updatedAt"
-        ]
-      },
-      "Board": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "title": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string",
-            "enum": ["feedback"]
-          },
-          "fiderBoard": {
-            "$ref": "#/components/schemas/FiderBoard"
-          },
-          "context": {
-            "$ref": "#/components/schemas/BoardContext"
-          },
-          "tags": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Tag"
-            }
-          },
-          "posts": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Post"
-            }
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "updatedAt": {
-            "format": "date-time",
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "title",
-          "description",
-          "type",
-          "tags",
-          "posts",
-          "createdAt",
-          "updatedAt"
-        ]
+        "properties": {}
       },
       "FiderBoardCreateDto": {
         "type": "object",
@@ -1384,6 +1192,10 @@
           }
         },
         "required": ["baseUrl", "apiKey"]
+      },
+      "FiderBoard": {
+        "type": "object",
+        "properties": {}
       }
     }
   }

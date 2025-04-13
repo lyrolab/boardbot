@@ -20,17 +20,25 @@ import {
   mapFormDataToDecision,
 } from "./postDecisionMapper"
 import { useApplyDecision } from "../../queries/posts"
+import { usePostDecisionDrawer } from "../../store/postDecisionDrawer"
+import { useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
+
 type PostDecisionFormProps = {
   data: PostGetResponse
 }
 
 export function PostDecisionForm({ data }: PostDecisionFormProps) {
   const { data: post, includes } = data
+  const { closeDrawer } = usePostDecisionDrawer()
+  const queryClient = useQueryClient()
   const { mutate: applyDecision, isPending } = useApplyDecision(post.id)
+  const isReadonly = post.processingStatus === "completed"
 
   const methods = useForm<PostDecisionFormData>({
     resolver: zodResolver(postDecisionSchema),
     defaultValues: mapDecisionToFormData(post),
+    disabled: isReadonly,
   })
 
   const timeAgo = formatDistanceToNow(new Date(post.postCreatedAt), {
@@ -40,8 +48,17 @@ export function PostDecisionForm({ data }: PostDecisionFormProps) {
 
   const onSubmit = (formData: PostDecisionFormData) => {
     const decision = mapFormDataToDecision(formData)
-    applyDecision(decision)
-    console.log("Form submitted:", decision)
+    applyDecision(decision, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["posts"] })
+        queryClient.invalidateQueries({ queryKey: ["post", post.id] })
+        closeDrawer()
+        toast.success("Decision applied successfully")
+      },
+      onError: () => {
+        toast.error("Failed to apply decision")
+      },
+    })
   }
 
   return (
@@ -81,9 +98,11 @@ export function PostDecisionForm({ data }: PostDecisionFormProps) {
         )}
 
         <div className="flex justify-end">
-          <Button type="submit" loading={isPending}>
-            Apply Decisions
-          </Button>
+          {!isReadonly && (
+            <Button type="submit" loading={isPending}>
+              Apply Decisions
+            </Button>
+          )}
         </div>
       </form>
     </FormProvider>

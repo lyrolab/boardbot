@@ -3,11 +3,20 @@ import { Injectable } from "@nestjs/common"
 import { generateText } from "ai"
 import { Post } from "src/modules/board/entities/post.entity"
 import {
+  boardContextForPrompt,
+  BoardContextForPrompt,
+} from "src/modules/board/models/board-context/for-prompt"
+import {
   ModerationDecision,
   ModerationReason,
 } from "src/modules/board/models/dto/post-decision.dto"
 
 const rejectedRegex = /REJECTED(?:: (.*))?/
+
+type ForPostParams = {
+  post: Post
+  context: BoardContextForPrompt
+}
 
 /// For a given post with a title and description, the AI will moderate the post.
 /// Reasons for rejecting a post:
@@ -21,7 +30,7 @@ const rejectedRegex = /REJECTED(?:: (.*))?/
 export class AiModerationService {
   constructor(private readonly aiService: AiService) {}
 
-  async forPost(post: Post): Promise<ModerationDecision> {
+  async forPost({ post, context }: ForPostParams): Promise<ModerationDecision> {
     const system = `
 You are a helpful assistant that is tasked with moderating posts on a board.
 You will be given a post with a title and description.
@@ -53,6 +62,8 @@ This post suggests to create playlists.
 
 ACCEPTED
 REASONING: The post contains a single, clear suggestion about creating playlists. It is well-formatted and follows all posting guidelines.
+
+${boardContextForPrompt(context)}
     `
 
     const prompt = `

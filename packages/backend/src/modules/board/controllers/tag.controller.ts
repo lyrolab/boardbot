@@ -9,7 +9,10 @@ import {
   Post,
 } from "@nestjs/common"
 import { ApiTags } from "@nestjs/swagger"
-import { TagsGetResponse } from "src/modules/board/models/dto/tags-get.response.dto"
+import {
+  TagsGetResponse,
+  toTagsGetResponse,
+} from "src/modules/board/models/dto/tags-get.response.dto"
 import { TagsPutRequestDto } from "src/modules/board/models/dto/tags-put.request.dto"
 import { TagService } from "src/modules/board/services/tag.service"
 
@@ -26,10 +29,11 @@ export class TagController {
   }
 
   @Get("boards/:boardId/tags")
-  getTags(
+  async getTags(
     @Param("boardId", new ParseUUIDPipe()) boardId: string,
   ): Promise<TagsGetResponse> {
-    return this.tagService.findAllByBoardId(boardId)
+    const tags = await this.tagService.findAllByBoardId(boardId)
+    return toTagsGetResponse(tags)
   }
 
   @Put("boards/:boardId/tags")

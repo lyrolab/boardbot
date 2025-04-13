@@ -1,16 +1,32 @@
-import { ApplyDecisionRequestDto, PostsApi } from "@/clients/backend-client"
+import { PostsApi } from "@/clients/backend-client"
 import { configuration } from "@/modules/core/queries/clientConfiguration"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useInfiniteQuery,
+} from "@tanstack/react-query"
+import { PostProcessingStatusEnum } from "@/clients/backend-client"
 
-export const usePosts = (boardIds?: string[]) => {
-  return useQuery({
-    queryKey: ["posts", { boardIds }],
-    queryFn: () =>
-      new PostsApi(configuration)
-        .postControllerGetPosts(
-          boardIds && boardIds.length > 0 ? boardIds.join(",") : undefined,
-        )
-        .then(({ data }) => data),
+export const usePosts = (
+  boardIds?: string[],
+  statuses?: PostProcessingStatusEnum[],
+) => {
+  return useInfiniteQuery({
+    queryKey: ["posts", { boardIds, statuses }],
+    queryFn: async ({ pageParam = undefined }) => {
+      const response = await new PostsApi(
+        configuration,
+      ).postControllerSearchPosts({
+        boardIds: boardIds && boardIds.length > 0 ? boardIds : undefined,
+        statuses: statuses && statuses.length > 0 ? statuses : undefined,
+        cursor: pageParam as string | undefined,
+        limit: 20,
+      })
+      return response.data
+    },
+    initialPageParam: null as unknown as string | undefined,
+    getNextPageParam: (lastPage) => lastPage?.nextCursor,
   })
 }
 
@@ -41,7 +57,7 @@ export const useSyncPost = () => {
 
 export const useApplyDecision = (postId: string) => {
   return useMutation({
-    mutationFn: (decision: ApplyDecisionRequestDto) =>
+    mutationFn: (decision: object) =>
       new PostsApi(configuration).postControllerApplyDecision(postId, decision),
   })
 }

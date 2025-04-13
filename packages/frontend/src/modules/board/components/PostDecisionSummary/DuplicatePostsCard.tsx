@@ -27,6 +27,7 @@ export function DuplicatePostsCard({
   relatedPosts,
 }: DuplicatePostsCardProps) {
   const form = useFormContext()
+  const isDisabled = form.formState.disabled
 
   return (
     <Card>
@@ -45,6 +46,7 @@ export function DuplicatePostsCard({
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                   className="space-y-4"
+                  disabled={isDisabled}
                 >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="not_duplicate" id="not_duplicate" />

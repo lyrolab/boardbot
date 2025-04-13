@@ -5,7 +5,10 @@ import { uniqBy } from "lodash"
 import { Post } from "src/modules/board/entities/post.entity"
 import { BasePost } from "src/modules/board/models/base-post"
 import { BoardClientInterface } from "src/modules/board/models/board-client.interface"
-import { DuplicatePostsDecision } from "src/modules/board/models/dto/post-decision.dto"
+import {
+  boardContextForPrompt,
+  BoardContextForPrompt,
+} from "src/modules/board/models/board-context/for-prompt"
 import { parse } from "yaml"
 import { z } from "zod"
 
@@ -18,6 +21,12 @@ const duplicatePostSchema = z.object({
   isDuplicate: z.boolean(),
 })
 const duplicatePostListSchema = z.array(duplicatePostSchema)
+
+type ForPostParams = {
+  client: BoardClientInterface
+  post: Post
+  context: BoardContextForPrompt
+}
 
 type AiFindDuplicatePostsDecision = {
   status: "success" | "failed"
@@ -39,11 +48,12 @@ type AiFindDuplicatePostsDecision = {
 export class AiFindDuplicatePostsService {
   constructor(private readonly aiService: AiService) {}
 
-  async forPost(
-    client: BoardClientInterface,
-    post: Post,
-  ): Promise<AiFindDuplicatePostsDecision> {
-    const queries = await this.generateQueriesPrompt(post)
+  async forPost({
+    client,
+    post,
+    context,
+  }: ForPostParams): Promise<AiFindDuplicatePostsDecision> {
+    const queries = await this.generateQueriesPrompt(post, context)
 
     const rawQueryResults = await Promise.all(
       queries.map((query) => client.queryPosts(query)),
@@ -63,12 +73,17 @@ export class AiFindDuplicatePostsService {
     return this.findDuplicatePostsPrompt(post, postResults)
   }
 
-  private async generateQueriesPrompt(post: Post) {
+  private async generateQueriesPrompt(
+    post: Post,
+    context: BoardContextForPrompt,
+  ) {
     const system = `
     You are a helpful assistant that is tasked with finding duplicate posts on a board.
     You will be given a post with a title and description.
     You will need to generate a list of queries to search for in the board search API.
     Remember to write short and effective queries that will return the most relevant results.
+
+    ${boardContextForPrompt(context)}
     `
 
     const prompt = `

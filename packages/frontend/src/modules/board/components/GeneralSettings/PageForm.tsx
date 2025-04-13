@@ -32,7 +32,6 @@ export default function PageForm({ board, onSubmit, isPending }: Props) {
     defaultValues: {
       title: board.title,
       description: board.description,
-      imageUrl: "",
     },
   })
 
@@ -76,25 +75,6 @@ export default function PageForm({ board, onSubmit, isPending }: Props) {
                 </FormControl>
                 <FormDescription>
                   Brief description of your board&apos;s purpose.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="imageUrl"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Board Image URL</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="https://example.com/image.jpg"
-                    {...field}
-                  />
-                </FormControl>
-                <FormDescription>
-                  URL for your board&apos;s cover image.
                 </FormDescription>
                 <FormMessage />
               </FormItem>

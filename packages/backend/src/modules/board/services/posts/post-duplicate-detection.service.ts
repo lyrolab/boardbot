@@ -2,27 +2,34 @@ import { Injectable } from "@nestjs/common"
 import { keyBy } from "lodash"
 import { Post } from "src/modules/board/entities/post.entity"
 import { BoardClientInterface } from "src/modules/board/models/board-client.interface"
-import { PostService } from "src/modules/board/services/post.service"
+import { BoardContextForPrompt } from "src/modules/board/models/board-context/for-prompt"
 import { AiFindDuplicatePostsService } from "src/modules/board/services/ai-find-duplicate-posts.service"
-import { BasePost } from "src/modules/board/models/base-post"
+import { PostService } from "src/modules/board/services/post.service"
+
+type FindDuplicatesParams = {
+  client: BoardClientInterface
+  post: Post
+  boardId: string
+  context: BoardContextForPrompt
+}
 
 interface DuplicatePost {
   id: string
-  reasoning: string
+  reasoning?: string
   externalId?: string
 }
 
 interface AIDuplicatePostResult {
   status: "success" | "failed"
   decision: "duplicate" | "not_duplicate" | "unknown"
-  reasoning: string
-  duplicatePosts: { externalId: string; reasoning: string }[]
+  reasoning?: string
+  duplicatePosts: { externalId: string; reasoning?: string }[]
 }
 
 interface DuplicatePostsDecision {
   status: "success" | "failed"
   decision: "duplicate" | "not_duplicate" | "unknown"
-  reasoning: string
+  reasoning?: string
   duplicatePosts: DuplicatePost[]
 }
 
@@ -33,19 +40,21 @@ export class PostDuplicateDetectionService {
     private readonly postService: PostService,
   ) {}
 
-  async findDuplicates(
-    client: BoardClientInterface,
-    post: Post,
-    boardId: string,
-  ): Promise<DuplicatePostsDecision> {
+  async findDuplicates({
+    client,
+    post,
+    boardId,
+    context,
+  }: FindDuplicatesParams): Promise<DuplicatePostsDecision> {
     if (post.decision?.duplicatePosts) {
       return post.decision.duplicatePosts
     }
 
-    const duplicatePosts = await this.aiFindDuplicatePostsService.forPost(
+    const duplicatePosts = await this.aiFindDuplicatePostsService.forPost({
       client,
       post,
-    )
+      context,
+    })
     const result = this.createInitialDecision(duplicatePosts)
 
     if (!this.shouldProcessDuplicates(duplicatePosts)) {
@@ -109,7 +118,7 @@ export class PostDuplicateDetectionService {
 
   private mapToDuplicatePosts(
     posts: Post[],
-    mapExternalIdToPostDecision: Record<string, { reasoning: string }>,
+    mapExternalIdToPostDecision: Record<string, { reasoning?: string }>,
   ): DuplicatePost[] {
     return posts.map((post) => ({
       id: post.id,

@@ -1,7 +1,14 @@
 import { Injectable } from "@nestjs/common"
+import { BoardContextForPrompt } from "src/modules/board/models/board-context/for-prompt"
 import { Post } from "src/modules/board/entities/post.entity"
-import { BaseTag } from "src/modules/board/models/base-tag"
+import { Tag } from "src/modules/board/entities/tag.entity"
 import { AiTagAssignmentService } from "src/modules/board/services/ai-tag-assignment.service"
+
+type AssignTagsParams = {
+  post: Post
+  availableTags: Tag[]
+  context: BoardContextForPrompt
+}
 
 @Injectable()
 export class PostTagAssignmentService {
@@ -9,11 +16,15 @@ export class PostTagAssignmentService {
     private readonly aiTagAssignmentService: AiTagAssignmentService,
   ) {}
 
-  async assignTags(post: Post, availableTags: BaseTag[]) {
+  async assignTags({ post, availableTags, context }: AssignTagsParams) {
     if (post.decision?.tagAssignment) {
       return post.decision.tagAssignment
     }
 
-    return this.aiTagAssignmentService.forPost(post, availableTags)
+    return this.aiTagAssignmentService.forPost({
+      post,
+      availableTags,
+      context,
+    })
   }
 }

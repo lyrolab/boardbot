@@ -30,6 +30,7 @@ type Props = {
 export function ModerationCard({ decision }: Props) {
   const form = useFormContext()
   const moderationDecision = form.watch("moderation.decision")
+  const isDisabled = form.formState.disabled
 
   return (
     <Card>
@@ -53,6 +54,7 @@ export function ModerationCard({ decision }: Props) {
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
+                  disabled={isDisabled}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -81,6 +83,7 @@ export function ModerationCard({ decision }: Props) {
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
+                    disabled={isDisabled}
                   >
                     <FormControl>
                       <SelectTrigger>

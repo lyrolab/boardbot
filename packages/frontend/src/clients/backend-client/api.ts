@@ -42,200 +42,6 @@ import {
 /**
  *
  * @export
- * @interface ApplyDecisionRequestDto
- */
-export interface ApplyDecisionRequestDto {
-  /**
-   *
-   * @type {ApplyModerationDecision}
-   * @memberof ApplyDecisionRequestDto
-   */
-  moderation?: ApplyModerationDecision
-  /**
-   *
-   * @type {ApplyDuplicatePostsDecision}
-   * @memberof ApplyDecisionRequestDto
-   */
-  duplicatePosts?: ApplyDuplicatePostsDecision
-  /**
-   *
-   * @type {ApplyTagAssignmentDecision}
-   * @memberof ApplyDecisionRequestDto
-   */
-  tagAssignment?: ApplyTagAssignmentDecision
-}
-/**
- *
- * @export
- * @interface ApplyDuplicatePostsDecision
- */
-export interface ApplyDuplicatePostsDecision {
-  /**
-   *
-   * @type {string}
-   * @memberof ApplyDuplicatePostsDecision
-   */
-  duplicatePostExternalId?: string
-}
-/**
- *
- * @export
- * @interface ApplyModerationDecision
- */
-export interface ApplyModerationDecision {
-  /**
-   *
-   * @type {string}
-   * @memberof ApplyModerationDecision
-   */
-  reason?: ApplyModerationDecisionReasonEnum
-}
-
-export const ApplyModerationDecisionReasonEnum = {
-  MultipleSuggestions: "multiple_suggestions",
-  IsAQuestion: "is_a_question",
-  IsSpamOrInappropriate: "is_spam_or_inappropriate",
-  IsAdvertisement: "is_advertisement",
-  IsBugReport: "is_bug_report",
-  IsNotUnderstandable: "is_not_understandable",
-} as const
-
-export type ApplyModerationDecisionReasonEnum =
-  (typeof ApplyModerationDecisionReasonEnum)[keyof typeof ApplyModerationDecisionReasonEnum]
-
-/**
- *
- * @export
- * @interface ApplyTagAssignmentDecision
- */
-export interface ApplyTagAssignmentDecision {
-  /**
-   *
-   * @type {Array<string>}
-   * @memberof ApplyTagAssignmentDecision
-   */
-  tagIds?: Array<string>
-}
-/**
- *
- * @export
- * @interface Board
- */
-export interface Board {
-  /**
-   *
-   * @type {string}
-   * @memberof Board
-   */
-  id: string
-  /**
-   *
-   * @type {string}
-   * @memberof Board
-   */
-  title: string
-  /**
-   *
-   * @type {string}
-   * @memberof Board
-   */
-  description: string
-  /**
-   *
-   * @type {string}
-   * @memberof Board
-   */
-  type: BoardTypeEnum
-  /**
-   *
-   * @type {FiderBoard}
-   * @memberof Board
-   */
-  fiderBoard?: FiderBoard
-  /**
-   *
-   * @type {BoardContext}
-   * @memberof Board
-   */
-  context?: BoardContext
-  /**
-   *
-   * @type {Array<Tag>}
-   * @memberof Board
-   */
-  tags: Array<Tag>
-  /**
-   *
-   * @type {Array<Post>}
-   * @memberof Board
-   */
-  posts: Array<Post>
-  /**
-   *
-   * @type {string}
-   * @memberof Board
-   */
-  createdAt: string
-  /**
-   *
-   * @type {string}
-   * @memberof Board
-   */
-  updatedAt: string
-}
-
-export const BoardTypeEnum = {
-  Feedback: "feedback",
-} as const
-
-export type BoardTypeEnum = (typeof BoardTypeEnum)[keyof typeof BoardTypeEnum]
-
-/**
- *
- * @export
- * @interface BoardContext
- */
-export interface BoardContext {
-  /**
-   *
-   * @type {string}
-   * @memberof BoardContext
-   */
-  id: string
-  /**
-   *
-   * @type {string}
-   * @memberof BoardContext
-   */
-  productDescription: string
-  /**
-   *
-   * @type {string}
-   * @memberof BoardContext
-   */
-  productGoals: string
-  /**
-   *
-   * @type {Board}
-   * @memberof BoardContext
-   */
-  board: Board
-  /**
-   *
-   * @type {string}
-   * @memberof BoardContext
-   */
-  createdAt: string
-  /**
-   *
-   * @type {string}
-   * @memberof BoardContext
-   */
-  updatedAt: string
-}
-/**
- *
- * @export
  * @interface BoardContextGetDto
  */
 export interface BoardContextGetDto {
@@ -387,17 +193,17 @@ export interface BoardsGetResponse {
  */
 export interface DuplicatePost {
   /**
-   *
+   * The ID of the duplicate post
    * @type {string}
    * @memberof DuplicatePost
    */
   id: string
   /**
-   *
+   * The reasoning of the duplicate post
    * @type {string}
    * @memberof DuplicatePost
    */
-  reasoning: string
+  reasoning?: string
 }
 /**
  *
@@ -406,33 +212,33 @@ export interface DuplicatePost {
  */
 export interface DuplicatePostsDecision {
   /**
-   *
+   * The status of the duplicate posts decision
    * @type {DuplicatePostsDecisionStatusEnum}
    * @memberof DuplicatePostsDecision
    */
   status: DuplicatePostsDecisionStatusEnum
   /**
-   *
+   * The decision of the duplicate posts
    * @type {DuplicatePostsDecisionEnum}
    * @memberof DuplicatePostsDecision
    */
   decision: DuplicatePostsDecisionEnum
   /**
-   *
+   * List of duplicate posts with their reasoning
    * @type {Array<DuplicatePost>}
    * @memberof DuplicatePostsDecision
    */
   duplicatePosts: Array<DuplicatePost>
   /**
-   *
+   * The AI reasoning
    * @type {string}
    * @memberof DuplicatePostsDecision
    */
-  reasoning: string
+  reasoning?: string
 }
 
 /**
- *
+ * The decision of the duplicate posts
  * @export
  * @enum {string}
  */
@@ -447,7 +253,7 @@ export type DuplicatePostsDecisionEnum =
   (typeof DuplicatePostsDecisionEnum)[keyof typeof DuplicatePostsDecisionEnum]
 
 /**
- *
+ * The status of the duplicate posts decision
  * @export
  * @enum {string}
  */
@@ -460,61 +266,6 @@ export const DuplicatePostsDecisionStatusEnum = {
 export type DuplicatePostsDecisionStatusEnum =
   (typeof DuplicatePostsDecisionStatusEnum)[keyof typeof DuplicatePostsDecisionStatusEnum]
 
-/**
- *
- * @export
- * @interface FiderBoard
- */
-export interface FiderBoard {
-  /**
-   *
-   * @type {string}
-   * @memberof FiderBoard
-   */
-  id: string
-  /**
-   *
-   * @type {Board}
-   * @memberof FiderBoard
-   */
-  board: Board
-  /**
-   *
-   * @type {string}
-   * @memberof FiderBoard
-   */
-  boardId: string
-  /**
-   *
-   * @type {string}
-   * @memberof FiderBoard
-   */
-  baseUrl: string
-  /**
-   *
-   * @type {string}
-   * @memberof FiderBoard
-   */
-  apiKey: string
-  /**
-   *
-   * @type {string}
-   * @memberof FiderBoard
-   */
-  lastFetchedAt: string
-  /**
-   *
-   * @type {string}
-   * @memberof FiderBoard
-   */
-  createdAt: string
-  /**
-   *
-   * @type {string}
-   * @memberof FiderBoard
-   */
-  updatedAt: string
-}
 /**
  *
  * @export
@@ -618,7 +369,7 @@ export interface HealthControllerCheck503Response {
  */
 export interface IncludesGetDto {
   /**
-   *
+   * The related posts
    * @type {Array<PostGet>}
    * @memberof IncludesGetDto
    */
@@ -631,27 +382,27 @@ export interface IncludesGetDto {
  */
 export interface ModerationDecision {
   /**
-   *
+   * The decision of the moderation
    * @type {ModerationDecisionEnum}
    * @memberof ModerationDecision
    */
   decision: ModerationDecisionEnum
   /**
-   *
+   * The reason of the moderation
    * @type {ModerationReasonEnum}
    * @memberof ModerationDecision
    */
   reason?: ModerationReasonEnum
   /**
-   *
+   * The AI reasoning
    * @type {string}
    * @memberof ModerationDecision
    */
-  reasoning: string
+  reasoning?: string
 }
 
 /**
- *
+ * The decision of the moderation
  * @export
  * @enum {string}
  */
@@ -666,7 +417,7 @@ export type ModerationDecisionEnum =
   (typeof ModerationDecisionEnum)[keyof typeof ModerationDecisionEnum]
 
 /**
- *
+ * The reason of the moderation
  * @export
  * @enum {string}
  */
@@ -682,84 +433,6 @@ export const ModerationReasonEnum = {
 
 export type ModerationReasonEnum =
   (typeof ModerationReasonEnum)[keyof typeof ModerationReasonEnum]
-
-/**
- *
- * @export
- * @interface Post
- */
-export interface Post {
-  /**
-   *
-   * @type {string}
-   * @memberof Post
-   */
-  id: string
-  /**
-   *
-   * @type {string}
-   * @memberof Post
-   */
-  title: string
-  /**
-   *
-   * @type {string}
-   * @memberof Post
-   */
-  description: string
-  /**
-   *
-   * @type {string}
-   * @memberof Post
-   */
-  externalId: string
-  /**
-   *
-   * @type {string}
-   * @memberof Post
-   */
-  processingStatus: PostProcessingStatusEnum
-  /**
-   *
-   * @type {PostDecision}
-   * @memberof Post
-   */
-  decision: PostDecision | null
-  /**
-   *
-   * @type {Board}
-   * @memberof Post
-   */
-  board: Board
-  /**
-   *
-   * @type {string}
-   * @memberof Post
-   */
-  postCreatedAt: string
-  /**
-   *
-   * @type {string}
-   * @memberof Post
-   */
-  createdAt: string
-  /**
-   *
-   * @type {string}
-   * @memberof Post
-   */
-  updatedAt: string
-}
-
-export const PostProcessingStatusEnum = {
-  Pending: "pending",
-  AwaitingManualReview: "awaiting_manual_review",
-  Completed: "completed",
-  Failed: "failed",
-} as const
-
-export type PostProcessingStatusEnum =
-  (typeof PostProcessingStatusEnum)[keyof typeof PostProcessingStatusEnum]
 
 /**
  *
@@ -794,6 +467,12 @@ export interface PostDecision {
 export interface PostGet {
   /**
    *
+   * @type {PostProcessingStatusEnum}
+   * @memberof PostGet
+   */
+  processingStatus: PostProcessingStatusEnum
+  /**
+   *
    * @type {string}
    * @memberof PostGet
    */
@@ -810,12 +489,6 @@ export interface PostGet {
    * @memberof PostGet
    */
   description: string
-  /**
-   *
-   * @type {string}
-   * @memberof PostGet
-   */
-  processingStatus: PostGetProcessingStatusEnum
   /**
    *
    * @type {PostDecision}
@@ -854,16 +527,6 @@ export interface PostGet {
   updatedAt: string
 }
 
-export const PostGetProcessingStatusEnum = {
-  Pending: "pending",
-  AwaitingManualReview: "awaiting_manual_review",
-  Completed: "completed",
-  Failed: "failed",
-} as const
-
-export type PostGetProcessingStatusEnum =
-  (typeof PostGetProcessingStatusEnum)[keyof typeof PostGetProcessingStatusEnum]
-
 /**
  *
  * @export
@@ -884,6 +547,22 @@ export interface PostGetResponse {
   includes: IncludesGetDto
 }
 /**
+ * Filter posts by processing statuses
+ * @export
+ * @enum {string}
+ */
+
+export const PostProcessingStatusEnum = {
+  Pending: "pending",
+  AwaitingManualReview: "awaiting_manual_review",
+  Completed: "completed",
+  Failed: "failed",
+} as const
+
+export type PostProcessingStatusEnum =
+  (typeof PostProcessingStatusEnum)[keyof typeof PostProcessingStatusEnum]
+
+/**
  *
  * @export
  * @interface PostsGetResponse
@@ -895,55 +574,43 @@ export interface PostsGetResponse {
    * @memberof PostsGetResponse
    */
   data: Array<PostGet>
+  /**
+   *
+   * @type {string}
+   * @memberof PostsGetResponse
+   */
+  nextCursor: string | null
 }
 /**
  *
  * @export
- * @interface Tag
+ * @interface PostsSearchRequestDto
  */
-export interface Tag {
+export interface PostsSearchRequestDto {
   /**
-   *
+   * Filter posts by processing statuses
+   * @type {Array<PostProcessingStatusEnum>}
+   * @memberof PostsSearchRequestDto
+   */
+  statuses?: Array<PostProcessingStatusEnum>
+  /**
+   * Cursor for pagination (typically the ID of the last post from previous page)
    * @type {string}
-   * @memberof Tag
+   * @memberof PostsSearchRequestDto
    */
-  id: string
+  cursor?: string
   /**
-   *
-   * @type {string}
-   * @memberof Tag
+   * Maximum number of posts to return
+   * @type {number}
+   * @memberof PostsSearchRequestDto
    */
-  title: string
+  limit?: number
   /**
-   *
-   * @type {string}
-   * @memberof Tag
+   * Filter posts by board IDs
+   * @type {Array<string>}
+   * @memberof PostsSearchRequestDto
    */
-  description: string
-  /**
-   *
-   * @type {string}
-   * @memberof Tag
-   */
-  externalId: string
-  /**
-   *
-   * @type {Board}
-   * @memberof Tag
-   */
-  board: Board
-  /**
-   *
-   * @type {string}
-   * @memberof Tag
-   */
-  createdAt: string
-  /**
-   *
-   * @type {string}
-   * @memberof Tag
-   */
-  updatedAt: string
+  boardIds?: Array<string>
 }
 /**
  *
@@ -952,27 +619,27 @@ export interface Tag {
  */
 export interface TagAssignmentDecision {
   /**
-   *
+   * The status of the tag assignment
    * @type {TagAssignmentDecisionStatusEnum}
    * @memberof TagAssignmentDecision
    */
   status: TagAssignmentDecisionStatusEnum
   /**
-   *
+   * The tag IDs
    * @type {Array<string>}
    * @memberof TagAssignmentDecision
    */
   tagIds: Array<string>
   /**
-   *
+   * The AI reasoning
    * @type {string}
    * @memberof TagAssignmentDecision
    */
-  reasoning: string
+  reasoning?: string
 }
 
 /**
- *
+ * The status of the tag assignment
  * @export
  * @enum {string}
  */
@@ -1256,7 +923,7 @@ export const BoardContextApiFp = function (configuration?: Configuration) {
       boardContextPutRequestDto: BoardContextPutRequestDto,
       options?: RawAxiosRequestConfig,
     ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<BoardContext>
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.boardContextControllerUpdateBoardContext(
@@ -1318,7 +985,7 @@ export const BoardContextApiFactory = function (
       boardId: string,
       boardContextPutRequestDto: BoardContextPutRequestDto,
       options?: RawAxiosRequestConfig,
-    ): AxiosPromise<BoardContext> {
+    ): AxiosPromise<object> {
       return localVarFp
         .boardContextControllerUpdateBoardContext(
           boardId,
@@ -2239,7 +1906,7 @@ export const FiderBoardsApiFp = function (configuration?: Configuration) {
       fiderBoardCreateDto: FiderBoardCreateDto,
       options?: RawAxiosRequestConfig,
     ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<FiderBoard>
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.fiderBoardControllerCreateOrUpdate(
@@ -2317,7 +1984,7 @@ export const FiderBoardsApiFactory = function (
       boardId: string,
       fiderBoardCreateDto: FiderBoardCreateDto,
       options?: RawAxiosRequestConfig,
-    ): AxiosPromise<FiderBoard> {
+    ): AxiosPromise<object> {
       return localVarFp
         .fiderBoardControllerCreateOrUpdate(
           boardId,
@@ -2533,23 +2200,19 @@ export const PostsApiAxiosParamCreator = function (
      *
      * @summary Apply a decision to a post
      * @param {string} postId The ID of the post to apply the decision to
-     * @param {ApplyDecisionRequestDto} applyDecisionRequestDto
+     * @param {object} body
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     postControllerApplyDecision: async (
       postId: string,
-      applyDecisionRequestDto: ApplyDecisionRequestDto,
+      body: object,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'postId' is not null or undefined
       assertParamExists("postControllerApplyDecision", "postId", postId)
-      // verify required parameter 'applyDecisionRequestDto' is not null or undefined
-      assertParamExists(
-        "postControllerApplyDecision",
-        "applyDecisionRequestDto",
-        applyDecisionRequestDto,
-      )
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists("postControllerApplyDecision", "body", body)
       const localVarPath = `/posts/{postId}/apply-decision`.replace(
         `{${"postId"}}`,
         encodeURIComponent(String(postId)),
@@ -2580,7 +2243,7 @@ export const PostsApiAxiosParamCreator = function (
         ...options.headers,
       }
       localVarRequestOptions.data = serializeDataIfNeeded(
-        applyDecisionRequestDto,
+        body,
         localVarRequestOptions,
         configuration,
       )
@@ -2638,16 +2301,22 @@ export const PostsApiAxiosParamCreator = function (
     },
     /**
      *
-     * @summary Get all posts across all boards
-     * @param {string} [boardIds] Filter posts by board IDs
+     * @summary Search for posts across all boards with cursor pagination
+     * @param {PostsSearchRequestDto} postsSearchRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    postControllerGetPosts: async (
-      boardIds?: string,
+    postControllerSearchPosts: async (
+      postsSearchRequestDto: PostsSearchRequestDto,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      const localVarPath = `/posts`
+      // verify required parameter 'postsSearchRequestDto' is not null or undefined
+      assertParamExists(
+        "postControllerSearchPosts",
+        "postsSearchRequestDto",
+        postsSearchRequestDto,
+      )
+      const localVarPath = `/posts/search`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -2656,16 +2325,14 @@ export const PostsApiAxiosParamCreator = function (
       }
 
       const localVarRequestOptions = {
-        method: "GET",
+        method: "POST",
         ...baseOptions,
         ...options,
       }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
 
-      if (boardIds !== undefined) {
-        localVarQueryParameter["boardIds"] = boardIds
-      }
+      localVarHeaderParameter["Content-Type"] = "application/json"
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions =
@@ -2675,6 +2342,11 @@ export const PostsApiAxiosParamCreator = function (
         ...headersFromBaseOptions,
         ...options.headers,
       }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        postsSearchRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
 
       return {
         url: toPathString(localVarUrlObj),
@@ -2741,13 +2413,13 @@ export const PostsApiFp = function (configuration?: Configuration) {
      *
      * @summary Apply a decision to a post
      * @param {string} postId The ID of the post to apply the decision to
-     * @param {ApplyDecisionRequestDto} applyDecisionRequestDto
+     * @param {object} body
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async postControllerApplyDecision(
       postId: string,
-      applyDecisionRequestDto: ApplyDecisionRequestDto,
+      body: object,
       options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
@@ -2755,7 +2427,7 @@ export const PostsApiFp = function (configuration?: Configuration) {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.postControllerApplyDecision(
           postId,
-          applyDecisionRequestDto,
+          body,
           options,
         )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -2804,13 +2476,13 @@ export const PostsApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @summary Get all posts across all boards
-     * @param {string} [boardIds] Filter posts by board IDs
+     * @summary Search for posts across all boards with cursor pagination
+     * @param {PostsSearchRequestDto} postsSearchRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async postControllerGetPosts(
-      boardIds?: string,
+    async postControllerSearchPosts(
+      postsSearchRequestDto: PostsSearchRequestDto,
       options?: RawAxiosRequestConfig,
     ): Promise<
       (
@@ -2819,13 +2491,13 @@ export const PostsApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<PostsGetResponse>
     > {
       const localVarAxiosArgs =
-        await localVarAxiosParamCreator.postControllerGetPosts(
-          boardIds,
+        await localVarAxiosParamCreator.postControllerSearchPosts(
+          postsSearchRequestDto,
           options,
         )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap["PostsApi.postControllerGetPosts"]?.[
+        operationServerMap["PostsApi.postControllerSearchPosts"]?.[
           localVarOperationServerIndex
         ]?.url
       return (axios, basePath) =>
@@ -2882,17 +2554,17 @@ export const PostsApiFactory = function (
      *
      * @summary Apply a decision to a post
      * @param {string} postId The ID of the post to apply the decision to
-     * @param {ApplyDecisionRequestDto} applyDecisionRequestDto
+     * @param {object} body
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     postControllerApplyDecision(
       postId: string,
-      applyDecisionRequestDto: ApplyDecisionRequestDto,
+      body: object,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
-        .postControllerApplyDecision(postId, applyDecisionRequestDto, options)
+        .postControllerApplyDecision(postId, body, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -2912,17 +2584,17 @@ export const PostsApiFactory = function (
     },
     /**
      *
-     * @summary Get all posts across all boards
-     * @param {string} [boardIds] Filter posts by board IDs
+     * @summary Search for posts across all boards with cursor pagination
+     * @param {PostsSearchRequestDto} postsSearchRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    postControllerGetPosts(
-      boardIds?: string,
+    postControllerSearchPosts(
+      postsSearchRequestDto: PostsSearchRequestDto,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<PostsGetResponse> {
       return localVarFp
-        .postControllerGetPosts(boardIds, options)
+        .postControllerSearchPosts(postsSearchRequestDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -2954,18 +2626,18 @@ export class PostsApi extends BaseAPI {
    *
    * @summary Apply a decision to a post
    * @param {string} postId The ID of the post to apply the decision to
-   * @param {ApplyDecisionRequestDto} applyDecisionRequestDto
+   * @param {object} body
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof PostsApi
    */
   public postControllerApplyDecision(
     postId: string,
-    applyDecisionRequestDto: ApplyDecisionRequestDto,
+    body: object,
     options?: RawAxiosRequestConfig,
   ) {
     return PostsApiFp(this.configuration)
-      .postControllerApplyDecision(postId, applyDecisionRequestDto, options)
+      .postControllerApplyDecision(postId, body, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -2988,18 +2660,18 @@ export class PostsApi extends BaseAPI {
 
   /**
    *
-   * @summary Get all posts across all boards
-   * @param {string} [boardIds] Filter posts by board IDs
+   * @summary Search for posts across all boards with cursor pagination
+   * @param {PostsSearchRequestDto} postsSearchRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof PostsApi
    */
-  public postControllerGetPosts(
-    boardIds?: string,
+  public postControllerSearchPosts(
+    postsSearchRequestDto: PostsSearchRequestDto,
     options?: RawAxiosRequestConfig,
   ) {
     return PostsApiFp(this.configuration)
-      .postControllerGetPosts(boardIds, options)
+      .postControllerSearchPosts(postsSearchRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 

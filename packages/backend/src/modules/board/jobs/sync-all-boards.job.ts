@@ -1,32 +1,21 @@
-import { Injectable, OnModuleInit } from "@nestjs/common"
-import {
-  SyncBoardJob,
-  syncBoardJobSchema,
-} from "src/modules/board/jobs/sync-board.job"
-import { BoardRepository } from "src/modules/board/repositories/board.repository"
 import {
   JobProcessor,
   JobProcessorInterface,
   QueueService,
 } from "@lyrolab/nest-shared/queue"
+import { Injectable } from "@nestjs/common"
+import { BoardRepository } from "src/modules/board/repositories/board.repository"
+import { SyncBoardJob, syncBoardJobSchema } from "./sync-board.job"
 
 @Injectable()
-@JobProcessor(SyncAllBoardsJob.JOB_NAME)
-export class SyncAllBoardsJob implements JobProcessorInterface, OnModuleInit {
+@JobProcessor({ name: SyncAllBoardsJob.JOB_NAME, cron: "* * * * * *" })
+export class SyncAllBoardsJob implements JobProcessorInterface {
   public static readonly JOB_NAME = "sync-all-boards"
 
   constructor(
     private readonly queueService: QueueService,
     private readonly boardRepository: BoardRepository,
   ) {}
-
-  async onModuleInit() {
-    // await this.queueService.add(
-    //   SyncAllBoardsJob.JOB_NAME,
-    //   {},
-    //   { repeat: { pattern: "* * * * *" } },
-    // )
-  }
 
   async process() {
     const boards = await this.boardRepository.findAll()
@@ -35,6 +24,7 @@ export class SyncAllBoardsJob implements JobProcessorInterface, OnModuleInit {
       await this.queueService.add(
         SyncBoardJob.JOB_NAME,
         syncBoardJobSchema.parse({ boardId: board.id }),
+        { deduplication: { id: `${SyncBoardJob.JOB_NAME}:${board.id}` } },
       )
     }
   }

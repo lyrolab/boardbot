@@ -26,8 +26,9 @@ export function TagAssignmentCard({
   decision,
 }: TagAssignmentCardProps) {
   const { data: tags, status } = useTags(boardId)
-  const { watch, setValue } = useFormContext()
-  const selectedTagIds = watch("tagAssignment.tagIds") || []
+  const form = useFormContext()
+  const selectedTagIds = form.watch("tagAssignment.tagIds") || []
+  const isDisabled = form.formState.disabled
 
   if (status === "pending") return <div>Loading...</div>
   if (status === "error") return <div>Error</div>
@@ -38,7 +39,7 @@ export function TagAssignmentCard({
   }))
 
   const handleTagChange = (values: string[]) => {
-    setValue("tagAssignment.tagIds", values)
+    form.setValue("tagAssignment.tagIds", values)
   }
 
   return (
@@ -73,6 +74,8 @@ export function TagAssignmentCard({
             value={selectedTagIds}
             onValueChange={handleTagChange}
             placeholder="Select tags..."
+            selectAllEnabled={false}
+            disabled={isDisabled}
           >
             {(props) => <InputMultiSelectTrigger {...props} />}
           </InputMultiSelect>

@@ -2,7 +2,6 @@ import { SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { ResponsiveDrawer } from "@/modules/core/components/ResponsiveDrawer"
 import { usePostDecisionDrawer } from "../../store/postDecisionDrawer"
 import { PostDecisionSummary } from "../PostDecisionSummary/PostDecisionSummary"
-import { Input } from "@/components/ui/input"
 
 export function PostDecisionDrawer() {
   const { isOpen, selectedPost, closeDrawer } = usePostDecisionDrawer()

@@ -1,3 +1,4 @@
+import { ApiProperty } from "@nestjs/swagger"
 import { PostProcessingStatus } from "src/modules/board/entities/post-processing-status.enum"
 import { Post } from "src/modules/board/entities/post.entity"
 import {
@@ -10,6 +11,11 @@ export class PostGet {
   id: string
   title: string
   description: string
+
+  @ApiProperty({
+    enum: PostProcessingStatus,
+    enumName: "PostProcessingStatusEnum",
+  })
   processingStatus: PostProcessingStatus
   decision?: PostDecision
   board: BoardGet

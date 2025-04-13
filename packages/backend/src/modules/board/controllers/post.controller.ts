@@ -6,14 +6,17 @@ import {
   Param,
   ParseUUIDPipe,
   Post,
-  Query,
 } from "@nestjs/common"
-import { ApiOperation, ApiParam, ApiQuery, ApiTags } from "@nestjs/swagger"
-import { PostSyncService } from "../services/post-sync.service"
-import { PostService } from "../services/post.service"
-import { toPostGetResponse } from "src/modules/board/models/dto/post-get.response.dto"
-import { toPostsGetResponse } from "src/modules/board/models/dto/posts-get.response.dto"
+import { ApiOperation, ApiParam, ApiTags, ApiResponse } from "@nestjs/swagger"
 import { ApplyDecisionRequestDto } from "src/modules/board/models/dto/apply-decision.request.dto"
+import { toPostGetResponse } from "src/modules/board/models/dto/post-get.response.dto"
+import { PostsSearchRequestDto } from "src/modules/board/models/dto/posts-search.request.dto"
+import {
+  toPostsGetResponse,
+  PostsGetResponse,
+} from "src/modules/board/models/dto/posts-get.response.dto"
+import { PostSyncService } from "src/modules/board/services/posts/post-sync.service"
+import { PostService } from "../services/post.service"
 
 @ApiTags("posts")
 @Controller("posts")
@@ -23,18 +26,25 @@ export class PostController {
     private readonly postSyncService: PostSyncService,
   ) {}
 
-  @Get()
-  @ApiOperation({ summary: "Get all posts across all boards" })
-  @ApiQuery({
-    name: "boardIds",
-    required: false,
-    description: "Filter posts by board IDs",
+  @Post("search")
+  @ApiOperation({
+    summary: "Search for posts across all boards with cursor pagination",
   })
-  async getPosts(@Query("boardIds") boardIds?: string) {
-    const posts = await this.postService.findAll(
-      boardIds ? boardIds.split(",") : undefined,
-    )
-    return toPostsGetResponse(posts)
+  @ApiResponse({
+    status: 200,
+    description: "Returns paginated posts with cursor for next page",
+    type: PostsGetResponse,
+  })
+  async searchPosts(
+    @Body() body: PostsSearchRequestDto,
+  ): Promise<PostsGetResponse> {
+    const paginatedResult = await this.postService.search({
+      boardIds: body.boardIds,
+      statuses: body.statuses,
+      cursor: body.cursor,
+      limit: body.limit,
+    })
+    return toPostsGetResponse(paginatedResult)
   }
 
   @Get(":postId")
@@ -65,6 +75,6 @@ export class PostController {
     @Param("postId", new ParseUUIDPipe()) postId: string,
     @Body() body: ApplyDecisionRequestDto,
   ): Promise<void> {
-    await this.postSyncService.applyDecision(postId, body)
+    await this.postService.applyDecision(postId, body)
   }
 }

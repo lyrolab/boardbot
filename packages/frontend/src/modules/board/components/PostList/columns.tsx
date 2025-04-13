@@ -1,7 +1,11 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { PostGet } from "@/clients/backend-client"
+import {
+  PostGet,
+  PostGetProcessingStatusEnum,
+  PostProcessingStatusEnum,
+} from "@/clients/backend-client"
 import { Badge } from "@/components/ui/badge"
 import { format } from "date-fns"
 import { Button } from "@/components/ui/button"
@@ -15,17 +19,23 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { usePostDecisionDrawer } from "../../store/postDecisionDrawer"
 
-const getStatusBadge = (status: string, onClick?: () => void) => {
-  const variants: Record<string, "default" | "secondary" | "destructive"> = {
-    PENDING: "default",
-    AWAITING_MANUAL_REVIEW: "secondary",
-    FAILED: "destructive",
-    APPLIED: "default",
+const getStatusBadge = (
+  status: PostGetProcessingStatusEnum,
+  onClick?: () => void,
+) => {
+  const variants: Record<
+    PostProcessingStatusEnum,
+    "default" | "secondary" | "yellow" | "destructive"
+  > = {
+    pending: "secondary",
+    awaiting_manual_review: "yellow",
+    failed: "destructive",
+    completed: "default",
   }
 
   const badge = (
     <Badge
-      variant={variants[status] || "default"}
+      variant={variants[status]}
       className={onClick ? "cursor-pointer hover:opacity-80" : ""}
       onClick={onClick}
     >
