@@ -27,6 +27,9 @@ import { BoardContextService } from "./services/board-context.service"
 import { PostService } from "./services/post.service"
 import { BoardContext } from "src/modules/board/entities/board-context.entity"
 import { AiTagDescriptionService } from "src/modules/board/services/ai-tag-description.service"
+import { PostDuplicateDetectionService } from "src/modules/board/services/posts/post-duplicate-detection.service"
+import { PostModerationService } from "src/modules/board/services/posts/post-moderation.service"
+import { PostTagAssignmentService } from "src/modules/board/services/posts/post-tag-assignment.service"
 
 @Module({
   imports: [
@@ -52,6 +55,9 @@ import { AiTagDescriptionService } from "src/modules/board/services/ai-tag-descr
     PostSyncService,
     BoardContextService,
     BoardContextRepository,
+    PostDuplicateDetectionService,
+    PostModerationService,
+    PostTagAssignmentService,
   ],
   exports: [BoardRepository, TagService, BoardService, PostService],
   controllers: [

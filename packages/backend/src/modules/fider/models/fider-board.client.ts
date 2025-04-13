@@ -92,7 +92,7 @@ export class FiderBoardClient implements BoardClientInterface {
       .map(toBasePost)
   }
 
-  async fetchPost(externalId: string): Promise<BasePost> {
+  async fetchPostByExternalId(externalId: string): Promise<BasePost> {
     const post = await postGet({
       configuration: this.configuration,
       postId: +externalId,

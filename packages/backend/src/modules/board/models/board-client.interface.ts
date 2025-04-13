@@ -15,7 +15,7 @@ export interface BoardClientInterface {
    * Fetches a single post by its external ID
    * @param externalId The external ID of the post to fetch
    */
-  fetchPost(externalId: string): Promise<BasePost>
+  fetchPostByExternalId(externalId: string): Promise<BasePost>
 
   /**
    * Queries the board for posts matching the query

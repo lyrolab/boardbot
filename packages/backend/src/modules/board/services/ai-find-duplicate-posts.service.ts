@@ -19,6 +19,16 @@ const duplicatePostSchema = z.object({
 })
 const duplicatePostListSchema = z.array(duplicatePostSchema)
 
+type AiFindDuplicatePostsDecision = {
+  status: "success" | "failed"
+  decision: "duplicate" | "not_duplicate" | "unknown"
+  duplicatePosts: {
+    externalId: string
+    reasoning: string
+  }[]
+  reasoning: string
+}
+
 /// For a given post with a title and description, the AI will first generate a list of queries to search for.
 /// This list of queries will be used to search for duplicate posts in the board, via the board search API.
 /// Then, the query results will be returned to the AI, which will then determine if there are any duplicate posts.
@@ -32,7 +42,7 @@ export class AiFindDuplicatePostsService {
   async forPost(
     client: BoardClientInterface,
     post: Post,
-  ): Promise<DuplicatePostsDecision> {
+  ): Promise<AiFindDuplicatePostsDecision> {
     const queries = await this.generateQueriesPrompt(post)
 
     const rawQueryResults = await Promise.all(
@@ -76,13 +86,15 @@ export class AiFindDuplicatePostsService {
       }),
     })
 
+    console.log(result.object)
+
     return result.object.queries
   }
 
   private async findDuplicatePostsPrompt(
     post: Post,
     postResults: BasePost[],
-  ): Promise<DuplicatePostsDecision> {
+  ): Promise<AiFindDuplicatePostsDecision> {
     const system = `You are a helpful assistant that is tasked with finding duplicate posts on a board.
 You will be given a post with a title and description.
 You will also be given a list of posts that were found via the board search API.
@@ -123,11 +135,15 @@ ${"```"}
       .join("\n\n")}
     `
 
+    console.log(prompt)
+
     const result = await generateText({
       model: this.aiService.model,
       system,
       prompt,
     })
+
+    console.log(result.text)
 
     const response = result.text.match(/```(?:yaml|yml)?([\s\S]*)```/)
     if (!response) {

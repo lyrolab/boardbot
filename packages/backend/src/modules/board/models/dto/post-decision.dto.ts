@@ -46,9 +46,9 @@ export class ModerationDecision {
 
 export class DuplicatePost {
   /**
-   * The external ID of the duplicate post
+   * The ID of the duplicate post
    */
-  externalId: string
+  id: string
 
   /**
    * The reasoning of the duplicate post

@@ -21,18 +21,13 @@ export class PostService {
   async findById(id: string): Promise<{ post: Post; relatedPosts: Post[] }> {
     const post = await this.postRepository.findByIdOrFail(id)
     const relatedPostIds =
-      post.decision?.duplicatePosts?.duplicatePosts?.map(
-        ({ externalId: id }) => id,
-      ) ?? []
-    const relatedPosts = await this.postRepository.findAllByExternalIds(
+      post.decision?.duplicatePosts?.duplicatePosts?.map(({ id }) => id) ?? []
+    const relatedPosts = await this.postRepository.findAllByIds(
       post.board.id,
       relatedPostIds,
     )
 
-    return {
-      post,
-      relatedPosts,
-    }
+    return { post, relatedPosts }
   }
 
   async update(post: Post): Promise<Post> {

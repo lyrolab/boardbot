@@ -1,5 +1,6 @@
 import { Configuration } from "@/clients/backend-client"
+import { env } from "next-runtime-env"
 
 export const configuration = new Configuration({
-  basePath: process.env.NEXT_PUBLIC_BACKEND_URL,
+  basePath: env("NEXT_PUBLIC_BACKEND_URL"),
 })

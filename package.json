@@ -20,5 +20,9 @@
     "extends": [
       "@commitlint/config-conventional"
     ]
+  },
+  "overrides": {
+    "@radix-ui/react-dismissable-layer": "^1.1.6",
+    "@radix-ui/react-focus-scope": "^1.1.3"
   }
 }

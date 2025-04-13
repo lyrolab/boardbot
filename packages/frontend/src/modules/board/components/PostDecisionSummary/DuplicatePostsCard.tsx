@@ -53,21 +53,21 @@ export function DuplicatePostsCard({
 
                   {decision.duplicatePosts.map((duplicatePost) => {
                     const post = relatedPosts.find(
-                      (p) => p.externalId === duplicatePost.externalId,
+                      (p) => p.id === duplicatePost.id,
                     )
                     if (!post) return null
 
                     return (
                       <div
-                        key={duplicatePost.externalId}
+                        key={duplicatePost.id}
                         className="flex items-start space-x-2"
                       >
                         <RadioGroupItem
-                          value={duplicatePost.externalId}
-                          id={duplicatePost.externalId}
+                          value={duplicatePost.id}
+                          id={duplicatePost.id}
                         />
                         <Label
-                          htmlFor={duplicatePost.externalId}
+                          htmlFor={duplicatePost.id}
                           className="font-normal"
                         >
                           <DuplicatePostCard

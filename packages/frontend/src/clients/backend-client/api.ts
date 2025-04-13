@@ -391,7 +391,7 @@ export interface DuplicatePost {
    * @type {string}
    * @memberof DuplicatePost
    */
-  externalId: string
+  id: string
   /**
    *
    * @type {string}
@@ -533,6 +533,83 @@ export interface FiderBoardCreateDto {
    * @memberof FiderBoardCreateDto
    */
   apiKey: string
+}
+/**
+ *
+ * @export
+ * @interface HealthControllerCheck200Response
+ */
+export interface HealthControllerCheck200Response {
+  /**
+   *
+   * @type {string}
+   * @memberof HealthControllerCheck200Response
+   */
+  status?: string
+  /**
+   *
+   * @type {{ [key: string]: HealthControllerCheck200ResponseInfoValue; }}
+   * @memberof HealthControllerCheck200Response
+   */
+  info?: { [key: string]: HealthControllerCheck200ResponseInfoValue } | null
+  /**
+   *
+   * @type {{ [key: string]: HealthControllerCheck200ResponseInfoValue; }}
+   * @memberof HealthControllerCheck200Response
+   */
+  error?: { [key: string]: HealthControllerCheck200ResponseInfoValue } | null
+  /**
+   *
+   * @type {{ [key: string]: HealthControllerCheck200ResponseInfoValue; }}
+   * @memberof HealthControllerCheck200Response
+   */
+  details?: { [key: string]: HealthControllerCheck200ResponseInfoValue }
+}
+/**
+ *
+ * @export
+ * @interface HealthControllerCheck200ResponseInfoValue
+ */
+export interface HealthControllerCheck200ResponseInfoValue {
+  [key: string]: any
+
+  /**
+   *
+   * @type {string}
+   * @memberof HealthControllerCheck200ResponseInfoValue
+   */
+  status: string
+}
+/**
+ *
+ * @export
+ * @interface HealthControllerCheck503Response
+ */
+export interface HealthControllerCheck503Response {
+  /**
+   *
+   * @type {string}
+   * @memberof HealthControllerCheck503Response
+   */
+  status?: string
+  /**
+   *
+   * @type {{ [key: string]: HealthControllerCheck200ResponseInfoValue; }}
+   * @memberof HealthControllerCheck503Response
+   */
+  info?: { [key: string]: HealthControllerCheck200ResponseInfoValue } | null
+  /**
+   *
+   * @type {{ [key: string]: HealthControllerCheck200ResponseInfoValue; }}
+   * @memberof HealthControllerCheck503Response
+   */
+  error?: { [key: string]: HealthControllerCheck200ResponseInfoValue } | null
+  /**
+   *
+   * @type {{ [key: string]: HealthControllerCheck200ResponseInfoValue; }}
+   * @memberof HealthControllerCheck503Response
+   */
+  details?: { [key: string]: HealthControllerCheck200ResponseInfoValue }
 }
 /**
  *
@@ -2307,6 +2384,139 @@ export class FiderBoardsApi extends BaseAPI {
   ) {
     return FiderBoardsApiFp(this.configuration)
       .fiderBoardControllerGetByBoardId(boardId, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
+ * HealthApi - axios parameter creator
+ * @export
+ */
+export const HealthApiAxiosParamCreator = function (
+  configuration?: Configuration,
+) {
+  return {
+    /**
+     *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    healthControllerCheck: async (
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/health`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: "GET",
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * HealthApi - functional programming interface
+ * @export
+ */
+export const HealthApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = HealthApiAxiosParamCreator(configuration)
+  return {
+    /**
+     *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async healthControllerCheck(
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<HealthControllerCheck200Response>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.healthControllerCheck(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap["HealthApi.healthControllerCheck"]?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+  }
+}
+
+/**
+ * HealthApi - factory interface
+ * @export
+ */
+export const HealthApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = HealthApiFp(configuration)
+  return {
+    /**
+     *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    healthControllerCheck(
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<HealthControllerCheck200Response> {
+      return localVarFp
+        .healthControllerCheck(options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * HealthApi - object-oriented interface
+ * @export
+ * @class HealthApi
+ * @extends {BaseAPI}
+ */
+export class HealthApi extends BaseAPI {
+  /**
+   *
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof HealthApi
+   */
+  public healthControllerCheck(options?: RawAxiosRequestConfig) {
+    return HealthApiFp(this.configuration)
+      .healthControllerCheck(options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

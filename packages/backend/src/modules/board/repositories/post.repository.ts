@@ -17,9 +17,9 @@ export class PostRepository {
     private readonly repository: Repository<Post>,
   ) {}
 
-  async findAllByExternalIds(boardId: string, externalIds: string[]) {
+  async findAllByIds(boardId: string, ids: string[]) {
     return this.repository.find({
-      where: { externalId: In(externalIds) },
+      where: { board: { id: boardId }, id: In(ids) },
       relations: ["board"],
     })
   }
@@ -44,7 +44,7 @@ export class PostRepository {
   async createOrUpdateByExternalId(
     boardId: string,
     posts: PostInput[],
-  ): Promise<void> {
+  ): Promise<Post[]> {
     const existingPosts = await this.repository.find({
       where: {
         board: { id: boardId },
@@ -52,6 +52,7 @@ export class PostRepository {
       },
     })
     const existingPostsMap = keyBy(existingPosts, "externalId")
+    const updatedPosts: Post[] = []
 
     for (const postInput of posts) {
       const post =
@@ -65,8 +66,11 @@ export class PostRepository {
       post.description = postInput.description
       post.postCreatedAt = postInput.postCreatedAt
 
-      await this.repository.save(post)
+      const savedPost = await this.repository.save(post)
+      updatedPosts.push(savedPost)
     }
+
+    return updatedPosts
   }
 
   async findPending(boardId: string) {
