@@ -42,6 +42,83 @@ import {
 /**
  *
  * @export
+ * @interface ApplyDecisionRequestDto
+ */
+export interface ApplyDecisionRequestDto {
+  /**
+   *
+   * @type {ApplyModerationDecision}
+   * @memberof ApplyDecisionRequestDto
+   */
+  moderation?: ApplyModerationDecision
+  /**
+   *
+   * @type {ApplyDuplicatePostsDecision}
+   * @memberof ApplyDecisionRequestDto
+   */
+  duplicatePosts?: ApplyDuplicatePostsDecision
+  /**
+   *
+   * @type {ApplyTagAssignmentDecision}
+   * @memberof ApplyDecisionRequestDto
+   */
+  tagAssignment?: ApplyTagAssignmentDecision
+}
+/**
+ *
+ * @export
+ * @interface ApplyDuplicatePostsDecision
+ */
+export interface ApplyDuplicatePostsDecision {
+  /**
+   *
+   * @type {string}
+   * @memberof ApplyDuplicatePostsDecision
+   */
+  duplicatePostExternalId?: string
+}
+/**
+ *
+ * @export
+ * @interface ApplyModerationDecision
+ */
+export interface ApplyModerationDecision {
+  /**
+   *
+   * @type {string}
+   * @memberof ApplyModerationDecision
+   */
+  reason?: ApplyModerationDecisionReasonEnum
+}
+
+export const ApplyModerationDecisionReasonEnum = {
+  MultipleSuggestions: "multiple_suggestions",
+  IsAQuestion: "is_a_question",
+  IsSpamOrInappropriate: "is_spam_or_inappropriate",
+  IsAdvertisement: "is_advertisement",
+  IsBugReport: "is_bug_report",
+  IsNotUnderstandable: "is_not_understandable",
+} as const
+
+export type ApplyModerationDecisionReasonEnum =
+  (typeof ApplyModerationDecisionReasonEnum)[keyof typeof ApplyModerationDecisionReasonEnum]
+
+/**
+ *
+ * @export
+ * @interface ApplyTagAssignmentDecision
+ */
+export interface ApplyTagAssignmentDecision {
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof ApplyTagAssignmentDecision
+   */
+  tagIds?: Array<string>
+}
+/**
+ *
+ * @export
  * @interface BoardContextGetDto
  */
 export interface BoardContextGetDto {
@@ -2200,19 +2277,23 @@ export const PostsApiAxiosParamCreator = function (
      *
      * @summary Apply a decision to a post
      * @param {string} postId The ID of the post to apply the decision to
-     * @param {object} body
+     * @param {ApplyDecisionRequestDto} applyDecisionRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     postControllerApplyDecision: async (
       postId: string,
-      body: object,
+      applyDecisionRequestDto: ApplyDecisionRequestDto,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'postId' is not null or undefined
       assertParamExists("postControllerApplyDecision", "postId", postId)
-      // verify required parameter 'body' is not null or undefined
-      assertParamExists("postControllerApplyDecision", "body", body)
+      // verify required parameter 'applyDecisionRequestDto' is not null or undefined
+      assertParamExists(
+        "postControllerApplyDecision",
+        "applyDecisionRequestDto",
+        applyDecisionRequestDto,
+      )
       const localVarPath = `/posts/{postId}/apply-decision`.replace(
         `{${"postId"}}`,
         encodeURIComponent(String(postId)),
@@ -2243,7 +2324,7 @@ export const PostsApiAxiosParamCreator = function (
         ...options.headers,
       }
       localVarRequestOptions.data = serializeDataIfNeeded(
-        body,
+        applyDecisionRequestDto,
         localVarRequestOptions,
         configuration,
       )
@@ -2413,13 +2494,13 @@ export const PostsApiFp = function (configuration?: Configuration) {
      *
      * @summary Apply a decision to a post
      * @param {string} postId The ID of the post to apply the decision to
-     * @param {object} body
+     * @param {ApplyDecisionRequestDto} applyDecisionRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async postControllerApplyDecision(
       postId: string,
-      body: object,
+      applyDecisionRequestDto: ApplyDecisionRequestDto,
       options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
@@ -2427,7 +2508,7 @@ export const PostsApiFp = function (configuration?: Configuration) {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.postControllerApplyDecision(
           postId,
-          body,
+          applyDecisionRequestDto,
           options,
         )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -2554,17 +2635,17 @@ export const PostsApiFactory = function (
      *
      * @summary Apply a decision to a post
      * @param {string} postId The ID of the post to apply the decision to
-     * @param {object} body
+     * @param {ApplyDecisionRequestDto} applyDecisionRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     postControllerApplyDecision(
       postId: string,
-      body: object,
+      applyDecisionRequestDto: ApplyDecisionRequestDto,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
-        .postControllerApplyDecision(postId, body, options)
+        .postControllerApplyDecision(postId, applyDecisionRequestDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -2626,18 +2707,18 @@ export class PostsApi extends BaseAPI {
    *
    * @summary Apply a decision to a post
    * @param {string} postId The ID of the post to apply the decision to
-   * @param {object} body
+   * @param {ApplyDecisionRequestDto} applyDecisionRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof PostsApi
    */
   public postControllerApplyDecision(
     postId: string,
-    body: object,
+    applyDecisionRequestDto: ApplyDecisionRequestDto,
     options?: RawAxiosRequestConfig,
   ) {
     return PostsApiFp(this.configuration)
-      .postControllerApplyDecision(postId, body, options)
+      .postControllerApplyDecision(postId, applyDecisionRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 

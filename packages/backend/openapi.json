@@ -1087,9 +1087,54 @@
         },
         "required": ["data", "includes"]
       },
+      "ApplyModerationDecision": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "enum": [
+              "multiple_suggestions",
+              "is_a_question",
+              "is_spam_or_inappropriate",
+              "is_advertisement",
+              "is_bug_report",
+              "is_not_understandable"
+            ]
+          }
+        }
+      },
+      "ApplyDuplicatePostsDecision": {
+        "type": "object",
+        "properties": {
+          "duplicatePostExternalId": {
+            "type": "string"
+          }
+        }
+      },
+      "ApplyTagAssignmentDecision": {
+        "type": "object",
+        "properties": {
+          "tagIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
       "ApplyDecisionRequestDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "moderation": {
+            "$ref": "#/components/schemas/ApplyModerationDecision"
+          },
+          "duplicatePosts": {
+            "$ref": "#/components/schemas/ApplyDuplicatePostsDecision"
+          },
+          "tagAssignment": {
+            "$ref": "#/components/schemas/ApplyTagAssignmentDecision"
+          }
+        }
       },
       "TagGenerateDescriptionResponseDto": {
         "type": "object",

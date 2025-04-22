@@ -1,14 +1,14 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
-import { PostGetProcessingStatusEnum } from "@/clients/backend-client"
+import { PostProcessingStatusEnum } from "@/clients/backend-client"
 
 interface FiltersState {
   filters: {
     selectedBoards: string[]
-    selectedStatuses: PostGetProcessingStatusEnum[]
+    selectedStatuses: PostProcessingStatusEnum[]
   }
   setSelectedBoards: (boardIds: string[]) => void
-  setSelectedStatuses: (statuses: PostGetProcessingStatusEnum[]) => void
+  setSelectedStatuses: (statuses: PostProcessingStatusEnum[]) => void
   resetFilters: () => void
 }
 

@@ -1,11 +1,7 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import {
-  PostGet,
-  PostGetProcessingStatusEnum,
-  PostProcessingStatusEnum,
-} from "@/clients/backend-client"
+import { PostGet, PostProcessingStatusEnum } from "@/clients/backend-client"
 import { Badge } from "@/components/ui/badge"
 import { format } from "date-fns"
 import { Button } from "@/components/ui/button"
@@ -20,7 +16,7 @@ import {
 import { usePostDecisionDrawer } from "../../store/postDecisionDrawer"
 
 const getStatusBadge = (
-  status: PostGetProcessingStatusEnum,
+  status: PostProcessingStatusEnum,
   onClick?: () => void,
 ) => {
   const variants: Record<

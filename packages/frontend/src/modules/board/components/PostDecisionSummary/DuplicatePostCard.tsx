@@ -12,7 +12,7 @@ export function DuplicatePostCard({ post, duplicatePost }: Props) {
       <div className="flex items-center gap-2">
         <FileText className="h-4 w-4" />
         <span className="text-sm font-medium">
-          {post?.title ?? duplicatePost.externalId}
+          {post?.title ?? duplicatePost.id}
         </span>
       </div>
       <p className="text-sm text-muted-foreground">{duplicatePost.reasoning}</p>
