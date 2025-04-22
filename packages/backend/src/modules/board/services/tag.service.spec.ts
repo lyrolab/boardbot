@@ -158,13 +158,13 @@ describe("TagService", () => {
           id: "1",
           externalId: "tag-1",
           title: "Updated Tag 1",
-          description: "",
+          description: "Tag description",
         },
         {
           id: "2",
           externalId: "tag-2",
           title: "Updated Tag 2",
-          description: "",
+          description: "Tag description",
         },
         {
           id: undefined,
@@ -228,7 +228,7 @@ describe("TagService", () => {
           id: "1",
           externalId: "tag-1",
           title: "Updated Tag 1",
-          description: "",
+          description: "Tag description",
         },
       ])
     })

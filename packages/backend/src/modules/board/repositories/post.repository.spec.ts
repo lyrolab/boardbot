@@ -8,6 +8,7 @@ import { BoardFactory } from "src/modules/board/factories/board.factory"
 import { Board } from "src/modules/board/entities/board.entity"
 import { PostProcessingStatus } from "src/modules/board/entities/post-processing-status.enum"
 import { In } from "typeorm"
+import { ConfigModule } from "@nestjs/config"
 
 describe("PostRepository", () => {
   let repository: PostRepository
@@ -16,6 +17,7 @@ describe("PostRepository", () => {
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
+        ConfigModule.forRoot(),
         SharedDatabaseModule.forRoot(),
         TypeOrmModule.forFeature([Post]),
       ],
