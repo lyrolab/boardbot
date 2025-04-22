@@ -87,8 +87,7 @@ export function mapFormDataToDecision(
       formData.duplicatePosts &&
       formData.duplicatePosts.selectedDuplicateId !== "not_duplicate"
         ? {
-            duplicatePostExternalId:
-              formData.duplicatePosts.selectedDuplicateId,
+            duplicatePostId: formData.duplicatePosts.selectedDuplicateId,
           }
         : undefined,
     tagAssignment:

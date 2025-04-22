@@ -34,7 +34,7 @@ export function TagAssignmentCard({
   if (status === "error") return <div>Error</div>
 
   const tagOptions = tags.data.map((tag) => ({
-    value: tag.externalId,
+    value: tag.id,
     label: tag.title,
   }))
 

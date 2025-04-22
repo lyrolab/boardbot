@@ -3,6 +3,8 @@ import { BasePost } from "src/modules/board/models/base-post"
 import { BaseTag } from "src/modules/board/models/base-tag"
 import { BoardClientInterface } from "src/modules/board/models/board-client.interface"
 import { ApplyDecisionRequestDto } from "src/modules/board/models/dto/apply-decision.request.dto"
+import { PostRepository } from "src/modules/board/repositories/post.repository"
+import { TagRepository } from "src/modules/board/repositories/tag.repository"
 import { PostService } from "src/modules/board/services/post.service"
 import {
   ApiV1PostsGet200ResponseInner,
@@ -26,6 +28,8 @@ export class FiderBoardClient implements BoardClientInterface {
   configuration: Configuration
 
   constructor(
+    private readonly postRepository: PostRepository,
+    private readonly tagRepository: TagRepository,
     private readonly postService: PostService,
     private readonly fiderBoardRepository: FiderBoardRepository,
     private readonly fiderBoard: FiderBoard,
@@ -124,12 +128,16 @@ export class FiderBoardClient implements BoardClientInterface {
       return
     }
 
-    if (decision.duplicatePosts?.duplicatePostExternalId) {
+    if (decision.duplicatePosts?.duplicatePostId) {
+      const duplicatePost = await this.postRepository.findByIdOrFail(
+        decision.duplicatePosts.duplicatePostId,
+      )
+
       await postsStatusPut({
         configuration: this.configuration,
         postId: +basePostId,
         status: "duplicate",
-        originalNumber: +decision.duplicatePosts.duplicatePostExternalId,
+        originalNumber: +duplicatePost.externalId,
       })
       return
     }
@@ -148,11 +156,15 @@ export class FiderBoardClient implements BoardClientInterface {
     }
 
     if (decision.tagAssignment?.tagIds) {
+      const tags = await this.tagRepository.findAllByIds(
+        decision.tagAssignment.tagIds,
+      )
+
       await Promise.all(
-        decision.tagAssignment.tagIds.map((tagId) =>
+        tags.map((tag) =>
           addTagToPost({
             configuration: this.configuration,
-            tagId: +tagId,
+            tagId: +tag.externalId,
             postId: +basePostId,
           }),
         ),

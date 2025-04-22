@@ -60,7 +60,14 @@ import { ProcessPostJob } from "src/modules/board/jobs/process-post.job"
     PostTagAssignmentService,
     ProcessPostJob,
   ],
-  exports: [BoardRepository, TagService, BoardService, PostService],
+  exports: [
+    BoardRepository,
+    TagService,
+    BoardService,
+    PostService,
+    PostRepository,
+    TagRepository,
+  ],
   controllers: [
     BoardController,
     PostController,

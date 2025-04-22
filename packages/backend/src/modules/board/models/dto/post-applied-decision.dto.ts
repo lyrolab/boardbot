@@ -15,12 +15,18 @@ export class ApplyModerationDecision {
 }
 
 export class ApplyDuplicatePostsDecision {
+  /**
+   * The ID of the applied duplicate post
+   */
   @IsString()
   @IsOptional()
-  duplicatePostExternalId?: string
+  duplicatePostId?: string
 }
 
 export class ApplyTagAssignmentDecision {
+  /**
+   * The IDs of the applied tags to the post
+   */
   @IsArray()
   @IsString({ each: true })
   @IsOptional()

@@ -1106,8 +1106,9 @@
       "ApplyDuplicatePostsDecision": {
         "type": "object",
         "properties": {
-          "duplicatePostExternalId": {
-            "type": "string"
+          "duplicatePostId": {
+            "type": "string",
+            "description": "The ID of the duplicate post"
           }
         }
       },
@@ -1115,6 +1116,7 @@
         "type": "object",
         "properties": {
           "tagIds": {
+            "description": "The IDs of the tags to assign to the post",
             "type": "array",
             "items": {
               "type": "string"

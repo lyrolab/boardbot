@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
 import { Tag } from "src/modules/board/entities/tag.entity"
-import { Repository } from "typeorm"
+import { In, Repository } from "typeorm"
 
 @Injectable()
 export class TagRepository {
@@ -31,6 +31,12 @@ export class TagRepository {
       order: {
         title: "ASC",
       },
+    })
+  }
+
+  async findAllByIds(tagIds: string[]) {
+    return this.tagRepository.find({
+      where: { id: In(tagIds) },
     })
   }
 }

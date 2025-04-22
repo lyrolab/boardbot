@@ -71,11 +71,11 @@ export interface ApplyDecisionRequestDto {
  */
 export interface ApplyDuplicatePostsDecision {
   /**
-   *
+   * The ID of the duplicate post
    * @type {string}
    * @memberof ApplyDuplicatePostsDecision
    */
-  duplicatePostExternalId?: string
+  duplicatePostId?: string
 }
 /**
  *
@@ -110,7 +110,7 @@ export type ApplyModerationDecisionReasonEnum =
  */
 export interface ApplyTagAssignmentDecision {
   /**
-   *
+   * The IDs of the tags to assign to the post
    * @type {Array<string>}
    * @memberof ApplyTagAssignmentDecision
    */
