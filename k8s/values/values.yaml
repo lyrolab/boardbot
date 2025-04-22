@@ -2,11 +2,9 @@ nameOverride: boardbot
 components:
   backend:
     enabled: true
-    host: boardbot-preprod.lyrolab.fr
     image:
       repository: ghcr.io/lyrolab/boardbot-backend
   frontend:
     enabled: true
-    host: boardbot-preprod.lyrolab.fr
     image:
       repository: ghcr.io/lyrolab/boardbot-frontend

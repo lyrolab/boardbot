@@ -1,0 +1,6 @@
+nameOverride: boardbot
+components:
+  backend:
+    host: boardbot.lyrolab.fr
+  frontend:
+    host: boardbot.lyrolab.fr

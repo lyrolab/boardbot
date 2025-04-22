@@ -42,7 +42,7 @@ import { createMock } from "@golevelup/ts-jest"
 
     service = module.get(BoardService)
   })
-    ```
+```
 
 ## Factories
 

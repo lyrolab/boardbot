@@ -36,6 +36,7 @@ export class FiderBoardRepository {
         board: { id: boardId },
         baseUrl: createDto.baseUrl,
         apiKey: createDto.apiKey,
+        lastFetchedAt: new Date(),
       })
     } else {
       fiderBoard.baseUrl = createDto.baseUrl
