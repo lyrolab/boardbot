@@ -29,6 +29,9 @@ export class Post {
   @Column({ default: PostProcessingStatus.PENDING })
   processingStatus: PostProcessingStatus
 
+  @Column({ type: "text", nullable: true })
+  processingError: string | null
+
   @Column({ type: "jsonb", nullable: true })
   decision: PostDecision | null
 

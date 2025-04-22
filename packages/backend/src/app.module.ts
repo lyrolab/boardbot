@@ -6,7 +6,7 @@ import { SharedQueueModule } from "@lyrolab/nest-shared/queue"
 import { SharedRedisModule } from "@lyrolab/nest-shared/redis"
 import { SharedHealthModule } from "@lyrolab/nest-shared/health"
 import { Module } from "@nestjs/common"
-import { ConfigModule } from "@nestjs/config"
+import { ConfigModule, ConfigService } from "@nestjs/config"
 import { join } from "path"
 import { BoardModule } from "src/modules/board/board.module"
 import { FiderModule } from "src/modules/fider/fider.module"
@@ -23,7 +23,12 @@ import { FiderModule } from "src/modules/fider/fider.module"
     SharedRedisModule.forRoot(),
     SharedBullModule.forRoot(),
     SharedCacheModule.forRoot(),
-    SharedQueueModule,
+    SharedQueueModule.forRootAsync({
+      useFactory: (configService: ConfigService) => ({
+        concurrency: +(configService.get("QUEUE_CONCURRENCY") ?? 10),
+      }),
+      inject: [ConfigService],
+    }),
     SharedHealthModule,
     SharedAiModule,
     BoardModule,

@@ -101,8 +101,6 @@ export class AiFindDuplicatePostsService {
       }),
     })
 
-    console.log(result.object)
-
     return result.object.queries
   }
 
@@ -150,15 +148,11 @@ ${"```"}
       .join("\n\n")}
     `
 
-    console.log(prompt)
-
     const result = await generateText({
       model: this.aiService.model,
       system,
       prompt,
     })
-
-    console.log(result.text)
 
     const response = result.text.match(/```(?:yaml|yml)?([\s\S]*)```/)
     if (!response) {

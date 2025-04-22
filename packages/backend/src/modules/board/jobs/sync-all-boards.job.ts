@@ -8,7 +8,7 @@ import { BoardRepository } from "src/modules/board/repositories/board.repository
 import { SyncBoardJob, syncBoardJobSchema } from "./sync-board.job"
 
 @Injectable()
-@JobProcessor({ name: SyncAllBoardsJob.JOB_NAME, cron: "* * * * * *" })
+@JobProcessor({ name: SyncAllBoardsJob.JOB_NAME, cron: "* * * * *" })
 export class SyncAllBoardsJob implements JobProcessorInterface {
   public static readonly JOB_NAME = "sync-all-boards"
 

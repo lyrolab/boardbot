@@ -77,8 +77,6 @@ ${boardContextForPrompt(context)}
       prompt,
     })
 
-    console.log("result", result.text)
-
     const reasoningMatch = result.text.match(/REASONING: (.*?)(?:\n|$)/s)
     const reasoning = reasoningMatch
       ? reasoningMatch[1].trim()

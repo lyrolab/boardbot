@@ -23,15 +23,16 @@ export class PostSyncService {
 
   async syncPost(postId: string) {
     const post = await this.postRepository.findByIdOrFail(postId)
-    const board = await this.boardService.getBoard(post.board.id)
-
-    post.processingStatus = PostProcessingStatus.PENDING
-    post.decision = null
-
-    const client = this.boardService.getClientForBoard(board)
-    const tags = await this.tagService.findAllByBoardId(board.id)
 
     try {
+      const board = await this.boardService.getBoard(post.board.id)
+
+      post.processingStatus = PostProcessingStatus.PENDING
+      post.decision = null
+
+      const client = this.boardService.getClientForBoard(board)
+      const tags = await this.tagService.findAllByBoardId(board.id)
+
       const decision = await this.findDecisionsForPost(
         client,
         board,
@@ -44,6 +45,8 @@ export class PostSyncService {
       await this.postRepository.update(post)
     } catch (error) {
       post.processingStatus = PostProcessingStatus.FAILED
+      post.processingError =
+        error instanceof Error ? error.message : `Unknown error: ${error}`
       await this.postRepository.update(post)
     }
   }

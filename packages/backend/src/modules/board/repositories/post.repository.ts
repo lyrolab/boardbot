@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common"
+import { ConfigService } from "@nestjs/config"
 import { InjectRepository } from "@nestjs/typeorm"
 import { keyBy } from "lodash"
 import { PostProcessingStatus } from "src/modules/board/entities/post-processing-status.enum"
@@ -20,6 +21,7 @@ export class PostRepository {
   constructor(
     @InjectRepository(Post)
     private readonly repository: Repository<Post>,
+    private readonly configService: ConfigService,
   ) {}
 
   async findAllByIds(boardId: string, ids: string[]) {
@@ -134,6 +136,7 @@ export class PostRepository {
       order: {
         createdAt: "ASC",
       },
+      take: +(this.configService.get("POST_SYNC_BATCH_SIZE") ?? 10),
     })
   }
 

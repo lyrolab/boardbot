@@ -46,7 +46,6 @@ export class FiderBoardClient implements BoardClientInterface {
     let reachedOldPosts = false
 
     while (!reachedOldPosts) {
-      console.log("Fetching posts", limit)
       posts = await postsGet({
         configuration: this.configuration,
         view: ApiV1PostsGetViewEnum.Recent,

@@ -36,7 +36,6 @@ import { ProcessPostJob } from "src/modules/board/jobs/process-post.job"
   imports: [
     TypeOrmModule.forFeature([Board, Post, Tag, BoardContext]),
     DiscoveryModule,
-    SharedQueueModule,
     SharedAiModule,
   ],
   providers: [
