@@ -185,5 +185,25 @@ describe("PostRepository", () => {
       expect(pendingPosts[0].id).toBe(posts[0].id)
       expect(pendingPosts[1].id).toBe(posts[1].id)
     })
+
+    it("should respect the POST_SYNC_BATCH_SIZE config", async () => {
+      // Create 5 pending posts
+      await new PostFactory().createMany(5, {
+        board,
+        processingStatus: PostProcessingStatus.PENDING,
+      })
+
+      // Mock the config service to return 2 as batch size
+      jest
+        .spyOn(repository["configService"], "get")
+        .mockImplementation((key) => {
+          if (key === "POST_SYNC_BATCH_SIZE") return "2"
+          return undefined
+        })
+
+      const pendingPosts = await repository.findPending(board.id)
+
+      expect(pendingPosts).toHaveLength(2)
+    })
   })
 })

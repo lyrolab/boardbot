@@ -134,7 +134,7 @@ export class PostRepository {
         processingStatus: PostProcessingStatus.PENDING,
       },
       order: {
-        createdAt: "ASC",
+        postCreatedAt: "ASC",
       },
       take: +(this.configService.get("POST_SYNC_BATCH_SIZE") ?? 10),
     })
