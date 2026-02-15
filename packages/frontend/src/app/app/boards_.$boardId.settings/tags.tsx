@@ -1,5 +1,6 @@
 import { useBreadcrumbUpdate } from "@/components/ui/breadcrumb/context"
-import BoardTagsPage from "@/modules/board/pages/BoardTagsPage"
+import BoardTagsPage from "@/modules/board/entrypoints/BoardTagsPage"
+import { QuerySuspenseBoundary } from "@/components/ui/QuerySuspenseBoundary"
 import { createFileRoute } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/app/boards_/$boardId/settings/tags")({
@@ -19,5 +20,9 @@ function TagsPage() {
     },
   ])
 
-  return <BoardTagsPage boardId={boardId} />
+  return (
+    <QuerySuspenseBoundary resetKeys={[boardId]}>
+      <BoardTagsPage boardId={boardId} />
+    </QuerySuspenseBoundary>
+  )
 }

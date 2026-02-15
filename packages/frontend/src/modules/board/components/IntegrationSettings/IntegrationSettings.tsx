@@ -1,6 +1,5 @@
 import Box from "@mui/material/Box"
 import Typography from "@mui/material/Typography"
-import Skeleton from "@mui/material/Skeleton"
 import TextField from "@mui/material/TextField"
 import MenuItem from "@mui/material/MenuItem"
 import LoadingButton from "@mui/lab/LoadingButton"
@@ -20,16 +19,12 @@ export default function IntegrationSettings({
   boardId,
 }: IntegrationSettingsProps) {
   const createFiderBoard = useCreateFiderBoard(boardId)
-  const { form, isLoading } = useBoardIntegrationForm(boardId)
+  const { form } = useBoardIntegrationForm(boardId)
 
   async function onSubmit(data: IntegrationFormValues) {
     if (data.vendor === "fider") {
       await createFiderBoard.mutateAsync(data.settings)
     }
-  }
-
-  if (isLoading) {
-    return <Skeleton variant="rectangular" width="100%" height={400} />
   }
 
   return (

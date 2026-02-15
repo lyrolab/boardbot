@@ -1,5 +1,4 @@
 import { SharedAiModule } from "@lyrolab/nest-shared/ai"
-import { SharedQueueModule } from "@lyrolab/nest-shared/queue"
 import { Module } from "@nestjs/common"
 import { DiscoveryModule } from "@nestjs/core"
 import { TypeOrmModule } from "@nestjs/typeorm"
@@ -33,12 +32,14 @@ import { PostModerationService } from "src/modules/board/services/posts/post-mod
 import { PostTagAssignmentService } from "src/modules/board/services/posts/post-tag-assignment.service"
 import { PostSyncService } from "src/modules/board/services/posts/post-sync.service"
 import { ProcessPostJob } from "src/modules/board/jobs/process-post.job"
+import { UserModule } from "src/modules/user/user.module"
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Board, Post, Tag, BoardContext]),
     DiscoveryModule,
     SharedAiModule,
+    UserModule,
   ],
   providers: [
     DuplicateDetectionOrchestrator,

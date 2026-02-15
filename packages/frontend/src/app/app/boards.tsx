@@ -1,5 +1,5 @@
 import { useBreadcrumbUpdate } from "@/components/ui/breadcrumb/context"
-import BoardsPage from "@/modules/board/pages/BoardsPage"
+import BoardsPage from "@/modules/board/entrypoints/BoardsPage"
 import { createFileRoute } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/app/boards")({

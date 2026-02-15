@@ -6,8 +6,13 @@ export function configureSwagger(app: NestExpressApplication) {
     .setTitle("BoardBot API")
     .setDescription("BoardBot API")
     .setVersion("1.0")
+    .addBearerAuth()
     .build()
 
-  const documentFactory = () => SwaggerModule.createDocument(app, config)
+  const documentFactory = () => {
+    const document = SwaggerModule.createDocument(app, config)
+    document.security = [{ bearer: [] }]
+    return document
+  }
   SwaggerModule.setup("api", app, documentFactory)
 }

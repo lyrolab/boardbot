@@ -1,5 +1,5 @@
 import { PostGet } from "@/clients/backend-client"
-import { Box, Typography } from "@mui/material"
+import { Box, Chip } from "@mui/material"
 import { LoadingButton } from "@mui/lab"
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline"
 import ContentCopyIcon from "@mui/icons-material/ContentCopy"
@@ -25,11 +25,16 @@ export function FinalDecisionCard({ relatedPosts, boardId, isPending }: Props) {
 
   if (isDisabled) return null
 
-  const getSummary = (): { text: string; icon: React.ReactNode } => {
+  const getSummary = (): {
+    text: string
+    icon: React.ReactNode
+    color: "error" | "warning" | "success"
+  } => {
     if (moderation?.decision === "rejected") {
       return {
         text: "Reject Post",
-        icon: <CloseIcon sx={{ fontSize: 18 }} />,
+        icon: <CloseIcon sx={{ fontSize: 16 }} />,
+        color: "error",
       }
     }
 
@@ -44,8 +49,9 @@ export function FinalDecisionCard({ relatedPosts, boardId, isPending }: Props) {
         ? `#${dupePost.externalId}`
         : duplicatePosts.selectedDuplicateId
       return {
-        text: `Mark as Duplicate — Merging into ${label}`,
-        icon: <ContentCopyIcon sx={{ fontSize: 18 }} />,
+        text: `Duplicate — Merge into ${label}`,
+        icon: <ContentCopyIcon sx={{ fontSize: 16 }} />,
+        color: "warning",
       }
     }
 
@@ -54,18 +60,20 @@ export function FinalDecisionCard({ relatedPosts, boardId, isPending }: Props) {
         .map((id) => tags.data.find((t) => t.id === id)?.title)
         .filter(Boolean)
       return {
-        text: `Accept Post — Tags: ${tagNames.join(", ")}`,
-        icon: <CheckCircleOutlineIcon sx={{ fontSize: 18 }} />,
+        text: `Accept — Tags: ${tagNames.join(", ")}`,
+        icon: <CheckCircleOutlineIcon sx={{ fontSize: 16 }} />,
+        color: "success",
       }
     }
 
     return {
       text: "Accept Post",
-      icon: <CheckCircleOutlineIcon sx={{ fontSize: 18 }} />,
+      icon: <CheckCircleOutlineIcon sx={{ fontSize: 16 }} />,
+      color: "success",
     }
   }
 
-  const { text, icon } = getSummary()
+  const { text, icon, color } = getSummary()
 
   return (
     <Box
@@ -79,12 +87,13 @@ export function FinalDecisionCard({ relatedPosts, boardId, isPending }: Props) {
         bgcolor: "action.hover",
       }}
     >
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1, flex: 1 }}>
-        {icon}
-        <Typography variant="body2" fontWeight={600} color="text.secondary">
-          {text}
-        </Typography>
-      </Box>
+      <Chip
+        icon={icon as React.ReactElement}
+        label={text}
+        color={color}
+        variant="outlined"
+        sx={{ flex: 1, justifyContent: "flex-start" }}
+      />
       <LoadingButton
         type="submit"
         variant="contained"

@@ -12,13 +12,10 @@ type Props = {
 }
 
 export function SuggestedTagsSection({ boardId, decision }: Props) {
-  const { data: tags, status } = useTags(boardId)
+  const { data: tags } = useTags(boardId)
   const form = useFormContext()
   const selectedTagIds: string[] = form.watch("tagAssignment.tagIds") || []
   const isDisabled = form.formState.disabled
-
-  if (status === "pending") return null
-  if (status === "error") return null
 
   const tagOptions = tags.data.map((tag) => ({
     value: tag.id,

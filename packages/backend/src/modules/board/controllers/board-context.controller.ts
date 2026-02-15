@@ -3,9 +3,11 @@ import { ApiOperation, ApiParam, ApiTags } from "@nestjs/swagger"
 import { BoardContextPutRequestDto } from "src/modules/board/models/dto/board-context-put.request.dto"
 import { BoardContextService } from "../services/board-context.service"
 import { toBoardContextGetDto } from "src/modules/board/models/dto/board-context-get.dto"
+import { BoardAccess } from "src/modules/user/decorators/board-access.decorator"
 
 @ApiTags("Board Context")
 @Controller("boards/:boardId/context")
+@BoardAccess({ boardIdParam: "boardId" })
 export class BoardContextController {
   constructor(private readonly boardContextService: BoardContextService) {}
 

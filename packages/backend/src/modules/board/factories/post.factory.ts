@@ -19,6 +19,7 @@ export class PostFactory extends Factory<Post> {
       externalId: "post_123",
       processingStatus: PostProcessingStatus.PENDING,
       postCreatedAt: new Date(),
+      tags: [],
       board: new LazyInstanceAttribute(
         (instance) => new SingleSubfactory(BoardFactory, { posts: [instance] }),
       ),

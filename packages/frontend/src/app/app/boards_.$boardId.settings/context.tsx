@@ -4,12 +4,11 @@ import * as z from "zod"
 import Box from "@mui/material/Box"
 import Typography from "@mui/material/Typography"
 import TextField from "@mui/material/TextField"
-import Skeleton from "@mui/material/Skeleton"
 import LoadingButton from "@mui/lab/LoadingButton"
-import { useEffect } from "react"
 import { useUpdateBoardContext } from "@/modules/board/queries/boardContext"
 import { useBoardContext } from "@/modules/board/queries/boardContext"
 import { createFileRoute } from "@tanstack/react-router"
+import { QuerySuspenseBoundary } from "@/components/ui/QuerySuspenseBoundary"
 
 const formSchema = z.object({
   productDescription: z.string().min(1, "Product description is required"),
@@ -17,35 +16,30 @@ const formSchema = z.object({
 })
 
 export const Route = createFileRoute("/app/boards_/$boardId/settings/context")({
-  component: ContextSettingsPage,
+  component: ContextPage,
 })
 
-function ContextSettingsPage() {
+function ContextPage() {
   const { boardId } = Route.useParams()
-  const { data: context, status } = useBoardContext(boardId)
+  return (
+    <QuerySuspenseBoundary resetKeys={[boardId]}>
+      <ContextSettingsContent boardId={boardId} />
+    </QuerySuspenseBoundary>
+  )
+}
+
+function ContextSettingsContent({ boardId }: { boardId: string }) {
+  const { data: context } = useBoardContext(boardId)
   const { mutateAsync: updateContext, isPending } =
     useUpdateBoardContext(boardId)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      productDescription: "",
-      productGoals: "",
+      productDescription: context.productDescription || "",
+      productGoals: context.productGoals || "",
     },
   })
-
-  useEffect(() => {
-    if (context) {
-      form.reset({
-        productDescription: context.productDescription || "",
-        productGoals: context.productGoals || "",
-      })
-    }
-  }, [context, form])
-
-  if (status === "pending")
-    return <Skeleton variant="rectangular" width="100%" height="100%" />
-  if (status === "error") return <div>Error</div>
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     await updateContext(values)

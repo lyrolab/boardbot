@@ -8,8 +8,15 @@ import {
 import { ThemeProvider } from "@mui/material/styles"
 import CssBaseline from "@mui/material/CssBaseline"
 import { theme } from "../../src/theme"
+import { Suspense } from "react"
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+    },
+  },
+})
 
 function createTestRouter(children: React.ReactNode) {
   const rootRoute = createRootRoute({
@@ -24,7 +31,9 @@ function createTestRouter(children: React.ReactNode) {
 
 export function Wrapper({ children }: { children: React.ReactNode }) {
   const router = createTestRouter(
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>,
+    <QueryClientProvider client={queryClient}>
+      <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+    </QueryClientProvider>,
   )
   return (
     <ThemeProvider theme={theme}>

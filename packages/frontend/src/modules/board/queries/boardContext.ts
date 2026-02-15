@@ -3,7 +3,11 @@ import {
   BoardContextPutRequestDto,
 } from "@/clients/backend-client"
 import { configuration } from "@/modules/core/queries/clientConfiguration"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import {
+  useMutation,
+  useSuspenseQuery,
+  useQueryClient,
+} from "@tanstack/react-query"
 
 export const buildBoardContextQueryKey = (boardId: string) => [
   "board",
@@ -12,7 +16,7 @@ export const buildBoardContextQueryKey = (boardId: string) => [
 ]
 
 export function useBoardContext(boardId: string) {
-  return useQuery({
+  return useSuspenseQuery({
     queryKey: buildBoardContextQueryKey(boardId),
     queryFn: () =>
       new BoardContextApi(configuration)

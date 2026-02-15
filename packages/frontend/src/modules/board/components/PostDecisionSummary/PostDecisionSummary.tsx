@@ -6,10 +6,7 @@ type Props = {
 }
 
 export function PostDecisionSummary({ postId }: Props) {
-  const { data, status } = usePost(postId)
-
-  if (status === "pending") return <div>Loading...</div>
-  if (status === "error") return <div>Error loading post</div>
+  const { data } = usePost(postId)
 
   return <PostDecisionForm data={data} />
 }

@@ -42,7 +42,7 @@ export function DuplicatesSection({ decision, relatedPosts }: Props) {
   }, [decision.duplicatePosts])
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
       <SectionHeader
         icon={<ContentCopyIcon sx={{ fontSize: 18 }} />}
         title="Detected Duplicates"
@@ -80,15 +80,7 @@ export function DuplicatesSection({ decision, relatedPosts }: Props) {
                       value={dp.id}
                       control={<Radio size="small" />}
                       disabled={isDisabled}
-                      sx={{
-                        alignItems: "flex-start",
-                        my: 0.5,
-                        width: "100%",
-                        "& .MuiFormControlLabel-label": {
-                          minWidth: 0,
-                          flex: 1,
-                        },
-                      }}
+                      sx={{ mr: 0, mt: 1, alignItems: "flex-start" }}
                       label={
                         <DuplicatePostItem post={post} duplicatePost={dp} />
                       }
@@ -117,15 +109,7 @@ export function DuplicatesSection({ decision, relatedPosts }: Props) {
                       value={dp.id}
                       control={<Radio size="small" />}
                       disabled={isDisabled}
-                      sx={{
-                        alignItems: "flex-start",
-                        my: 0.5,
-                        width: "100%",
-                        "& .MuiFormControlLabel-label": {
-                          minWidth: 0,
-                          flex: 1,
-                        },
-                      }}
+                      sx={{ mr: 0, mt: 1, alignItems: "flex-start" }}
                       label={
                         <DuplicatePostItem post={post} duplicatePost={dp} />
                       }

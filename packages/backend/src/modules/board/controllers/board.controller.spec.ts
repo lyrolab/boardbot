@@ -1,5 +1,5 @@
-import { createMock } from "@golevelup/ts-vitest"
 import { Test, TestingModule } from "@nestjs/testing"
+import { mockFactory } from "test/helpers/mock"
 import type { Mocked } from "vitest"
 import { BoardController } from "src/modules/board/controllers/board.controller"
 import { Board } from "src/modules/board/entities/board.entity"
@@ -8,6 +8,7 @@ import { BoardPutRequestDto } from "src/modules/board/models/dto/board-put.reque
 import { BoardVendorEnum } from "src/modules/board/models/dto/board-vendor-enum.dto"
 import { BoardService } from "src/modules/board/services/board.service"
 import { FiderBoardFactory } from "src/modules/fider/factories/fider-board.factory"
+import { User } from "src/modules/user/entities/user.entity"
 import { v4 } from "uuid"
 
 describe("BoardController", () => {
@@ -19,7 +20,7 @@ describe("BoardController", () => {
     module = await Test.createTestingModule({
       providers: [BoardController],
     })
-      .useMocker(createMock as any)
+      .useMocker(mockFactory)
       .compile()
 
     controller = module.get(BoardController)
@@ -38,8 +39,9 @@ describe("BoardController", () => {
       ]
 
       service.getBoards.mockResolvedValue(mockBoards)
+      const user = { id: v4() } as User
 
-      const result = await controller.getBoards()
+      const result = await controller.getBoards(user)
       expect(result).toEqual({
         data: [
           {
@@ -60,7 +62,7 @@ describe("BoardController", () => {
           },
         ],
       })
-      expect(service.getBoards).toHaveBeenCalled()
+      expect(service.getBoards).toHaveBeenCalledWith(user.id)
     })
   })
 

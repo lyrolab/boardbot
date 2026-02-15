@@ -36,6 +36,15 @@ export class BoardRepository {
     })
   }
 
+  async findAllForUser(userId: string) {
+    return this.boardRepository
+      .createQueryBuilder("board")
+      .leftJoinAndSelect("board.fiderBoard", "fiderBoard")
+      .innerJoin("board.members", "user", "user.id = :userId", { userId })
+      .orderBy("board.createdAt", "ASC")
+      .getMany()
+  }
+
   async create(board: Partial<Board>) {
     const newBoard = this.boardRepository.create(board)
     return this.boardRepository.save(newBoard)

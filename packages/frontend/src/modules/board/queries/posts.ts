@@ -2,9 +2,9 @@ import { PostsApi } from "@/clients/backend-client"
 import { configuration } from "@/modules/core/queries/clientConfiguration"
 import {
   useMutation,
-  useQuery,
+  useSuspenseQuery,
   useQueryClient,
-  useInfiniteQuery,
+  useSuspenseInfiniteQuery,
 } from "@tanstack/react-query"
 import { PostProcessingStatusEnum } from "@/clients/backend-client"
 
@@ -12,7 +12,7 @@ export const usePosts = (
   boardIds?: string[],
   statuses?: PostProcessingStatusEnum[],
 ) => {
-  return useInfiniteQuery({
+  return useSuspenseInfiniteQuery({
     queryKey: ["posts", { boardIds, statuses }],
     queryFn: async ({ pageParam = undefined }) => {
       const response = await new PostsApi(
@@ -30,16 +30,13 @@ export const usePosts = (
   })
 }
 
-export const usePost = (postId?: string) => {
-  return useQuery({
+export const usePost = (postId: string) => {
+  return useSuspenseQuery({
     queryKey: ["post", postId],
     queryFn: () =>
-      postId
-        ? new PostsApi(configuration)
-            .postControllerGetPost(postId)
-            .then(({ data }) => data)
-        : Promise.reject(),
-    enabled: Boolean(postId),
+      new PostsApi(configuration)
+        .postControllerGetPost(postId)
+        .then(({ data }) => data),
   })
 }
 

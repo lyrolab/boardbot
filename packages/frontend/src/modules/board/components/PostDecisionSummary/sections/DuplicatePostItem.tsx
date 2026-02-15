@@ -23,17 +23,11 @@ export function DuplicatePostItem({ post, duplicatePost }: Props) {
         borderColor: "divider",
         borderRadius: 1,
         p: 1.5,
-        minWidth: 0,
       }}
     >
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
         <PostIdLabel externalId={post.externalId} />
-        <Typography
-          variant="body2"
-          fontWeight={500}
-          noWrap
-          sx={{ flex: 1, minWidth: 0 }}
-        >
+        <Typography variant="body2" fontWeight={500} sx={{ flex: 1 }}>
           {post.title}
         </Typography>
         <Chip

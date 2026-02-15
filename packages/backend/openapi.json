@@ -177,6 +177,25 @@
         "tags": ["Health"]
       }
     },
+    "/auth/me": {
+      "get": {
+        "operationId": "AuthController_me",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Auth"]
+      }
+    },
     "/boards": {
       "get": {
         "operationId": "BoardController_getBoards",
@@ -727,6 +746,13 @@
   "tags": [],
   "servers": [],
   "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
     "schemas": {
       "QueueAddDto": {
         "type": "object",
@@ -862,6 +888,35 @@
             }
           }
         }
+      },
+      "PostStatusEnum": {
+        "type": "string",
+        "enum": [
+          "open",
+          "planned",
+          "started",
+          "completed",
+          "declined",
+          "duplicate"
+        ]
+      },
+      "TagGet": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "externalId": {
+            "type": "string"
+          }
+        },
+        "required": ["id", "title", "description", "externalId"]
       },
       "ModerationDecisionEnum": {
         "type": "string",
@@ -1033,6 +1088,19 @@
           "postUrl": {
             "type": "string"
           },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PostStatusEnum"
+              }
+            ]
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagGet"
+            }
+          },
           "id": {
             "type": "string"
           },
@@ -1177,24 +1245,6 @@
         },
         "required": ["description"]
       },
-      "TagGet": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "title": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "externalId": {
-            "type": "string"
-          }
-        },
-        "required": ["id", "title", "description", "externalId"]
-      },
       "TagsGetResponse": {
         "type": "object",
         "properties": {
@@ -1275,5 +1325,10 @@
         "properties": {}
       }
     }
-  }
+  },
+  "security": [
+    {
+      "bearer": []
+    }
+  ]
 }

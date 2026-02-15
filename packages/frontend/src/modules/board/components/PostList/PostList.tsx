@@ -1,5 +1,4 @@
 import { DataTable } from "@/components/ui/data-table"
-import Skeleton from "@mui/material/Skeleton"
 import Box from "@mui/material/Box"
 import Button from "@mui/material/Button"
 import CircularProgress from "@mui/material/CircularProgress"
@@ -18,7 +17,6 @@ export default function PostList() {
   const { filters, resetFilters } = useFiltersStore()
   const {
     data,
-    isLoading,
     fetchNextPage,
     hasNextPage = false,
     isFetchingNextPage,
@@ -28,7 +26,6 @@ export default function PostList() {
     loading: isFetchingNextPage,
     hasNextPage,
     onLoadMore: fetchNextPage,
-    disabled: isLoading,
     rootMargin: "0px 0px 400px 0px",
   })
 
@@ -37,16 +34,7 @@ export default function PostList() {
   const hasActiveFilters =
     filters.selectedBoards.length > 0 || filters.selectedStatuses.length > 0
 
-  if (isLoading) {
-    return (
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
-        <Skeleton variant="rounded" height={60} />
-        <Skeleton variant="rounded" height={400} />
-      </Box>
-    )
-  }
-
-  const posts = data?.pages.flatMap((page: PostsGetResponse) => page.data) || []
+  const posts = data.pages.flatMap((page: PostsGetResponse) => page.data) || []
 
   return (
     <>

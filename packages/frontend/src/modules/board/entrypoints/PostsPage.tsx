@@ -1,6 +1,7 @@
 import Box from "@mui/material/Box"
 import PostList from "@/modules/board/components/PostList/PostList"
 import PageHeader from "@/modules/core/components/PageHeader"
+import { QuerySuspenseBoundary } from "@/components/ui/QuerySuspenseBoundary"
 
 export default function PostsPage() {
   return (
@@ -9,7 +10,9 @@ export default function PostsPage() {
         title="Posts"
         subtitle="Manage and review posts from all your boards"
       />
-      <PostList />
+      <QuerySuspenseBoundary>
+        <PostList />
+      </QuerySuspenseBoundary>
     </Box>
   )
 }

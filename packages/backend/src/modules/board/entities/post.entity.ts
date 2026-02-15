@@ -1,5 +1,7 @@
 import { Board } from "src/modules/board/entities/board.entity"
 import { PostProcessingStatus } from "src/modules/board/entities/post-processing-status.enum"
+import { PostStatus } from "src/modules/board/entities/post-status.enum"
+import { Tag } from "src/modules/board/entities/tag.entity"
 import { PostDecision } from "src/modules/board/models/dto/post-decision.dto"
 import { PostAppliedDecision } from "src/modules/board/models/dto/post-applied-decision.dto"
 import {
@@ -7,6 +9,8 @@ import {
   CreateDateColumn,
   Entity,
   Index,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   Relation,
@@ -38,6 +42,13 @@ export class Post {
 
   @Column({ type: "jsonb", nullable: true })
   appliedDecision: PostAppliedDecision | null
+
+  @Column({ type: "varchar", nullable: true })
+  status: PostStatus | null
+
+  @ManyToMany(() => Tag)
+  @JoinTable()
+  tags: Tag[]
 
   @ManyToOne(() => Board, (board) => board.posts)
   board: Relation<Board>

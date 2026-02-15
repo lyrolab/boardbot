@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common"
+import { keyBy } from "lodash"
 import { BasePost } from "src/modules/board/models/base-post"
 import { ApplyDecisionRequestDto } from "src/modules/board/models/dto/apply-decision.request.dto"
 import {
@@ -56,11 +57,16 @@ export class PostService {
   }
 
   async createOrUpdateByExternalId(boardId: string, posts: BasePost[]) {
+    const boardTags = await this.tagService.findAllByBoardId(boardId)
+    const tagsByTitle = keyBy(boardTags, "title")
+
     const postsToSync: PostInput[] = posts.map((post) => ({
       externalId: post.externalId,
       title: post.title,
       description: post.description,
       postCreatedAt: post.createdAt,
+      status: post.status,
+      tags: post.tags.map((name) => tagsByTitle[name]).filter(Boolean),
     }))
 
     return this.postRepository.createOrUpdateByExternalId(boardId, postsToSync)

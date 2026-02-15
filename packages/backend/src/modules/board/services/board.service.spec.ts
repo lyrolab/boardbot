@@ -1,8 +1,8 @@
-import { createMock } from "@golevelup/ts-vitest"
 import { Injectable } from "@nestjs/common"
+import { mockFactory } from "test/helpers/mock"
 import { DiscoveryModule } from "@nestjs/core"
 import { Test, TestingModule } from "@nestjs/testing"
-import type { Mocked } from "vitest"
+import { type Mocked, vi } from "vitest"
 import { BoardImplementation } from "src/modules/board/decorators/feedback-board"
 import { Board } from "src/modules/board/entities/board.entity"
 import { BoardFactory } from "src/modules/board/factories/board.factory"
@@ -11,6 +11,7 @@ import { BoardInterface } from "src/modules/board/models/board.interface"
 import { BoardPutRequestDto } from "src/modules/board/models/dto/board-put.request.dto"
 import { BoardRepository } from "src/modules/board/repositories/board.repository"
 import { BoardService } from "src/modules/board/services/board.service"
+import { UserService } from "src/modules/user/services/user.service"
 import { FiderBoardFactory } from "src/modules/fider/factories/fider-board.factory"
 import { v4 } from "uuid"
 
@@ -32,21 +33,33 @@ describe("BoardService", () => {
   let module: TestingModule
   let service: BoardService
   let boardRepositoryMock: Mocked<BoardRepository>
+  let userServiceMock: Mocked<UserService>
 
   beforeAll(async () => {
     module = await Test.createTestingModule({
       imports: [DiscoveryModule],
       providers: [BoardService, DummyFeedbackBoard],
     })
-      .useMocker(createMock as any)
+      .useMocker(mockFactory)
       .compile()
 
     service = module.get(BoardService)
     boardRepositoryMock = module.get(BoardRepository)
+    userServiceMock = module.get(UserService)
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
+    boardRepositoryMock.findAll.mockReset()
+    boardRepositoryMock.findAllForUser.mockReset()
+    boardRepositoryMock.findOneOrFail.mockReset()
+    boardRepositoryMock.create.mockReset()
+    boardRepositoryMock.update.mockReset()
+    userServiceMock.addBoardMembership.mockReset()
   })
 
   describe("getBoards", () => {
-    it("returns all boards", async () => {
+    it("returns all boards when no userId provided", async () => {
       const fiderBoard = await new FiderBoardFactory().make({
         id: "test-board",
       })
@@ -65,6 +78,16 @@ describe("BoardService", () => {
       expect(boardResult.description).toBe(board.description)
       expect(boardResult.createdAt).toBe(board.createdAt)
       expect(boardResult.updatedAt).toBe(board.updatedAt)
+    })
+
+    it("returns boards for user when userId provided", async () => {
+      const board = await new BoardFactory().make({ id: "user-board" })
+      boardRepositoryMock.findAllForUser.mockResolvedValue([board])
+
+      const boards = await service.getBoards("user-1")
+
+      expect(boardRepositoryMock.findAllForUser).toHaveBeenCalledWith("user-1")
+      expect(boards).toEqual([board])
     })
   })
 
@@ -103,6 +126,29 @@ describe("BoardService", () => {
         boardId,
         updateBoardDto,
       )
+    })
+  })
+
+  describe("createBoard", () => {
+    it("adds user as member when userId provided", async () => {
+      const board = await new BoardFactory().make({ id: "new-board" })
+      boardRepositoryMock.create.mockResolvedValue(board)
+
+      await service.createBoard({ name: "Test Board" }, "user-1")
+
+      expect(userServiceMock.addBoardMembership).toHaveBeenCalledWith(
+        "user-1",
+        "new-board",
+      )
+    })
+
+    it("does not add membership when no userId", async () => {
+      const board = await new BoardFactory().make({ id: "new-board" })
+      boardRepositoryMock.create.mockResolvedValue(board)
+
+      await service.createBoard({ name: "Test Board" })
+
+      expect(userServiceMock.addBoardMembership).not.toHaveBeenCalled()
     })
   })
 

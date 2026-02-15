@@ -20,5 +20,5 @@ COPY --from=builder /app/packages/frontend/dist /usr/share/nginx/html
 COPY --from=builder /app/packages/frontend/nginx.conf /etc/nginx/conf.d/default.conf
 COPY packages/frontend/docker/docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
-EXPOSE 4781
+EXPOSE 3000
 ENTRYPOINT ["/docker-entrypoint.sh"]

@@ -19,6 +19,8 @@ export function SidebarNav({ items }: SidebarNavProps) {
         display: "flex",
         flexDirection: { xs: "row", lg: "column" },
         gap: { xs: 0.5, lg: 0.25 },
+        overflowX: { xs: "auto", lg: "visible" },
+        flexWrap: "nowrap",
       }}
     >
       {items.map((item) => {
@@ -35,6 +37,8 @@ export function SidebarNav({ items }: SidebarNavProps) {
               borderRadius: 1,
               py: 0.75,
               px: 2,
+              flexShrink: 0,
+              whiteSpace: "nowrap",
               justifyContent: "flex-start",
               "&.Mui-selected": {
                 bgcolor: "action.selected",

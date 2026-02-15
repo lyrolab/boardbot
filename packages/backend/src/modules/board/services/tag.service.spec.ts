@@ -1,5 +1,5 @@
-import { createMock } from "@golevelup/ts-vitest"
 import { Test, TestingModule } from "@nestjs/testing"
+import { mockFactory } from "test/helpers/mock"
 import type { Mocked } from "vitest"
 import { BoardFactory } from "src/modules/board/factories/board.factory"
 import { TagFactory } from "src/modules/board/factories/tag.factory"
@@ -17,7 +17,7 @@ describe("TagService", () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [TagService],
     })
-      .useMocker(createMock as any)
+      .useMocker(mockFactory)
       .compile()
 
     service = module.get<TagService>(TagService)

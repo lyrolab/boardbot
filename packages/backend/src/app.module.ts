@@ -8,8 +8,10 @@ import { SharedHealthModule } from "@lyrolab/nest-shared/health"
 import { Module } from "@nestjs/common"
 import { ConfigModule, ConfigService } from "@nestjs/config"
 import { join } from "path"
+import { AuthModule } from "src/modules/auth/auth.module"
 import { BoardModule } from "src/modules/board/board.module"
 import { FiderModule } from "src/modules/fider/fider.module"
+import { UserModule } from "src/modules/user/user.module"
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -32,8 +34,10 @@ import { FiderModule } from "src/modules/fider/fider.module"
     }),
     SharedHealthModule,
     SharedAiModule,
+    AuthModule,
     BoardModule,
     FiderModule,
+    UserModule,
   ],
   controllers: [],
   providers: [],

@@ -79,6 +79,8 @@ export function PostDecisionForm({ data }: PostDecisionFormProps) {
             title={post.title}
             description={post.description}
             postUrl={post.postUrl}
+            status={post.status}
+            tags={post.tags}
           />
 
           {post.decision?.tagAssignment && (

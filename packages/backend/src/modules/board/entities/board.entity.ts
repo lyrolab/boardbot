@@ -6,6 +6,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -13,6 +14,7 @@ import {
   UpdateDateColumn,
 } from "typeorm"
 import { Post } from "src/modules/board/entities/post.entity"
+import type { User } from "src/modules/user/entities/user.entity"
 
 @Entity()
 export class Board {
@@ -45,6 +47,9 @@ export class Board {
 
   @OneToMany(() => Post, (post) => post.board)
   posts: Relation<Post[]>
+
+  @ManyToMany("User", "boards")
+  members: Relation<User[]>
 
   @CreateDateColumn()
   createdAt: Date

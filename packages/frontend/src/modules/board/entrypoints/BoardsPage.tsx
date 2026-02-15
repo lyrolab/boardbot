@@ -4,6 +4,7 @@ import Add from "@mui/icons-material/Add"
 import BoardList from "@/modules/board/components/BoardList/BoardList"
 import { CreateBoardDialog } from "@/modules/board/components/CreateBoardDialog/CreateBoardDialog"
 import PageHeader from "@/modules/core/components/PageHeader"
+import { QuerySuspenseBoundary } from "@/components/ui/QuerySuspenseBoundary"
 
 export default function BoardsPage() {
   return (
@@ -18,7 +19,9 @@ export default function BoardsPage() {
           </Button>
         </CreateBoardDialog>
       </PageHeader>
-      <BoardList />
+      <QuerySuspenseBoundary>
+        <BoardList />
+      </QuerySuspenseBoundary>
     </Box>
   )
 }

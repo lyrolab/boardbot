@@ -3,10 +3,14 @@ import {
   TagsApi,
 } from "@/clients/backend-client"
 import { configuration } from "@/modules/core/queries/clientConfiguration"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import {
+  useMutation,
+  useSuspenseQuery,
+  useQueryClient,
+} from "@tanstack/react-query"
 
 export const useTags = (boardId: string) =>
-  useQuery({
+  useSuspenseQuery({
     queryKey: ["boards", boardId, "tags"],
     queryFn: () =>
       new TagsApi(configuration)

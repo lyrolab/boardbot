@@ -1,6 +1,6 @@
 import { FiderBoardCreateDto, FiderBoardsApi } from "@/clients/backend-client"
 import { configuration } from "@/modules/core/queries/clientConfiguration"
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query"
 
 export const useCreateFiderBoard = (boardId: string) => {
   return useMutation({
@@ -15,7 +15,7 @@ export const useCreateFiderBoard = (boardId: string) => {
 }
 
 export const useFiderBoard = (boardId: string) => {
-  return useQuery({
+  return useSuspenseQuery({
     queryKey: ["fider-board", boardId],
     queryFn: async () => {
       const response = await new FiderBoardsApi(

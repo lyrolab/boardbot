@@ -33,7 +33,15 @@ function SettingsLayout() {
   ]
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 3, p: 5, pb: 8 }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: { xs: 2, lg: 3 },
+        p: { xs: 0, sm: 3, lg: 5 },
+        pb: { xs: 4, sm: 5, lg: 8 },
+      }}
+    >
       <Box
         sx={{
           display: "flex",

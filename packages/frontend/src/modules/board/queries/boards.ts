@@ -5,11 +5,15 @@ import {
   BoardsApi,
 } from "@/clients/backend-client"
 import { configuration } from "@/modules/core/queries/clientConfiguration"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import {
+  useMutation,
+  useSuspenseQuery,
+  useQueryClient,
+} from "@tanstack/react-query"
 import { AxiosResponse } from "axios"
 
 export const useBoards = () =>
-  useQuery({
+  useSuspenseQuery({
     queryKey: ["boards"],
     queryFn: () =>
       new BoardsApi(configuration)
@@ -18,7 +22,7 @@ export const useBoards = () =>
   })
 
 export const useBoard = (boardId: string) =>
-  useQuery({
+  useSuspenseQuery({
     queryKey: ["boards", boardId],
     queryFn: () =>
       new BoardsApi(configuration)

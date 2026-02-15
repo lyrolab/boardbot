@@ -4,3 +4,5 @@ components:
     host: boardbot-preprod.lyrolab.fr
   frontend:
     host: boardbot-preprod.lyrolab.fr
+keycloak:
+  realm: boardbotpreprod

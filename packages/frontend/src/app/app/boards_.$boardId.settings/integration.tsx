@@ -1,4 +1,5 @@
 import IntegrationSettings from "@/modules/board/components/IntegrationSettings/IntegrationSettings"
+import { QuerySuspenseBoundary } from "@/components/ui/QuerySuspenseBoundary"
 import { createFileRoute } from "@tanstack/react-router"
 
 export const Route = createFileRoute(
@@ -9,5 +10,9 @@ export const Route = createFileRoute(
 
 function IntegrationPage() {
   const { boardId } = Route.useParams()
-  return <IntegrationSettings boardId={boardId} />
+  return (
+    <QuerySuspenseBoundary resetKeys={[boardId]}>
+      <IntegrationSettings boardId={boardId} />
+    </QuerySuspenseBoundary>
+  )
 }

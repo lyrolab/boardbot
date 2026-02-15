@@ -17,9 +17,11 @@ async function generateOpenApi() {
     .setTitle("BoardBot API")
     .setDescription("BoardBot API")
     .setVersion("1.0")
+    .addBearerAuth()
     .build()
 
   const document = SwaggerModule.createDocument(app, config)
+  document.security = [{ bearer: [] }]
 
   const outputPath = join(process.cwd(), "openapi.json")
   writeFileSync(outputPath, JSON.stringify(document, null, 2), {

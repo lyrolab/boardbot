@@ -2,7 +2,16 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "docker:up",
+      "type": "shell",
+      "command": "docker compose up -d",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
       "label": "frontend:dev",
+      "dependsOn": ["docker:up"],
       "type": "npm",
       "script": "dev",
       "path": "packages/frontend",

@@ -6,12 +6,15 @@ import "@fontsource-variable/geist"
 import "@fontsource-variable/geist-mono"
 import { theme } from "./theme"
 import { getRouter } from "./router"
+import { AuthProvider } from "./modules/auth/components/AuthProvider"
 
 const router = getRouter()
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <ThemeProvider theme={theme}>
     <CssBaseline />
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </ThemeProvider>,
 )

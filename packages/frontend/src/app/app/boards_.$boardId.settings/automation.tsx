@@ -1,4 +1,5 @@
 import AutomationSettings from "@/modules/board/components/AutomationSettings/AutomationSettings"
+import { QuerySuspenseBoundary } from "@/components/ui/QuerySuspenseBoundary"
 import { createFileRoute } from "@tanstack/react-router"
 
 export const Route = createFileRoute(
@@ -9,5 +10,9 @@ export const Route = createFileRoute(
 
 function AutomationPage() {
   const { boardId } = Route.useParams()
-  return <AutomationSettings boardId={boardId} />
+  return (
+    <QuerySuspenseBoundary resetKeys={[boardId]}>
+      <AutomationSettings boardId={boardId} />
+    </QuerySuspenseBoundary>
+  )
 }

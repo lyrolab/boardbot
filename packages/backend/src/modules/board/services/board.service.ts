@@ -7,15 +7,20 @@ import { BoardInterface } from "src/modules/board/models/board.interface"
 import { BoardCreateRequestDto } from "src/modules/board/models/dto/board-create.request.dto"
 import { BoardPutRequestDto } from "src/modules/board/models/dto/board-put.request.dto"
 import { BoardRepository } from "src/modules/board/repositories/board.repository"
+import { UserService } from "src/modules/user/services/user.service"
 
 @Injectable()
 export class BoardService {
   constructor(
     private readonly discoveryService: DiscoveryService,
     private readonly boardRepository: BoardRepository,
+    private readonly userService: UserService,
   ) {}
 
-  async getBoards() {
+  async getBoards(userId?: string) {
+    if (userId) {
+      return this.boardRepository.findAllForUser(userId)
+    }
     return this.boardRepository.findAll()
   }
 
@@ -27,13 +32,18 @@ export class BoardService {
     await this.boardRepository.update(boardId, updateBoardDto)
   }
 
-  async createBoard(createBoardDto: BoardCreateRequestDto) {
+  async createBoard(createBoardDto: BoardCreateRequestDto, userId?: string) {
     const board = await this.boardRepository.create({
       title: createBoardDto.name,
       description: "",
       type: BoardType.FEEDBACK,
       tags: [],
     })
+
+    if (userId) {
+      await this.userService.addBoardMembership(userId, board.id)
+    }
+
     return board
   }
 

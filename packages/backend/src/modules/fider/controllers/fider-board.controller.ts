@@ -3,9 +3,11 @@ import { FiderBoardService } from "../services/fider-board.service"
 import { FiderBoardCreateDto } from "../models/dto/fider-board-create.dto"
 import { FiderBoard } from "../entities/fider-board.entity"
 import { ApiOperation, ApiParam, ApiTags } from "@nestjs/swagger"
+import { BoardAccess } from "src/modules/user/decorators/board-access.decorator"
 
 @ApiTags("Fider Boards")
 @Controller("boards/:boardId/fider-board")
+@BoardAccess({ boardIdParam: "boardId" })
 export class FiderBoardController {
   constructor(private readonly fiderBoardService: FiderBoardService) {}
 

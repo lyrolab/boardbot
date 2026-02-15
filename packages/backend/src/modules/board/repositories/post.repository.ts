@@ -3,13 +3,15 @@ import { ConfigService } from "@nestjs/config"
 import { InjectRepository } from "@nestjs/typeorm"
 import { keyBy } from "lodash"
 import { PostProcessingStatus } from "src/modules/board/entities/post-processing-status.enum"
+import { FINAL_POST_STATUSES } from "src/modules/board/entities/post-status.enum"
 import { Post } from "src/modules/board/entities/post.entity"
+import { Tag } from "src/modules/board/entities/tag.entity"
 import { FindOptionsWhere, In, LessThan, Repository } from "typeorm"
 
 export type PostInput = Pick<
   Post,
-  "externalId" | "title" | "description" | "postCreatedAt"
->
+  "externalId" | "title" | "description" | "postCreatedAt" | "status"
+> & { tags: Tag[] }
 
 export interface PaginatedResult<T> {
   items: T[]
@@ -27,7 +29,7 @@ export class PostRepository {
   async findAllByIds(boardId: string, ids: string[]) {
     return this.repository.find({
       where: { board: { id: boardId }, id: In(ids) },
-      relations: ["board", "board.fiderBoard"],
+      relations: ["board", "board.fiderBoard", "tags"],
     })
   }
 
@@ -53,7 +55,7 @@ export class PostRepository {
 
     const posts = await this.repository.find({
       where: whereCondition,
-      relations: ["board", "board.fiderBoard"],
+      relations: ["board", "board.fiderBoard", "tags"],
       order: { postCreatedAt: "DESC" },
       take: limit + 1, // Fetch one more to determine if there are more results
     })
@@ -90,7 +92,7 @@ export class PostRepository {
   async findByIdOrFail(id: string) {
     const post = await this.repository.findOneOrFail({
       where: { id },
-      relations: ["board", "board.fiderBoard"],
+      relations: ["board", "board.fiderBoard", "tags"],
     })
     return post
   }
@@ -104,6 +106,7 @@ export class PostRepository {
         board: { id: boardId },
         externalId: In(posts.map((post) => post.externalId)),
       },
+      relations: ["tags"],
     })
     const existingPostsMap = keyBy(existingPosts, "externalId")
     const updatedPosts: Post[] = []
@@ -119,6 +122,16 @@ export class PostRepository {
       post.title = postInput.title
       post.description = postInput.description
       post.postCreatedAt = postInput.postCreatedAt
+      post.status = postInput.status
+      post.tags = postInput.tags
+
+      if (
+        post.status &&
+        FINAL_POST_STATUSES.includes(post.status) &&
+        post.processingStatus !== PostProcessingStatus.COMPLETED
+      ) {
+        post.processingStatus = PostProcessingStatus.COMPLETED
+      }
 
       const savedPost = await this.repository.save(post)
       updatedPosts.push(savedPost)

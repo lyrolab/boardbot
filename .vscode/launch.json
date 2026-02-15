@@ -6,7 +6,8 @@
       "type": "node-terminal",
       "request": "launch",
       "command": "npm run start:debug",
-      "cwd": "${workspaceFolder}/packages/backend"
+      "cwd": "${workspaceFolder}/packages/backend",
+      "preLaunchTask": "docker:up"
     },
     {
       "name": "Frontend: Chrome",
@@ -30,13 +31,15 @@
       "sourceMapPathOverrides": {
         "/@fs/*": "${webRoot}/*",
         "/src/*": "${webRoot}/src/*"
-      }
+      },
+      "preLaunchTask": "docker:up"
     }
   ],
   "compounds": [
     {
       "name": "Full Stack: Backend + Frontend",
-      "configurations": ["Backend: Debug", "Frontend: Chrome"]
+      "configurations": ["Backend: Debug", "Frontend: Chrome"],
+      "preLaunchTask": "docker:up"
     }
   ]
 }

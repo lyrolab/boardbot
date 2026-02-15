@@ -7,23 +7,14 @@ import Typography from "@mui/material/Typography"
 import FormControlLabel from "@mui/material/FormControlLabel"
 import Switch from "@mui/material/Switch"
 import LoadingButton from "@mui/lab/LoadingButton"
-import Skeleton from "@mui/material/Skeleton"
 
 type Props = {
   boardId: string
 }
 
 export default function AutomationSettings({ boardId }: Props) {
-  const { data: board, status } = useBoard(boardId)
+  const { data: board } = useBoard(boardId)
   const { mutate: updateBoard, isPending } = useUpdateBoard(boardId)
-
-  if (status === "pending") {
-    return <Skeleton variant="rectangular" width="100%" height="100%" />
-  }
-
-  if (status === "error") {
-    return <div>Error</div>
-  }
 
   return (
     <AutomationForm

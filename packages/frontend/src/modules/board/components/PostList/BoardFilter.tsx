@@ -9,7 +9,7 @@ export function BoardFilter() {
   const { filters, setSelectedBoards } = useFiltersStore()
   const { selectedBoards } = filters
 
-  const options = boards?.data ?? []
+  const options = boards.data
   const selectedOptions = options.filter((b) => selectedBoards.includes(b.id))
 
   return (

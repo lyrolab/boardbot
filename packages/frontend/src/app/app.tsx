@@ -4,6 +4,8 @@ import {
   useBreadcrumb,
 } from "@/components/ui/breadcrumb/context"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { RequireAuth } from "@/modules/auth/components/RequireAuth"
+import { userManager } from "@/modules/auth/config/userManager"
 import NavigateNextIcon from "@mui/icons-material/NavigateNext"
 import { Box, Breadcrumbs, Divider, Link, Typography } from "@mui/material"
 import {
@@ -31,6 +33,10 @@ function formatError(error: unknown) {
 const queryClient = new QueryClient({
   queryCache: new QueryCache({
     onError: (error, query) => {
+      if (isAxiosError(error) && error.response?.status === 401) {
+        userManager.signinRedirect()
+        return
+      }
       if (query.meta?.showErrorToast) {
         toast.error(formatError(error))
       }
@@ -38,6 +44,10 @@ const queryClient = new QueryClient({
   }),
   mutationCache: new MutationCache({
     onError: (error, variables, context, mutation) => {
+      if (isAxiosError(error) && error.response?.status === 401) {
+        userManager.signinRedirect()
+        return
+      }
       if (mutation.meta?.showErrorToast) {
         toast.error(formatError(error))
       }
@@ -86,52 +96,54 @@ function BreadcrumbNav() {
 function AppLayout() {
   return (
     <QueryClientProvider client={queryClient}>
-      <BreadcrumbProvider>
-        <SidebarProvider>
-          <AppSidebar />
-          <Box
-            component="main"
-            sx={{
-              position: "relative",
-              display: "flex",
-              width: "100%",
-              flex: 1,
-              flexDirection: "column",
-              bgcolor: "background.default",
-            }}
-          >
+      <RequireAuth>
+        <BreadcrumbProvider>
+          <SidebarProvider>
+            <AppSidebar />
             <Box
-              component="header"
+              component="main"
               sx={{
+                position: "relative",
                 display: "flex",
-                height: 64,
-                flexShrink: 0,
-                alignItems: "center",
-                gap: 2,
-                borderBottom: 1,
-                borderColor: "divider",
-                pl: 2,
-                pr: 2,
-              }}
-            >
-              <SidebarTrigger sx={{ ml: -0.5 }} />
-              <Divider orientation="vertical" flexItem sx={{ my: 1.5 }} />
-              <BreadcrumbNav />
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
+                width: "100%",
                 flex: 1,
                 flexDirection: "column",
-                gap: 4,
-                p: 4,
+                bgcolor: "background.default",
               }}
             >
-              <Outlet />
+              <Box
+                component="header"
+                sx={{
+                  display: "flex",
+                  height: 64,
+                  flexShrink: 0,
+                  alignItems: "center",
+                  gap: 2,
+                  borderBottom: 1,
+                  borderColor: "divider",
+                  pl: 2,
+                  pr: 2,
+                }}
+              >
+                <SidebarTrigger sx={{ ml: -0.5 }} />
+                <Divider orientation="vertical" flexItem sx={{ my: 1.5 }} />
+                <BreadcrumbNav />
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  flex: 1,
+                  flexDirection: "column",
+                  gap: 4,
+                  p: { xs: 2, lg: 4 },
+                }}
+              >
+                <Outlet />
+              </Box>
             </Box>
-          </Box>
-        </SidebarProvider>
-      </BreadcrumbProvider>
+          </SidebarProvider>
+        </BreadcrumbProvider>
+      </RequireAuth>
     </QueryClientProvider>
   )
 }

@@ -22,6 +22,9 @@ import { BoardService } from "src/modules/board/services/board.service"
 import { BoardPutRequestDto } from "src/modules/board/models/dto/board-put.request.dto"
 import { BoardCreateRequestDto } from "src/modules/board/models/dto/board-create.request.dto"
 import { BoardSyncService } from "../services/board-sync.service"
+import { CurrentDbUser } from "src/modules/user/decorators/current-db-user.decorator"
+import { User } from "src/modules/user/entities/user.entity"
+import { BoardAccess } from "src/modules/user/decorators/board-access.decorator"
 
 @Controller("boards")
 @ApiTags("Boards")
@@ -34,12 +37,13 @@ export class BoardController {
   @Get()
   @ApiOperation({ summary: "Get all boards" })
   @ApiResponse({ type: BoardsGetResponse })
-  async getBoards(): Promise<BoardsGetResponse> {
-    const boards = await this.boardService.getBoards()
+  async getBoards(@CurrentDbUser() user: User): Promise<BoardsGetResponse> {
+    const boards = await this.boardService.getBoards(user.id)
     return toBoardsGetResponse(boards)
   }
 
   @Get(":boardId")
+  @BoardAccess({ boardIdParam: "boardId" })
   @ApiOperation({ summary: "Get a board by ID" })
   @ApiParam({ name: "boardId", description: "The ID of the board to retrieve" })
   @ApiResponse({ type: BoardGetOneResponse })
@@ -51,6 +55,7 @@ export class BoardController {
   }
 
   @Put(":boardId")
+  @BoardAccess({ boardIdParam: "boardId" })
   @ApiOperation({ summary: "Update a board by ID" })
   @ApiParam({ name: "boardId", description: "The ID of the board to update" })
   @ApiResponse({ type: BoardGetOneResponse })
@@ -66,13 +71,15 @@ export class BoardController {
   @ApiOperation({ summary: "Create a new board" })
   @ApiResponse({ type: BoardGetOneResponse })
   async createBoard(
+    @CurrentDbUser() user: User,
     @Body() createBoardDto: BoardCreateRequestDto,
   ): Promise<BoardGetOneResponse> {
-    const board = await this.boardService.createBoard(createBoardDto)
+    const board = await this.boardService.createBoard(createBoardDto, user.id)
     return toBoardGetResponse(board)
   }
 
   @Delete(":boardId")
+  @BoardAccess({ boardIdParam: "boardId" })
   @ApiOperation({ summary: "Delete a board by ID" })
   @ApiParam({ name: "boardId", description: "The ID of the board to delete" })
   @HttpCode(204)
@@ -83,6 +90,7 @@ export class BoardController {
   }
 
   @Post(":boardId/sync")
+  @BoardAccess({ boardIdParam: "boardId" })
   @ApiOperation({ summary: "Sync a board by ID" })
   @ApiParam({ name: "boardId", description: "The ID of the board to sync" })
   @HttpCode(204)
