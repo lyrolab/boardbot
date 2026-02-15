@@ -3,10 +3,7 @@ import {
   BreadcrumbProvider,
   useBreadcrumb,
 } from "@/components/ui/breadcrumb/context"
-import {
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar"
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import NavigateNextIcon from "@mui/icons-material/NavigateNext"
 import { Box, Breadcrumbs, Divider, Link, Typography } from "@mui/material"
 import {

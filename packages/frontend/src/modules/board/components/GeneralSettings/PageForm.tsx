@@ -75,11 +75,7 @@ export default function PageForm({ board, onSubmit, isPending }: Props) {
           )}
         />
         <Box>
-          <LoadingButton
-            type="submit"
-            variant="contained"
-            loading={isPending}
-          >
+          <LoadingButton type="submit" variant="contained" loading={isPending}>
             Save changes
           </LoadingButton>
         </Box>

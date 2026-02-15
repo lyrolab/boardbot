@@ -65,8 +65,21 @@ export function PostDecisionForm({ data }: PostDecisionFormProps) {
           onClose={closeDrawer}
         />
 
-        <Box sx={{ flex: 1, overflow: "auto", p: 2, display: "flex", flexDirection: "column", gap: 3 }}>
-          <PostContentCard title={post.title} description={post.description} postUrl={post.postUrl} />
+        <Box
+          sx={{
+            flex: 1,
+            overflow: "auto",
+            p: 2,
+            display: "flex",
+            flexDirection: "column",
+            gap: 3,
+          }}
+        >
+          <PostContentCard
+            title={post.title}
+            description={post.description}
+            postUrl={post.postUrl}
+          />
 
           {post.decision?.tagAssignment && (
             <SuggestedTagsSection

@@ -84,7 +84,10 @@ export function DuplicatesSection({ decision, relatedPosts }: Props) {
                         alignItems: "flex-start",
                         my: 0.5,
                         width: "100%",
-                        "& .MuiFormControlLabel-label": { minWidth: 0, flex: 1 },
+                        "& .MuiFormControlLabel-label": {
+                          minWidth: 0,
+                          flex: 1,
+                        },
                       }}
                       label={
                         <DuplicatePostItem post={post} duplicatePost={dp} />
@@ -118,7 +121,10 @@ export function DuplicatesSection({ decision, relatedPosts }: Props) {
                         alignItems: "flex-start",
                         my: 0.5,
                         width: "100%",
-                        "& .MuiFormControlLabel-label": { minWidth: 0, flex: 1 },
+                        "& .MuiFormControlLabel-label": {
+                          minWidth: 0,
+                          flex: 1,
+                        },
                       }}
                       label={
                         <DuplicatePostItem post={post} duplicatePost={dp} />

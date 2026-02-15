@@ -42,7 +42,11 @@ export function SectionHeader({ icon, title, action, reasoning }: Props) {
               <Typography variant="caption" fontWeight={600}>
                 AI Reasoning
               </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 0.5 }}
+              >
                 {reasoning}
               </Typography>
             </Box>

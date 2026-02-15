@@ -29,13 +29,12 @@ interface DescriptionCellProps {
 }
 
 function DescriptionCell({ tag, index, control }: DescriptionCellProps) {
-  const { mutate: generateDescription, isPending } =
-    useGenerateTagDescription({
-      tagId: tag.id,
-      onSuccess: (data) => {
-        field.onChange(data.description)
-      },
-    })
+  const { mutate: generateDescription, isPending } = useGenerateTagDescription({
+    tagId: tag.id,
+    onSuccess: (data) => {
+      field.onChange(data.description)
+    },
+  })
   const { field } = useController({
     control,
     name: `tags.${index}.description`,

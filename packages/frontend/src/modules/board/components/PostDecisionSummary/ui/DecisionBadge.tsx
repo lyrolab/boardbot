@@ -4,10 +4,7 @@ type Props = {
   decision: "accepted" | "rejected" | "unknown"
 }
 
-const decisionConfig: Record<
-  string,
-  { label: string; color: string }
-> = {
+const decisionConfig: Record<string, { label: string; color: string }> = {
   accepted: { label: "Accept", color: "success.main" },
   rejected: { label: "Reject", color: "error.main" },
   unknown: { label: "Unknown", color: "text.disabled" },

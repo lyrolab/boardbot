@@ -1,8 +1,5 @@
 import { useBoard, useUpdateBoard } from "@/modules/board/queries/boards"
-import {
-  automationFormSchema,
-  AutomationFormValues,
-} from "./schema"
+import { automationFormSchema, AutomationFormValues } from "./schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
 import Box from "@mui/material/Box"
@@ -132,7 +129,9 @@ function AutomationForm({ defaultValues, onSubmit, isPending }: FormProps) {
                   <Typography
                     variant="body2"
                     color={
-                      !autoTriggerModeration ? "text.disabled" : "text.secondary"
+                      !autoTriggerModeration
+                        ? "text.disabled"
+                        : "text.secondary"
                     }
                   >
                     Automatically apply AI decisions without manual review.
@@ -143,11 +142,7 @@ function AutomationForm({ defaultValues, onSubmit, isPending }: FormProps) {
           )}
         />
         <Box>
-          <LoadingButton
-            type="submit"
-            variant="contained"
-            loading={isPending}
-          >
+          <LoadingButton type="submit" variant="contained" loading={isPending}>
             Save changes
           </LoadingButton>
         </Box>

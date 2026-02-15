@@ -46,8 +46,7 @@ export default function PostList() {
     )
   }
 
-  const posts =
-    data?.pages.flatMap((page: PostsGetResponse) => page.data) || []
+  const posts = data?.pages.flatMap((page: PostsGetResponse) => page.data) || []
 
   return (
     <>
@@ -92,9 +91,7 @@ export default function PostList() {
                   }}
                 >
                   <CircularProgress size={16} />
-                  <Typography variant="body2">
-                    Loading more posts...
-                  </Typography>
+                  <Typography variant="body2">Loading more posts...</Typography>
                 </Box>
               )}
             </Box>

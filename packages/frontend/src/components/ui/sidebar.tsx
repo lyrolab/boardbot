@@ -1,11 +1,5 @@
 import * as React from "react"
-import {
-  Box,
-  Drawer,
-  IconButton,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material"
+import { Box, Drawer, IconButton, useMediaQuery, useTheme } from "@mui/material"
 import { visuallyHidden } from "@mui/utils"
 import MenuOpenIcon from "@mui/icons-material/MenuOpen"
 

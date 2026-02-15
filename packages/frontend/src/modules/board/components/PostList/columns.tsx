@@ -22,7 +22,11 @@ const getStatusChip = (
 ) => {
   const chipProps: Record<
     PostProcessingStatusEnum,
-    { color?: "default" | "error"; variant?: "filled" | "outlined"; sx?: object }
+    {
+      color?: "default" | "error"
+      variant?: "filled" | "outlined"
+      sx?: object
+    }
   > = {
     pending: { variant: "outlined" },
     awaiting_manual_review: {
