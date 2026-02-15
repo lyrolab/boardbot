@@ -1,52 +1,53 @@
-"use client"
-
 import { ColumnDef } from "@tanstack/react-table"
 import { PostGet, PostProcessingStatusEnum } from "@/clients/backend-client"
-import { Badge } from "@/components/ui/badge"
 import { format } from "date-fns"
-import { Button } from "@/components/ui/button"
-import { Loader2, MoreHorizontal, RotateCw, Eye } from "lucide-react"
 import { useSyncPost } from "../../queries/posts"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { usePostDecisionDrawer } from "../../store/postDecisionDrawer"
+import { useState } from "react"
+import Chip from "@mui/material/Chip"
+import IconButton from "@mui/material/IconButton"
+import Menu from "@mui/material/Menu"
+import MenuItem from "@mui/material/MenuItem"
+import ListItemIcon from "@mui/material/ListItemIcon"
+import ListItemText from "@mui/material/ListItemText"
+import Box from "@mui/material/Box"
+import CircularProgress from "@mui/material/CircularProgress"
+import MoreHoriz from "@mui/icons-material/MoreHoriz"
+import Refresh from "@mui/icons-material/Refresh"
+import Visibility from "@mui/icons-material/Visibility"
 
-const getStatusBadge = (
+const getStatusChip = (
   status: PostProcessingStatusEnum,
   onClick?: () => void,
 ) => {
-  const variants: Record<
+  const chipProps: Record<
     PostProcessingStatusEnum,
-    "default" | "secondary" | "yellow" | "destructive"
+    { color?: "default" | "error"; variant?: "filled" | "outlined"; sx?: object }
   > = {
-    pending: "secondary",
-    awaiting_manual_review: "yellow",
-    failed: "destructive",
-    completed: "default",
+    pending: { variant: "outlined" },
+    awaiting_manual_review: {
+      sx: { bgcolor: "#fef3c7", color: "#92400e" },
+    },
+    failed: { color: "error" },
+    completed: { color: "default" },
   }
 
-  const badge = (
-    <Badge
-      variant={variants[status]}
-      className={onClick ? "cursor-pointer hover:opacity-80" : ""}
+  return (
+    <Chip
+      label={status.replace(/_/g, " ")}
+      size="small"
       onClick={onClick}
-    >
-      {status.replace(/_/g, " ")}
-    </Badge>
+      sx={onClick ? { cursor: "pointer" } : undefined}
+      {...chipProps[status]}
+    />
   )
-
-  return badge
 }
 
 function StatusCell({ post }: { post: PostGet }) {
   const { openDrawer } = usePostDecisionDrawer()
   const status = post.processingStatus
 
-  return getStatusBadge(
+  return getStatusChip(
     status,
     post.decision ? () => openDrawer(post) : undefined,
   )
@@ -55,37 +56,53 @@ function StatusCell({ post }: { post: PostGet }) {
 function PostActions({ post }: { post: PostGet }) {
   const { mutate: syncPost, isPending } = useSyncPost()
   const { openDrawer } = usePostDecisionDrawer()
+  const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null)
 
   return (
-    <div className="flex justify-end">
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          {post.decision && (
-            <DropdownMenuItem onClick={() => openDrawer(post)}>
-              <Eye className="mr-2 h-4 w-4" />
-              View Decision
-            </DropdownMenuItem>
-          )}
-          <DropdownMenuItem
-            onClick={() => syncPost(post.id)}
-            disabled={isPending}
+    <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+      <IconButton
+        size="small"
+        onClick={(e) => setMenuAnchor(e.currentTarget)}
+        aria-label="Open menu"
+      >
+        <MoreHoriz fontSize="small" />
+      </IconButton>
+      <Menu
+        anchorEl={menuAnchor}
+        open={Boolean(menuAnchor)}
+        onClose={() => setMenuAnchor(null)}
+      >
+        {post.decision && (
+          <MenuItem
+            onClick={() => {
+              openDrawer(post)
+              setMenuAnchor(null)
+            }}
           >
+            <ListItemIcon>
+              <Visibility fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>View Decision</ListItemText>
+          </MenuItem>
+        )}
+        <MenuItem
+          onClick={() => {
+            syncPost(post.id)
+            setMenuAnchor(null)
+          }}
+          disabled={isPending}
+        >
+          <ListItemIcon>
             {isPending ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <CircularProgress size={16} />
             ) : (
-              <RotateCw className="mr-2 h-4 w-4" />
+              <Refresh fontSize="small" />
             )}
-            Sync
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
+          </ListItemIcon>
+          <ListItemText>Sync</ListItemText>
+        </MenuItem>
+      </Menu>
+    </Box>
   )
 }
 

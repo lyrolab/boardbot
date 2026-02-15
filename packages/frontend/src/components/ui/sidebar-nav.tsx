@@ -1,43 +1,63 @@
-"use client"
+import { Link, useLocation } from "@tanstack/react-router"
+import { List, ListItemButton, ListItemText } from "@mui/material"
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
-
-interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
+interface SidebarNavProps {
   items: {
     href: string
     title: string
   }[]
 }
 
-export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
-  const pathname = usePathname()
+export function SidebarNav({ items }: SidebarNavProps) {
+  const location = useLocation()
 
   return (
-    <nav
-      className={cn(
-        "flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1",
-        className,
-      )}
-      {...props}
+    <List
+      component="nav"
+      disablePadding
+      sx={{
+        display: "flex",
+        flexDirection: { xs: "row", lg: "column" },
+        gap: { xs: 0.5, lg: 0.25 },
+      }}
     >
-      {items.map((item) => (
-        <Link
-          key={item.href}
-          href={item.href}
-          className={cn(
-            buttonVariants({ variant: "ghost" }),
-            pathname.includes(item.href.split("/").pop() ?? "")
-              ? "bg-muted hover:bg-muted"
-              : "hover:bg-transparent hover:underline",
-            "justify-start",
-          )}
-        >
-          {item.title}
-        </Link>
-      ))}
-    </nav>
+      {items.map((item) => {
+        const segment = item.href.split("/").pop() ?? ""
+        const isActive = location.pathname.includes(segment)
+
+        return (
+          <ListItemButton
+            key={item.href}
+            component={Link}
+            to={item.href}
+            selected={isActive}
+            sx={{
+              borderRadius: 1,
+              py: 0.75,
+              px: 2,
+              justifyContent: "flex-start",
+              "&.Mui-selected": {
+                bgcolor: "action.selected",
+                "&:hover": {
+                  bgcolor: "action.selected",
+                },
+              },
+              "&:not(.Mui-selected):hover": {
+                bgcolor: "transparent",
+                textDecoration: "underline",
+              },
+            }}
+          >
+            <ListItemText
+              primary={item.title}
+              primaryTypographyProps={{
+                variant: "body2",
+                fontWeight: isActive ? 500 : 400,
+              }}
+            />
+          </ListItemButton>
+        )
+      })}
+    </List>
   )
 }

@@ -9,17 +9,14 @@ import { BoardRepository } from "src/modules/board/repositories/board.repository
 import { FiderBoard } from "src/modules/fider/entities/fider-board.entity"
 import { FiderBoardFactory } from "src/modules/fider/factories/fider-board.factory"
 import { assertDifference } from "test/helpers/assert-difference"
-import { SharedDatabaseModule } from "@lyrolab/nest-shared/database"
+import { TestDatabaseModule } from "test/helpers/database"
 
 describe("BoardRepository", () => {
   let repository: BoardRepository
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        SharedDatabaseModule.forRoot(),
-        TypeOrmModule.forFeature([Board]),
-      ],
+      imports: [TestDatabaseModule, TypeOrmModule.forFeature([Board])],
       providers: [BoardRepository],
     }).compile()
 

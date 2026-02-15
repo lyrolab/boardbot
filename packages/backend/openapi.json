@@ -749,6 +749,12 @@
             "nullable": true,
             "enum": ["fider"]
           },
+          "autoTriggerModeration": {
+            "type": "boolean"
+          },
+          "autoApplyDecision": {
+            "type": "boolean"
+          },
           "createdAt": {
             "format": "date-time",
             "type": "string"
@@ -763,6 +769,8 @@
           "title",
           "description",
           "vendor",
+          "autoTriggerModeration",
+          "autoApplyDecision",
           "createdAt",
           "updatedAt"
         ]
@@ -797,6 +805,12 @@
           },
           "description": {
             "type": "string"
+          },
+          "autoTriggerModeration": {
+            "type": "boolean"
+          },
+          "autoApplyDecision": {
+            "type": "boolean"
           }
         },
         "required": ["title", "description"]
@@ -902,9 +916,22 @@
         "enum": ["duplicate", "not_duplicate", "unknown"],
         "description": "The decision of the duplicate posts"
       },
+      "DuplicatePostClassificationEnum": {
+        "type": "string",
+        "enum": ["exact_duplicate", "related_but_different"],
+        "description": "The classification of the duplicate post"
+      },
       "DuplicatePost": {
         "type": "object",
         "properties": {
+          "classification": {
+            "description": "The classification of the duplicate post",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DuplicatePostClassificationEnum"
+              }
+            ]
+          },
           "id": {
             "type": "string",
             "description": "The ID of the duplicate post"
@@ -1002,6 +1029,9 @@
                 "$ref": "#/components/schemas/PostProcessingStatusEnum"
               }
             ]
+          },
+          "postUrl": {
+            "type": "string"
           },
           "id": {
             "type": "string"
@@ -1108,7 +1138,7 @@
         "properties": {
           "duplicatePostId": {
             "type": "string",
-            "description": "The ID of the duplicate post"
+            "description": "The ID of the applied duplicate post"
           }
         }
       },
@@ -1116,7 +1146,7 @@
         "type": "object",
         "properties": {
           "tagIds": {
-            "description": "The IDs of the tags to assign to the post",
+            "description": "The IDs of the applied tags to the post",
             "type": "array",
             "items": {
               "type": "string"

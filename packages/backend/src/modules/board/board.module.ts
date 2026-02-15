@@ -13,7 +13,9 @@ import { SyncBoardJob } from "src/modules/board/jobs/sync-board.job"
 import { BoardRepository } from "src/modules/board/repositories/board.repository"
 import { PostRepository } from "src/modules/board/repositories/post.repository"
 import { TagRepository } from "src/modules/board/repositories/tag.repository"
-import { AiFindDuplicatePostsService } from "src/modules/board/services/ai-find-duplicate-posts.service"
+import { DuplicateDetectionOrchestrator } from "src/modules/board/services/agents/duplicate-detection/duplicate-detection.orchestrator"
+import { QueryGenerationService } from "src/modules/board/services/agents/duplicate-detection/query-generation.service"
+import { DuplicateAnalysisService } from "src/modules/board/services/agents/duplicate-detection/duplicate-analysis.service"
 import { AiModerationService } from "src/modules/board/services/ai-moderation.service"
 import { AiTagAssignmentService } from "src/modules/board/services/ai-tag-assignment.service"
 import { BoardSyncService } from "src/modules/board/services/board-sync.service"
@@ -39,7 +41,9 @@ import { ProcessPostJob } from "src/modules/board/jobs/process-post.job"
     SharedAiModule,
   ],
   providers: [
-    AiFindDuplicatePostsService,
+    DuplicateDetectionOrchestrator,
+    QueryGenerationService,
+    DuplicateAnalysisService,
     AiModerationService,
     BoardRepository,
     BoardService,

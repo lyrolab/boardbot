@@ -1,5 +1,4 @@
-import { SheetHeader, SheetTitle } from "@/components/ui/sheet"
-import { ResponsiveDrawer } from "@/modules/core/components/ResponsiveDrawer"
+import Drawer from "@mui/material/Drawer"
 import { usePostDecisionDrawer } from "../../store/postDecisionDrawer"
 import { PostDecisionSummary } from "../PostDecisionSummary/PostDecisionSummary"
 
@@ -7,20 +6,13 @@ export function PostDecisionDrawer() {
   const { isOpen, selectedPost, closeDrawer } = usePostDecisionDrawer()
 
   return (
-    <ResponsiveDrawer
+    <Drawer
+      anchor="right"
       open={isOpen}
-      onOpenChange={closeDrawer}
-      className="sm:max-w-[600px]"
-      side="bottom"
+      onClose={closeDrawer}
+      PaperProps={{ sx: { width: { xs: "100%", sm: 520 } } }}
     >
-      <SheetHeader className="flex items-center justify-between">
-        <SheetTitle>Post Decision</SheetTitle>
-      </SheetHeader>
-      {selectedPost && (
-        <div className="p-4">
-          <PostDecisionSummary postId={selectedPost.id} />
-        </div>
-      )}
-    </ResponsiveDrawer>
+      {selectedPost && <PostDecisionSummary postId={selectedPost.id} />}
+    </Drawer>
   )
 }

@@ -1,74 +1,43 @@
-import * as React from "react"
-import { usePathname } from "next/navigation"
-
+import { Link, useLocation } from "@tanstack/react-router"
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarRail,
-} from "@/components/ui/sidebar"
-import { VersionSwitcher } from "@/components/version-switcher"
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  ListSubheader,
+} from "@mui/material"
+import { Sidebar } from "@/components/ui/sidebar"
 
-// This is sample data.
-const data = {
-  versions: ["1.0.1", "1.1.0-alpha", "2.0.0-beta1"],
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "#",
-      items: [
-        {
-          title: "Boards",
-          url: "/app/boards",
-        },
-        {
-          title: "Posts",
-          url: "/app/posts",
-        },
-      ],
-    },
-  ],
-}
+const navItems = [
+  { title: "Boards", url: "/app/boards" },
+  { title: "Posts", url: "/app/posts" },
+]
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const pathname = usePathname()
+export function AppSidebar() {
+  const location = useLocation()
 
   return (
-    <Sidebar {...props}>
-      <SidebarHeader>
-        <VersionSwitcher
-          versions={data.versions}
-          defaultVersion={data.versions[0]}
-        />
-      </SidebarHeader>
-      <SidebarContent>
-        {data.navMain.map((item) => (
-          <SidebarGroup key={item.title}>
-            <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {item.items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton
-                      asChild
-                      isActive={pathname.startsWith(item.url)}
-                    >
-                      <a href={item.url}>{item.title}</a>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
+    <Sidebar>
+      <List
+        subheader={
+          <ListSubheader component="div" sx={{ bgcolor: "transparent" }}>
+            Dashboard
+          </ListSubheader>
+        }
+      >
+        {navItems.map((item) => (
+          <ListItem key={item.url} disablePadding>
+            <ListItemButton
+              component={Link}
+              to={item.url}
+              selected={location.pathname.startsWith(item.url)}
+              sx={{ borderRadius: 1, mx: 1 }}
+            >
+              <ListItemText primary={item.title} />
+            </ListItemButton>
+          </ListItem>
         ))}
-      </SidebarContent>
-      <SidebarRail />
+      </List>
     </Sidebar>
   )
 }

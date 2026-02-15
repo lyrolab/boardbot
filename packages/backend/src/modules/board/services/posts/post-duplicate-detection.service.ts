@@ -3,7 +3,7 @@ import { keyBy } from "lodash"
 import { Post } from "src/modules/board/entities/post.entity"
 import { BoardClientInterface } from "src/modules/board/models/board-client.interface"
 import { BoardContextForPrompt } from "src/modules/board/models/board-context/for-prompt"
-import { AiFindDuplicatePostsService } from "src/modules/board/services/ai-find-duplicate-posts.service"
+import { DuplicateDetectionOrchestrator } from "src/modules/board/services/agents/duplicate-detection/duplicate-detection.orchestrator"
 import { PostService } from "src/modules/board/services/post.service"
 
 type FindDuplicatesParams = {
@@ -17,13 +17,18 @@ interface DuplicatePost {
   id: string
   reasoning?: string
   externalId?: string
+  classification?: "exact_duplicate" | "related_but_different"
 }
 
 interface AIDuplicatePostResult {
   status: "success" | "failed"
   decision: "duplicate" | "not_duplicate" | "unknown"
   reasoning?: string
-  duplicatePosts: { externalId: string; reasoning?: string }[]
+  duplicatePosts: {
+    externalId: string
+    reasoning?: string
+    classification?: "exact_duplicate" | "related_but_different"
+  }[]
 }
 
 interface DuplicatePostsDecision {
@@ -36,7 +41,7 @@ interface DuplicatePostsDecision {
 @Injectable()
 export class PostDuplicateDetectionService {
   constructor(
-    private readonly aiFindDuplicatePostsService: AiFindDuplicatePostsService,
+    private readonly duplicateDetectionOrchestrator: DuplicateDetectionOrchestrator,
     private readonly postService: PostService,
   ) {}
 
@@ -50,7 +55,7 @@ export class PostDuplicateDetectionService {
       return post.decision.duplicatePosts
     }
 
-    const duplicatePosts = await this.aiFindDuplicatePostsService.forPost({
+    const duplicatePosts = await this.duplicateDetectionOrchestrator.forPost({
       client,
       post,
       context,
@@ -89,7 +94,7 @@ export class PostDuplicateDetectionService {
     duplicatePosts: AIDuplicatePostResult,
   ): boolean {
     return (
-      duplicatePosts?.decision === "duplicate" &&
+      duplicatePosts?.status === "success" &&
       duplicatePosts.duplicatePosts.length > 0
     )
   }
@@ -118,11 +123,19 @@ export class PostDuplicateDetectionService {
 
   private mapToDuplicatePosts(
     posts: Post[],
-    mapExternalIdToPostDecision: Record<string, { reasoning?: string }>,
+    mapExternalIdToPostDecision: Record<
+      string,
+      {
+        reasoning?: string
+        classification?: "exact_duplicate" | "related_but_different"
+      }
+    >,
   ): DuplicatePost[] {
     return posts.map((post) => ({
       id: post.id,
       reasoning: mapExternalIdToPostDecision[post.externalId]?.reasoning || "",
+      classification:
+        mapExternalIdToPostDecision[post.externalId]?.classification,
     }))
   }
 

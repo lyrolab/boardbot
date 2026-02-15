@@ -1,3 +1,5 @@
+import Box from "@mui/material/Box"
+import Typography from "@mui/material/Typography"
 import Heading from "./Heading"
 
 interface PageHeaderProps {
@@ -12,14 +14,22 @@ export default function PageHeader({
   children,
 }: PageHeaderProps) {
   return (
-    <div className="flex items-center justify-between space-y-2">
-      <div className="space-y-2">
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+      }}
+    >
+      <Box>
         <Heading>{title}</Heading>
         {subtitle && (
-          <p className="text-md text-muted-foreground">{subtitle}</p>
+          <Typography variant="body1" color="text.secondary" sx={{ mt: 0.5 }}>
+            {subtitle}
+          </Typography>
         )}
-      </div>
+      </Box>
       {children}
-    </div>
+    </Box>
   )
 }

@@ -1,5 +1,6 @@
-import { createMock } from "@golevelup/ts-jest"
+import { createMock } from "@golevelup/ts-vitest"
 import { Test, TestingModule } from "@nestjs/testing"
+import type { Mocked } from "vitest"
 import { BoardFactory } from "src/modules/board/factories/board.factory"
 import { TagFactory } from "src/modules/board/factories/tag.factory"
 import { BaseTag } from "../models/base-tag"
@@ -9,23 +10,23 @@ import { TagRepository } from "src/modules/board/repositories/tag.repository"
 
 describe("TagService", () => {
   let service: TagService
-  let boardRepository: jest.Mocked<BoardRepository>
-  let tagRepository: jest.Mocked<TagRepository>
+  let boardRepository: Mocked<BoardRepository>
+  let tagRepository: Mocked<TagRepository>
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [TagService],
     })
-      .useMocker(createMock)
+      .useMocker(createMock as any)
       .compile()
 
     service = module.get<TagService>(TagService)
     boardRepository = module.get<BoardRepository>(
       BoardRepository,
-    ) as jest.Mocked<BoardRepository>
+    ) as Mocked<BoardRepository>
     tagRepository = module.get<TagRepository>(
       TagRepository,
-    ) as jest.Mocked<TagRepository>
+    ) as Mocked<TagRepository>
   })
 
   describe("findAllByBoardId", () => {

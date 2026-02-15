@@ -1,5 +1,6 @@
 import { DataTable } from "@/components/ui/data-table"
-import { Skeleton } from "@/components/ui/skeleton"
+import Skeleton from "@mui/material/Skeleton"
+import Box from "@mui/material/Box"
 import { useBoards } from "@/modules/board/queries/boards"
 import { columns } from "./columns"
 
@@ -8,16 +9,12 @@ export default function BoardList() {
 
   if (isLoading) {
     return (
-      <div className="space-y-3">
-        <Skeleton className="h-[60px] w-full" />
-        <Skeleton className="h-[400px] w-full" />
-      </div>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+        <Skeleton variant="rounded" height={60} />
+        <Skeleton variant="rounded" height={400} />
+      </Box>
     )
   }
 
-  return (
-    <div className="space-y-4">
-      <DataTable columns={columns} data={response?.data ?? []} />
-    </div>
-  )
+  return <DataTable columns={columns} data={response?.data ?? []} />
 }

@@ -34,6 +34,11 @@ export class SyncBoardJob implements JobProcessorInterface {
 
     const board = await this.boardRepository.findOneOrFail(boardId)
     await this.boardSyncService.syncBoard(board)
+
+    if (!board.autoTriggerModeration) {
+      return
+    }
+
     const pendingPosts = await this.postRepository.findPending(boardId)
     for (const post of pendingPosts) {
       await this.queueService.add(

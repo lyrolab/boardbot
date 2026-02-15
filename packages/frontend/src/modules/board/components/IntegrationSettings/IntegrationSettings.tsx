@@ -1,25 +1,12 @@
-"use client"
-
-import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import Box from "@mui/material/Box"
+import Typography from "@mui/material/Typography"
+import Skeleton from "@mui/material/Skeleton"
+import TextField from "@mui/material/TextField"
+import MenuItem from "@mui/material/MenuItem"
+import LoadingButton from "@mui/lab/LoadingButton"
+import { Controller } from "react-hook-form"
 import { useCreateFiderBoard } from "../../queries/fider-board"
 import { FiderForm } from "./FiderForm"
-import { Skeleton } from "@/components/ui/skeleton"
 import {
   IntegrationFormValues,
   useBoardIntegrationForm,
@@ -42,53 +29,54 @@ export default function IntegrationSettings({
   }
 
   if (isLoading) {
-    return <Skeleton className="h-[400px] w-full" />
+    return <Skeleton variant="rectangular" width="100%" height={400} />
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-medium">Integration Settings</h3>
-        <p className="text-sm text-muted-foreground">
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+      <Box>
+        <Typography variant="h6">Integration Settings</Typography>
+        <Typography variant="body2" color="text.secondary">
           Configure your feedback vendor connection.
-        </p>
-      </div>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <FormField
-            control={form.control}
-            name="vendor"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Vendor</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a vendor" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="fider">Fider</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormDescription>
-                  Choose your feedback management platform.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        </Typography>
+      </Box>
+      <Box
+        component="form"
+        onSubmit={form.handleSubmit(onSubmit)}
+        sx={{ display: "flex", flexDirection: "column", gap: 3 }}
+      >
+        <Controller
+          control={form.control}
+          name="vendor"
+          render={({ field, fieldState }) => (
+            <TextField
+              select
+              label="Vendor"
+              helperText={
+                fieldState.error?.message ||
+                "Choose your feedback management platform."
+              }
+              error={!!fieldState.error}
+              fullWidth
+              {...field}
+            >
+              <MenuItem value="fider">Fider</MenuItem>
+            </TextField>
+          )}
+        />
 
-          {form.watch("vendor") === "fider" && <FiderForm form={form} />}
+        {form.watch("vendor") === "fider" && <FiderForm form={form} />}
 
-          <Button type="submit" disabled={createFiderBoard.isPending}>
-            {createFiderBoard.isPending ? "Saving..." : "Save changes"}
-          </Button>
-        </form>
-      </Form>
-    </div>
+        <Box>
+          <LoadingButton
+            type="submit"
+            variant="contained"
+            loading={createFiderBoard.isPending}
+          >
+            Save changes
+          </LoadingButton>
+        </Box>
+      </Box>
+    </Box>
   )
 }

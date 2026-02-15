@@ -1,5 +1,6 @@
-import { createMock } from "@golevelup/ts-jest"
+import { createMock } from "@golevelup/ts-vitest"
 import { Test, TestingModule } from "@nestjs/testing"
+import type { Mocked } from "vitest"
 import { BoardController } from "src/modules/board/controllers/board.controller"
 import { Board } from "src/modules/board/entities/board.entity"
 import { BoardFactory } from "src/modules/board/factories/board.factory"
@@ -11,14 +12,14 @@ import { v4 } from "uuid"
 
 describe("BoardController", () => {
   let controller: BoardController
-  let service: jest.Mocked<BoardService>
+  let service: Mocked<BoardService>
   let module: TestingModule
 
   beforeAll(async () => {
     module = await Test.createTestingModule({
       providers: [BoardController],
     })
-      .useMocker(createMock)
+      .useMocker(createMock as any)
       .compile()
 
     controller = module.get(BoardController)

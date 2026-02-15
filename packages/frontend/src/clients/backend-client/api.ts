@@ -71,7 +71,7 @@ export interface ApplyDecisionRequestDto {
  */
 export interface ApplyDuplicatePostsDecision {
   /**
-   * The ID of the duplicate post
+   * The ID of the applied duplicate post
    * @type {string}
    * @memberof ApplyDuplicatePostsDecision
    */
@@ -110,7 +110,7 @@ export type ApplyModerationDecisionReasonEnum =
  */
 export interface ApplyTagAssignmentDecision {
   /**
-   * The IDs of the tags to assign to the post
+   * The IDs of the applied tags to the post
    * @type {Array<string>}
    * @memberof ApplyTagAssignmentDecision
    */
@@ -199,6 +199,18 @@ export interface BoardGet {
   vendor: BoardGetVendorEnum | null
   /**
    *
+   * @type {boolean}
+   * @memberof BoardGet
+   */
+  autoTriggerModeration: boolean
+  /**
+   *
+   * @type {boolean}
+   * @memberof BoardGet
+   */
+  autoApplyDecision: boolean
+  /**
+   *
    * @type {string}
    * @memberof BoardGet
    */
@@ -249,6 +261,18 @@ export interface BoardPutRequestDto {
    * @memberof BoardPutRequestDto
    */
   description: string
+  /**
+   *
+   * @type {boolean}
+   * @memberof BoardPutRequestDto
+   */
+  autoTriggerModeration?: boolean
+  /**
+   *
+   * @type {boolean}
+   * @memberof BoardPutRequestDto
+   */
+  autoApplyDecision?: boolean
 }
 /**
  *
@@ -270,6 +294,12 @@ export interface BoardsGetResponse {
  */
 export interface DuplicatePost {
   /**
+   * The classification of the duplicate post
+   * @type {DuplicatePostClassificationEnum}
+   * @memberof DuplicatePost
+   */
+  classification?: DuplicatePostClassificationEnum
+  /**
    * The ID of the duplicate post
    * @type {string}
    * @memberof DuplicatePost
@@ -282,6 +312,21 @@ export interface DuplicatePost {
    */
   reasoning?: string
 }
+
+/**
+ * The classification of the duplicate post
+ * @export
+ * @enum {string}
+ */
+
+export const DuplicatePostClassificationEnum = {
+  ExactDuplicate: "exact_duplicate",
+  RelatedButDifferent: "related_but_different",
+} as const
+
+export type DuplicatePostClassificationEnum =
+  (typeof DuplicatePostClassificationEnum)[keyof typeof DuplicatePostClassificationEnum]
+
 /**
  *
  * @export
@@ -548,6 +593,12 @@ export interface PostGet {
    * @memberof PostGet
    */
   processingStatus: PostProcessingStatusEnum
+  /**
+   *
+   * @type {string}
+   * @memberof PostGet
+   */
+  postUrl?: string
   /**
    *
    * @type {string}

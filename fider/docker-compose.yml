@@ -1,17 +1,16 @@
-version: '3.8'
-
 services:
   fider:
     image: getfider/fider:stable
     environment:
       BASE_URL: http://localhost:4852
-      DATABASE_URL: postgres://fider_user:fider_password@db:5432/fider_db?sslmode=disable
+      DATABASE_URL: postgres://fider:fider_password@db:5432/fider?sslmode=disable
       JWT_SECRET: 8df67ba75450666eceebe4dc17d6dc3734804c4a9a13399cba9d5ffc638107e1
       EMAIL_NOREPLY: noreply@yourdomain.com
       EMAIL_SMTP_HOST: mailhog
       EMAIL_SMTP_PORT: 1025
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     ports:
       - "4852:3000"
 
@@ -22,13 +21,13 @@ services:
       - "4295:1025"
 
   db:
-    image: postgres:latest
+    image: postgres:18
     environment:
-      - POSTGRES_USER=fider_user
+      - POSTGRES_USER=fider
       - POSTGRES_PASSWORD=fider_password
-      - POSTGRES_DB=fider_db
+      - POSTGRES_DB=fider
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "fider_user", "-d", "fider_db"]
+      test: ["CMD", "pg_isready", "-U", "fider", "-d", "fider"]
       interval: 10s
       timeout: 5s
       retries: 5

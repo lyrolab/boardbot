@@ -1,9 +1,9 @@
 import {
   BoardCreateRequestDto,
   BoardGetOneResponse,
+  BoardPutRequestDto,
   BoardsApi,
 } from "@/clients/backend-client"
-import { GeneralFormValues } from "@/modules/board/components/GeneralSettings/schema"
 import { configuration } from "@/modules/core/queries/clientConfiguration"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { AxiosResponse } from "axios"
@@ -47,11 +47,8 @@ export const useUpdateBoard = (boardId: string) => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (data: GeneralFormValues) =>
-      new BoardsApi(configuration).boardControllerUpdateBoard(boardId, {
-        title: data.title,
-        description: data.description,
-      }),
+    mutationFn: (data: BoardPutRequestDto) =>
+      new BoardsApi(configuration).boardControllerUpdateBoard(boardId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["boards", boardId] })
     },

@@ -1,5 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing"
-import { createMock } from "@golevelup/ts-jest"
+import { createMock } from "@golevelup/ts-vitest"
+import type { Mocked } from "vitest"
 import { PostService } from "src/modules/board/services/post.service"
 import { PostRepository } from "src/modules/board/repositories/post.repository"
 import { BasePost } from "src/modules/board/models/base-post"
@@ -7,14 +8,14 @@ import { BasePost } from "src/modules/board/models/base-post"
 describe("PostService", () => {
   let module: TestingModule
   let service: PostService
-  let postRepository: jest.Mocked<PostRepository>
+  let postRepository: Mocked<PostRepository>
 
   beforeAll(async () => {
     module = await Test.createTestingModule({
       imports: [],
       providers: [PostService],
     })
-      .useMocker(createMock)
+      .useMocker(createMock as any)
       .compile()
 
     service = module.get(PostService)

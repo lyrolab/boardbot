@@ -54,6 +54,16 @@ export class DuplicatePost {
    * The reasoning of the duplicate post
    */
   reasoning?: string
+
+  /**
+   * The classification of the duplicate post
+   */
+  @ApiProperty({
+    enum: ["exact_duplicate", "related_but_different"],
+    enumName: "DuplicatePostClassificationEnum",
+    required: false,
+  })
+  classification?: "exact_duplicate" | "related_but_different"
 }
 
 export class DuplicatePostsDecision {

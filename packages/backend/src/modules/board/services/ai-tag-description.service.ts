@@ -1,6 +1,6 @@
 import { AiService } from "@lyrolab/nest-shared/ai"
 import { Injectable } from "@nestjs/common"
-import { generateObject } from "ai"
+import { generateText, Output } from "ai"
 import { BaseTag } from "src/modules/board/models/base-tag"
 import { z } from "zod"
 import { BoardContext } from "../entities/board-context.entity"
@@ -65,14 +65,16 @@ ${tags.map((tag) => `- ${tag.name} (ID: ${tag.id})`).join("\n")}
 `
 
     try {
-      const result = await generateObject({
+      const result = await generateText({
         model: this.aiService.model,
         system,
         prompt,
-        schema: tagDescriptionSchema,
+        output: Output.object({
+          schema: tagDescriptionSchema,
+        }),
       })
 
-      return result.object.tagDescriptions.reduce(
+      return result.output.tagDescriptions.reduce(
         (acc, { tagId, description }) => ({
           ...acc,
           [tagId]: description,

@@ -1,7 +1,8 @@
-import { createMock } from "@golevelup/ts-jest"
+import { createMock } from "@golevelup/ts-vitest"
 import { Injectable } from "@nestjs/common"
 import { DiscoveryModule } from "@nestjs/core"
 import { Test, TestingModule } from "@nestjs/testing"
+import type { Mocked } from "vitest"
 import { BoardImplementation } from "src/modules/board/decorators/feedback-board"
 import { Board } from "src/modules/board/entities/board.entity"
 import { BoardFactory } from "src/modules/board/factories/board.factory"
@@ -30,14 +31,14 @@ class DummyFeedbackBoard implements BoardInterface {
 describe("BoardService", () => {
   let module: TestingModule
   let service: BoardService
-  let boardRepositoryMock: jest.Mocked<BoardRepository>
+  let boardRepositoryMock: Mocked<BoardRepository>
 
   beforeAll(async () => {
     module = await Test.createTestingModule({
       imports: [DiscoveryModule],
       providers: [BoardService, DummyFeedbackBoard],
     })
-      .useMocker(createMock)
+      .useMocker(createMock as any)
       .compile()
 
     service = module.get(BoardService)

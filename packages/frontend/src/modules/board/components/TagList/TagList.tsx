@@ -1,6 +1,7 @@
-import { Button } from "@/components/ui/button"
 import { DataTable } from "@/components/ui/data-table"
-import { Skeleton } from "@/components/ui/skeleton"
+import Skeleton from "@mui/material/Skeleton"
+import Box from "@mui/material/Box"
+import LoadingButton from "@mui/lab/LoadingButton"
 import { useTags, useUpdateTags } from "@/modules/board/queries/tags"
 import { useForm } from "react-hook-form"
 import { createColumns } from "./columns"
@@ -23,24 +24,32 @@ export default function TagList({ boardId }: { boardId: string }) {
 
   if (isLoading) {
     return (
-      <div className="space-y-3">
-        <Skeleton className="h-[60px] w-full" />
-        <Skeleton className="h-[400px] w-full" />
-      </div>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+        <Skeleton variant="rounded" height={60} />
+        <Skeleton variant="rounded" height={400} />
+      </Box>
     )
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4">
+    <Box
+      component="form"
+      onSubmit={onSubmit}
+      sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+    >
       <DataTable
         columns={createColumns(control, boardId)}
         data={response?.data ?? []}
       />
-      <div className="flex justify-end">
-        <Button type="submit" loading={updateTags.isPending}>
+      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+        <LoadingButton
+          type="submit"
+          variant="contained"
+          loading={updateTags.isPending}
+        >
           Save changes
-        </Button>
-      </div>
-    </form>
+        </LoadingButton>
+      </Box>
+    </Box>
   )
 }

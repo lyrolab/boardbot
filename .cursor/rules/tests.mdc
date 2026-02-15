@@ -46,7 +46,7 @@ import { createMock } from "@golevelup/ts-jest"
 
 ## Factories
 
-We also use factories. Here is an example:
+We also use factories. You must use factories in repository tests. Here is an example:
 
 ```
 export class TagFactory extends Factory<Tag> {

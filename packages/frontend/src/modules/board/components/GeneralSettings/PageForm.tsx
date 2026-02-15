@@ -1,24 +1,14 @@
-"use client"
-
 import { BoardGet } from "@/clients/backend-client"
-import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+import Box from "@mui/material/Box"
+import Typography from "@mui/material/Typography"
+import TextField from "@mui/material/TextField"
+import LoadingButton from "@mui/lab/LoadingButton"
 import {
   generalFormSchema,
   GeneralFormValues,
 } from "@/modules/board/components/GeneralSettings/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 
 type Props = {
   board: BoardGet
@@ -36,55 +26,64 @@ export default function PageForm({ board, onSubmit, isPending }: Props) {
   })
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-medium">General Settings</h3>
-        <p className="text-sm text-muted-foreground">
-          Update your board&apos;s basic information.
-        </p>
-      </div>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <FormField
-            control={form.control}
-            name="title"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Title</FormLabel>
-                <FormControl>
-                  <Input placeholder="My Board" {...field} />
-                </FormControl>
-                <FormDescription>
-                  This is your board&apos;s display name.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Description</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="Tell us about your board..."
-                    {...field}
-                  />
-                </FormControl>
-                <FormDescription>
-                  Brief description of your board&apos;s purpose.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type="submit" loading={isPending}>
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+      <Box>
+        <Typography variant="h6">General Settings</Typography>
+        <Typography variant="body2" color="text.secondary">
+          Update your board's basic information.
+        </Typography>
+      </Box>
+      <Box
+        component="form"
+        onSubmit={form.handleSubmit(onSubmit)}
+        sx={{ display: "flex", flexDirection: "column", gap: 3 }}
+      >
+        <Controller
+          control={form.control}
+          name="title"
+          render={({ field, fieldState }) => (
+            <TextField
+              label="Title"
+              placeholder="My Board"
+              helperText={
+                fieldState.error?.message ||
+                "This is your board's display name."
+              }
+              error={!!fieldState.error}
+              fullWidth
+              {...field}
+            />
+          )}
+        />
+        <Controller
+          control={form.control}
+          name="description"
+          render={({ field, fieldState }) => (
+            <TextField
+              label="Description"
+              placeholder="Tell us about your board..."
+              helperText={
+                fieldState.error?.message ||
+                "Brief description of your board's purpose."
+              }
+              error={!!fieldState.error}
+              multiline
+              rows={4}
+              fullWidth
+              {...field}
+            />
+          )}
+        />
+        <Box>
+          <LoadingButton
+            type="submit"
+            variant="contained"
+            loading={isPending}
+          >
             Save changes
-          </Button>
-        </form>
-      </Form>
-    </div>
+          </LoadingButton>
+        </Box>
+      </Box>
+    </Box>
   )
 }

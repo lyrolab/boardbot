@@ -10,6 +10,30 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: boardbot
+          POSTGRES_PASSWORD: boardbot123
+          POSTGRES_DB: boardbot
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U boardbot -d boardbot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd="redis-cli ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
       - name: Checkout main
         uses: actions/checkout@v4
@@ -30,3 +54,6 @@ jobs:
 
       - name: Run tests
         run: npm run test --workspace=backend
+        env:
+          DATABASE_URL: postgres://boardbot:boardbot123@localhost:5432/boardbot
+          REDIS_URL: redis://localhost:6379

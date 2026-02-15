@@ -6,6 +6,7 @@ import {
   JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
+  Relation,
   RelationId,
   UpdateDateColumn,
 } from "typeorm"
@@ -17,7 +18,7 @@ export class FiderBoard {
 
   @OneToOne(() => Board, (board) => board.id)
   @JoinColumn()
-  board: Board
+  board: Relation<Board>
 
   @RelationId((fiderBoard: FiderBoard) => fiderBoard.board)
   boardId: string

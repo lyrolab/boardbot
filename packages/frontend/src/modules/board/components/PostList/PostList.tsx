@@ -1,15 +1,17 @@
 import { DataTable } from "@/components/ui/data-table"
-import { Skeleton } from "@/components/ui/skeleton"
+import Skeleton from "@mui/material/Skeleton"
+import Box from "@mui/material/Box"
+import Button from "@mui/material/Button"
+import CircularProgress from "@mui/material/CircularProgress"
+import Typography from "@mui/material/Typography"
 import { columns } from "@/modules/board/components/PostList/columns"
 import { usePosts } from "@/modules/board/queries/posts"
 import { BoardFilter } from "./BoardFilter"
 import { StatusFilter } from "./StatusFilter"
 import { useFiltersStore } from "../../store/filters"
 import { PostDecisionDrawer } from "./PostDecisionDrawer"
-import { Button } from "@/components/ui/button"
 import useInfiniteScroll from "react-infinite-scroll-hook"
 import { useRef } from "react"
-import { Loader2 } from "lucide-react"
 import { PostsGetResponse } from "@/clients/backend-client"
 
 export default function PostList() {
@@ -37,47 +39,68 @@ export default function PostList() {
 
   if (isLoading) {
     return (
-      <div className="space-y-3">
-        <Skeleton className="h-[60px] w-full" />
-        <Skeleton className="h-[400px] w-full" />
-      </div>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+        <Skeleton variant="rounded" height={60} />
+        <Skeleton variant="rounded" height={400} />
+      </Box>
     )
   }
 
-  // Flatten posts from all pages
-  const posts = data?.pages.flatMap((page: PostsGetResponse) => page.data) || []
+  const posts =
+    data?.pages.flatMap((page: PostsGetResponse) => page.data) || []
 
   return (
     <>
-      <div className="space-y-4">
-        <div className="flex justify-between items-center gap-2">
-          <div className="flex gap-2">
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: 1,
+          }}
+        >
+          <Box sx={{ display: "flex", gap: 1 }}>
             <BoardFilter />
             <StatusFilter />
-          </div>
+          </Box>
           {hasActiveFilters && (
-            <Button variant="outline" onClick={resetFilters}>
+            <Button variant="outlined" onClick={resetFilters}>
               Reset All Filters
             </Button>
           )}
-        </div>
-        <div ref={scrollContainerRef} className="overflow-auto">
+        </Box>
+        <Box ref={scrollContainerRef} sx={{ overflow: "auto" }}>
           <DataTable columns={columns} data={posts} />
           {(isFetchingNextPage || hasNextPage) && (
-            <div
+            <Box
               ref={infiniteRef}
-              className="flex justify-center items-center p-4"
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                p: 2,
+              }}
             >
               {isFetchingNextPage && (
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span>Loading more posts...</span>
-                </div>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    color: "text.secondary",
+                  }}
+                >
+                  <CircularProgress size={16} />
+                  <Typography variant="body2">
+                    Loading more posts...
+                  </Typography>
+                </Box>
               )}
-            </div>
+            </Box>
           )}
-        </div>
-      </div>
+        </Box>
+      </Box>
 
       <PostDecisionDrawer />
     </>

@@ -24,6 +24,7 @@ import { FiderModule } from "src/modules/fider/fider.module"
     SharedBullModule.forRoot(),
     SharedCacheModule.forRoot(),
     SharedQueueModule.forRootAsync({
+      imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         concurrency: +(configService.get("QUEUE_CONCURRENCY") ?? 10),
       }),

@@ -4,7 +4,7 @@ import { Board } from "src/modules/board/entities/board.entity"
 import { FiderBoard } from "src/modules/fider/entities/fider-board.entity"
 import { FiderBoardFactory } from "src/modules/fider/factories/fider-board.factory"
 import { FiderBoardRepository } from "src/modules/fider/repositories/fider-board.repository"
-import { SharedDatabaseModule } from "@lyrolab/nest-shared/database"
+import { TestDatabaseModule } from "test/helpers/database"
 import { BoardFactory } from "src/modules/board/factories/board.factory"
 import { FiderBoardCreateDto } from "../models/dto/fider-board-create.dto"
 
@@ -14,7 +14,7 @@ describe("FiderBoardRepository", () => {
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
-        SharedDatabaseModule.forRoot(),
+        TestDatabaseModule,
         TypeOrmModule.forFeature([FiderBoard, Board]),
       ],
       providers: [FiderBoardRepository],

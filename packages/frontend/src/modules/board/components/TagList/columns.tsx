@@ -1,17 +1,12 @@
-"use client"
-
-import { Input } from "@/components/ui/input"
 import { useGenerateTagDescription } from "@/modules/board/queries/tags"
 import { ColumnDef } from "@tanstack/react-table"
 import { Control, Controller, useController } from "react-hook-form"
-import { Loader2, Sparkles } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import IconButton from "@mui/material/IconButton"
+import TextField from "@mui/material/TextField"
+import Tooltip from "@mui/material/Tooltip"
+import Box from "@mui/material/Box"
+import CircularProgress from "@mui/material/CircularProgress"
+import AutoAwesome from "@mui/icons-material/AutoAwesome"
 
 type TagFormValues = {
   tags: {
@@ -34,12 +29,13 @@ interface DescriptionCellProps {
 }
 
 function DescriptionCell({ tag, index, control }: DescriptionCellProps) {
-  const { mutate: generateDescription, isPending } = useGenerateTagDescription({
-    tagId: tag.id,
-    onSuccess: (data) => {
-      field.onChange(data.description)
-    },
-  })
+  const { mutate: generateDescription, isPending } =
+    useGenerateTagDescription({
+      tagId: tag.id,
+      onSuccess: (data) => {
+        field.onChange(data.description)
+      },
+    })
   const { field } = useController({
     control,
     name: `tags.${index}.description`,
@@ -47,39 +43,37 @@ function DescriptionCell({ tag, index, control }: DescriptionCellProps) {
   })
 
   return (
-    <div className="flex gap-2 relative">
+    <Box sx={{ display: "flex", gap: 1, position: "relative" }}>
       <Controller
         control={control}
         name={`tags.${index}.id`}
         defaultValue={tag.id}
         render={({ field }) => <input type="hidden" {...field} />}
       />
-      <Input {...field} />
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              type="button"
-              size="icon"
-              variant="ghost"
-              className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 cursor-pointer"
-              onClick={() => generateDescription()}
-              disabled={isPending}
-              aria-label="Generate description"
-            >
-              {isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Sparkles className="h-4 w-4" />
-              )}
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Generate description</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    </div>
+      <TextField
+        {...field}
+        size="small"
+        fullWidth
+        InputProps={{
+          endAdornment: (
+            <Tooltip title="Generate description">
+              <IconButton
+                size="small"
+                onClick={() => generateDescription()}
+                disabled={isPending}
+                aria-label="Generate description"
+              >
+                {isPending ? (
+                  <CircularProgress size={16} />
+                ) : (
+                  <AutoAwesome sx={{ fontSize: 16 }} />
+                )}
+              </IconButton>
+            </Tooltip>
+          ),
+        }}
+      />
+    </Box>
   )
 }
 

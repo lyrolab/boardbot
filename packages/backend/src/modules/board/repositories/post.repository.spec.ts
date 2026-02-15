@@ -3,7 +3,7 @@ import { TypeOrmModule } from "@nestjs/typeorm"
 import { Post } from "src/modules/board/entities/post.entity"
 import { PostFactory } from "src/modules/board/factories/post.factory"
 import { PostRepository } from "src/modules/board/repositories/post.repository"
-import { SharedDatabaseModule } from "@lyrolab/nest-shared/database"
+import { TestDatabaseModule } from "test/helpers/database"
 import { BoardFactory } from "src/modules/board/factories/board.factory"
 import { Board } from "src/modules/board/entities/board.entity"
 import { PostProcessingStatus } from "src/modules/board/entities/post-processing-status.enum"
@@ -18,7 +18,7 @@ describe("PostRepository", () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot(),
-        SharedDatabaseModule.forRoot(),
+        TestDatabaseModule,
         TypeOrmModule.forFeature([Post]),
       ],
       providers: [PostRepository],
@@ -194,12 +194,10 @@ describe("PostRepository", () => {
       })
 
       // Mock the config service to return 2 as batch size
-      jest
-        .spyOn(repository["configService"], "get")
-        .mockImplementation((key) => {
-          if (key === "POST_SYNC_BATCH_SIZE") return "2"
-          return undefined
-        })
+      vi.spyOn(repository["configService"], "get").mockImplementation((key) => {
+        if (key === "POST_SYNC_BATCH_SIZE") return "2"
+        return undefined
+      })
 
       const pendingPosts = await repository.findPending(board.id)
 

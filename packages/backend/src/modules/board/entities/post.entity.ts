@@ -9,6 +9,7 @@ import {
   Index,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Relation,
   UpdateDateColumn,
 } from "typeorm"
 
@@ -26,7 +27,7 @@ export class Post {
   @Column()
   externalId: string
 
-  @Column({ default: PostProcessingStatus.PENDING })
+  @Column({ type: "varchar", default: PostProcessingStatus.PENDING })
   processingStatus: PostProcessingStatus
 
   @Column({ type: "text", nullable: true })
@@ -39,7 +40,7 @@ export class Post {
   appliedDecision: PostAppliedDecision | null
 
   @ManyToOne(() => Board, (board) => board.posts)
-  board: Board
+  board: Relation<Board>
 
   @Index()
   @Column()

@@ -1,0 +1,42 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Backend: Debug",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run start:debug",
+      "cwd": "${workspaceFolder}/packages/backend"
+    },
+    {
+      "name": "Frontend: Chrome",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:4781",
+      "webRoot": "${workspaceFolder}/packages/frontend",
+      "sourceMapPathOverrides": {
+        "/@fs/*": "${webRoot}/*",
+        "/src/*": "${webRoot}/src/*"
+      },
+      "preLaunchTask": "frontend:dev"
+    },
+    {
+      "name": "Frontend: Attach Chrome",
+      "type": "chrome",
+      "request": "attach",
+      "port": 9222,
+      "url": "http://localhost:4781",
+      "webRoot": "${workspaceFolder}/packages/frontend",
+      "sourceMapPathOverrides": {
+        "/@fs/*": "${webRoot}/*",
+        "/src/*": "${webRoot}/src/*"
+      }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full Stack: Backend + Frontend",
+      "configurations": ["Backend: Debug", "Frontend: Chrome"]
+    }
+  ]
+}

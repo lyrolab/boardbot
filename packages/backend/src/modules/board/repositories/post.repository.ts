@@ -27,7 +27,7 @@ export class PostRepository {
   async findAllByIds(boardId: string, ids: string[]) {
     return this.repository.find({
       where: { board: { id: boardId }, id: In(ids) },
-      relations: ["board"],
+      relations: ["board", "board.fiderBoard"],
     })
   }
 
@@ -53,7 +53,7 @@ export class PostRepository {
 
     const posts = await this.repository.find({
       where: whereCondition,
-      relations: ["board"],
+      relations: ["board", "board.fiderBoard"],
       order: { postCreatedAt: "DESC" },
       take: limit + 1, // Fetch one more to determine if there are more results
     })
@@ -90,7 +90,7 @@ export class PostRepository {
   async findByIdOrFail(id: string) {
     const post = await this.repository.findOneOrFail({
       where: { id },
-      relations: ["board"],
+      relations: ["board", "board.fiderBoard"],
     })
     return post
   }

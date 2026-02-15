@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsString, Length } from "class-validator"
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Length,
+} from "class-validator"
 
 export class BoardPutRequestDto {
   @IsString()
@@ -8,4 +14,12 @@ export class BoardPutRequestDto {
 
   @IsString()
   description: string
+
+  @IsBoolean()
+  @IsOptional()
+  autoTriggerModeration?: boolean
+
+  @IsBoolean()
+  @IsOptional()
+  autoApplyDecision?: boolean
 }

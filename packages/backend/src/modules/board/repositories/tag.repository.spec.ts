@@ -5,7 +5,7 @@ import { Tag } from "src/modules/board/entities/tag.entity"
 import { BoardFactory } from "src/modules/board/factories/board.factory"
 import { TagFactory } from "src/modules/board/factories/tag.factory"
 import { TagRepository } from "src/modules/board/repositories/tag.repository"
-import { SharedDatabaseModule } from "@lyrolab/nest-shared/database"
+import { TestDatabaseModule } from "test/helpers/database"
 
 describe("TagRepository", () => {
   let repository: TagRepository
@@ -13,10 +13,7 @@ describe("TagRepository", () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        SharedDatabaseModule.forRoot(),
-        TypeOrmModule.forFeature([Tag]),
-      ],
+      imports: [TestDatabaseModule, TypeOrmModule.forFeature([Tag])],
       providers: [TagRepository],
     }).compile()
 

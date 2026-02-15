@@ -59,10 +59,15 @@ export function mapDecisionToFormData(
       : undefined,
     duplicatePosts: post.decision?.duplicatePosts
       ? {
-          selectedDuplicateId:
-            post.decision.duplicatePosts.duplicatePosts.length > 0
-              ? post.decision.duplicatePosts.duplicatePosts[0].id
-              : "not_duplicate",
+          selectedDuplicateId: (() => {
+            const dupes = post.decision.duplicatePosts!.duplicatePosts
+            const exactDuplicate = dupes.find(
+              (p) =>
+                p.classification === "exact_duplicate" ||
+                p.classification === undefined,
+            )
+            return exactDuplicate?.id ?? "not_duplicate"
+          })(),
         }
       : undefined,
     tagAssignment: post.decision?.tagAssignment

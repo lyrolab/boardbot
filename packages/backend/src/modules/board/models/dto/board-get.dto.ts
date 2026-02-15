@@ -6,6 +6,8 @@ export class BoardGet {
   title: string
   description: string
   vendor: BoardVendorEnum | null
+  autoTriggerModeration: boolean
+  autoApplyDecision: boolean
   createdAt: Date
   updatedAt: Date
 }
@@ -16,6 +18,8 @@ export function toBoardGet(board: Board): BoardGet {
     title: board.title,
     description: board.description,
     vendor: board.fiderBoard ? BoardVendorEnum.FIDER : null,
+    autoTriggerModeration: board.autoTriggerModeration,
+    autoApplyDecision: board.autoApplyDecision,
     createdAt: board.createdAt,
     updatedAt: board.updatedAt,
   }

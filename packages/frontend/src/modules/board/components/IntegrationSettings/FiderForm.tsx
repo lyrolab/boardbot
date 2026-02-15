@@ -1,14 +1,6 @@
-import { UseFormReturn } from "react-hook-form"
+import { UseFormReturn, Controller } from "react-hook-form"
 import * as z from "zod"
-import {
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+import TextField from "@mui/material/TextField"
 
 export const fiderFormSchema = z.object({
   baseUrl: z.string().url({
@@ -31,40 +23,39 @@ interface FiderFormProps {
 export function FiderForm({ form }: FiderFormProps) {
   return (
     <>
-      <FormField
+      <Controller
         control={form.control}
         name="settings.baseUrl"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Base URL</FormLabel>
-            <FormControl>
-              <Input placeholder="https://api.vendor.com" {...field} />
-            </FormControl>
-            <FormDescription>
-              The base URL of your Fider instance.
-            </FormDescription>
-            <FormMessage />
-          </FormItem>
+        render={({ field, fieldState }) => (
+          <TextField
+            label="Base URL"
+            placeholder="https://api.vendor.com"
+            helperText={
+              fieldState.error?.message ||
+              "The base URL of your Fider instance."
+            }
+            error={!!fieldState.error}
+            fullWidth
+            {...field}
+          />
         )}
       />
-      <FormField
+      <Controller
         control={form.control}
         name="settings.apiKey"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>API Key</FormLabel>
-            <FormControl>
-              <Input
-                type="password"
-                placeholder="Enter your API key"
-                {...field}
-              />
-            </FormControl>
-            <FormDescription>
-              Your Fider API key for authentication.
-            </FormDescription>
-            <FormMessage />
-          </FormItem>
+        render={({ field, fieldState }) => (
+          <TextField
+            label="API Key"
+            type="password"
+            placeholder="Enter your API key"
+            helperText={
+              fieldState.error?.message ||
+              "Your Fider API key for authentication."
+            }
+            error={!!fieldState.error}
+            fullWidth
+            {...field}
+          />
         )}
       />
     </>

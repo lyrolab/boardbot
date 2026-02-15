@@ -5,6 +5,7 @@ import {
   JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
+  Relation,
   UpdateDateColumn,
 } from "typeorm"
 import { Board } from "./board.entity"
@@ -22,7 +23,7 @@ export class BoardContext {
 
   @OneToOne(() => Board, (board) => board.context)
   @JoinColumn()
-  board: Board
+  board: Relation<Board>
 
   @CreateDateColumn()
   createdAt: Date

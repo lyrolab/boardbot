@@ -1,21 +1,17 @@
-import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import Button from "@mui/material/Button"
+import Dialog from "@mui/material/Dialog"
+import DialogActions from "@mui/material/DialogActions"
+import DialogContent from "@mui/material/DialogContent"
+import DialogContentText from "@mui/material/DialogContentText"
+import DialogTitle from "@mui/material/DialogTitle"
+import TextField from "@mui/material/TextField"
+import LoadingButton from "@mui/lab/LoadingButton"
 import { useCreateBoard } from "@/modules/board/queries/boards"
-import { useState } from "react"
+import { cloneElement, isValidElement, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { useRouter } from "next/navigation"
+import { useNavigate } from "@tanstack/react-router"
 import { AxiosResponse } from "axios"
 import { BoardGetOneResponse } from "@/clients/backend-client"
 
@@ -26,16 +22,16 @@ const createBoardSchema = z.object({
 type CreateBoardFormData = z.infer<typeof createBoardSchema>
 
 interface CreateBoardDialogProps {
-  children: React.ReactNode
+  children: React.ReactElement<{ onClick?: () => void }>
 }
 
 export function CreateBoardDialog({ children }: CreateBoardDialogProps) {
   const [open, setOpen] = useState(false)
-  const router = useRouter()
+  const navigate = useNavigate()
   const { mutate, isPending } = useCreateBoard({
     onSuccess: (response: AxiosResponse<BoardGetOneResponse>) => {
       setOpen(false)
-      router.push(`/app/boards/${response.data.data.id}/settings/general`)
+      navigate({ to: `/app/boards/${response.data.data.id}/settings/general` })
     },
   })
 
@@ -51,43 +47,42 @@ export function CreateBoardDialog({ children }: CreateBoardDialogProps) {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+    <>
+      {isValidElement(children) &&
+        cloneElement(children, { onClick: () => setOpen(true) })}
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <DialogHeader>
-            <DialogTitle>Create Board</DialogTitle>
-            <DialogDescription>
+          <DialogTitle>Create Board</DialogTitle>
+          <DialogContent>
+            <DialogContentText sx={{ mb: 2 }}>
               Create a new board to start collecting feedback.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                Name
-              </Label>
-              <div className="col-span-3">
-                <Input
-                  id="name"
-                  {...form.register("name")}
-                  className="col-span-3"
-                  autoFocus
-                />
-                {form.formState.errors.name && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {form.formState.errors.name.message}
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button type="submit" disabled={isPending}>
+            </DialogContentText>
+            <TextField
+              autoFocus
+              label="Name"
+              fullWidth
+              {...form.register("name")}
+              error={!!form.formState.errors.name}
+              helperText={form.formState.errors.name?.message}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpen(false)}>Cancel</Button>
+            <LoadingButton
+              type="submit"
+              variant="contained"
+              loading={isPending}
+            >
               Create Board
-            </Button>
-          </DialogFooter>
+            </LoadingButton>
+          </DialogActions>
         </form>
-      </DialogContent>
-    </Dialog>
+      </Dialog>
+    </>
   )
 }

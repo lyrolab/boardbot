@@ -9,6 +9,7 @@ import {
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
+  Relation,
   UpdateDateColumn,
 } from "typeorm"
 import { Post } from "src/modules/board/entities/post.entity"
@@ -24,20 +25,26 @@ export class Board {
   @Column()
   description: string
 
-  @Column()
+  @Column({ type: "varchar" })
   type: BoardType
 
+  @Column({ default: true })
+  autoTriggerModeration: boolean
+
+  @Column({ default: false })
+  autoApplyDecision: boolean
+
   @OneToOne(() => FiderBoard, (fiderBoard) => fiderBoard.board)
-  fiderBoard?: FiderBoard
+  fiderBoard?: Relation<FiderBoard>
 
   @OneToOne(() => BoardContext, (context) => context.board)
-  context?: BoardContext
+  context?: Relation<BoardContext>
 
   @OneToMany(() => Tag, (tag) => tag.board, { cascade: true })
-  tags: Tag[]
+  tags: Relation<Tag[]>
 
   @OneToMany(() => Post, (post) => post.board)
-  posts: Post[]
+  posts: Relation<Post[]>
 
   @CreateDateColumn()
   createdAt: Date

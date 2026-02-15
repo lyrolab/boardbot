@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common"
+import { Injectable, Logger } from "@nestjs/common"
 import { Board } from "src/modules/board/entities/board.entity"
 import { PostProcessingStatus } from "src/modules/board/entities/post-processing-status.enum"
 import { Post } from "src/modules/board/entities/post.entity"
@@ -10,8 +10,13 @@ import { PostDuplicateDetectionService } from "src/modules/board/services/posts/
 import { PostModerationService } from "src/modules/board/services/posts/post-moderation.service"
 import { PostTagAssignmentService } from "src/modules/board/services/posts/post-tag-assignment.service"
 import { TagService } from "src/modules/board/services/tag.service"
+import { PostService } from "src/modules/board/services/post.service"
+import { mapPostDecisionToApplyDecision } from "src/modules/board/services/posts/decision-mapper"
+
 @Injectable()
 export class PostSyncService {
+  private readonly logger = new Logger(PostSyncService.name)
+
   constructor(
     private readonly postRepository: PostRepository,
     private readonly postModerationService: PostModerationService,
@@ -19,6 +24,7 @@ export class PostSyncService {
     private readonly postTagAssignmentService: PostTagAssignmentService,
     private readonly boardService: BoardService,
     private readonly tagService: TagService,
+    private readonly postService: PostService,
   ) {}
 
   async syncPost(postId: string) {
@@ -43,6 +49,19 @@ export class PostSyncService {
       post.processingStatus = PostProcessingStatus.AWAITING_MANUAL_REVIEW
       post.decision = decision
       await this.postRepository.update(post)
+
+      if (board.autoApplyDecision) {
+        try {
+          const appliedDecision = mapPostDecisionToApplyDecision(decision)
+          await this.postService.applyDecision(post.id, appliedDecision)
+        } catch (error) {
+          this.logger.error(
+            `Failed to auto-apply decision for post ${post.id}: ${error}`,
+          )
+          // Decision is already saved with AWAITING_MANUAL_REVIEW status,
+          // so the user can manually apply it later
+        }
+      }
     } catch (error) {
       post.processingStatus = PostProcessingStatus.FAILED
       post.processingError =

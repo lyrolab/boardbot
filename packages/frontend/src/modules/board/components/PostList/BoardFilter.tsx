@@ -1,20 +1,7 @@
-import { Check } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { cn } from "@/lib/utils"
+import { Autocomplete, Checkbox, TextField, Chip } from "@mui/material"
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank"
+import CheckBoxIcon from "@mui/icons-material/CheckBox"
 import { useBoards } from "@/modules/board/queries/boards"
-import { Badge } from "@/components/ui/badge"
 import { useFiltersStore } from "../../store/filters"
 
 export function BoardFilter() {
@@ -22,51 +9,47 @@ export function BoardFilter() {
   const { filters, setSelectedBoards } = useFiltersStore()
   const { selectedBoards } = filters
 
-  const toggleBoard = (boardId: string) => {
-    if (selectedBoards.includes(boardId)) {
-      setSelectedBoards(selectedBoards.filter((id) => id !== boardId))
-    } else {
-      setSelectedBoards([...selectedBoards, boardId])
-    }
-  }
+  const options = boards?.data ?? []
+  const selectedOptions = options.filter((b) => selectedBoards.includes(b.id))
 
   return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="outline" className="justify-start">
-          Filter by Board
-          {selectedBoards.length > 0 && (
-            <Badge variant="secondary" className="ml-2">
-              {selectedBoards.length}
-            </Badge>
-          )}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
-        <Command>
-          <CommandInput placeholder="Search boards..." />
-          <CommandEmpty>No boards found.</CommandEmpty>
-          <CommandGroup>
-            {boards?.data.map((board) => (
-              <CommandItem
-                key={board.id}
-                onSelect={() => toggleBoard(board.id)}
-                className="cursor-pointer"
-              >
-                <Check
-                  className={cn(
-                    "mr-2 h-4 w-4",
-                    selectedBoards.includes(board.id)
-                      ? "opacity-100"
-                      : "opacity-0",
-                  )}
-                />
-                {board.title}
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </Command>
-      </PopoverContent>
-    </Popover>
+    <Autocomplete
+      multiple
+      size="small"
+      options={options}
+      value={selectedOptions}
+      onChange={(_, newValue) => setSelectedBoards(newValue.map((b) => b.id))}
+      getOptionLabel={(option) => option.title}
+      isOptionEqualToValue={(option, value) => option.id === value.id}
+      renderInput={(params) => (
+        <TextField {...params} placeholder="Filter by Board" size="small" />
+      )}
+      renderOption={(props, option, { selected }) => (
+        <li {...props} key={option.id}>
+          <Checkbox
+            icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+            checkedIcon={<CheckBoxIcon fontSize="small" />}
+            checked={selected}
+            sx={{ mr: 1 }}
+          />
+          {option.title}
+        </li>
+      )}
+      renderTags={(value, getTagProps) =>
+        value.map((option, index) => {
+          const { key, ...rest } = getTagProps({ index })
+          return (
+            <Chip
+              key={key}
+              label={option.title}
+              size="small"
+              variant="outlined"
+              {...rest}
+            />
+          )
+        })
+      }
+      sx={{ minWidth: 200 }}
+    />
   )
 }

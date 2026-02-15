@@ -1,8 +1,6 @@
-"use client"
-
 import { useBoard, useUpdateBoard } from "@/modules/board/queries/boards"
 import PageForm from "./PageForm"
-import { Skeleton } from "@/components/ui/skeleton"
+import Skeleton from "@mui/material/Skeleton"
 
 type Props = {
   boardId: string
@@ -13,7 +11,7 @@ export default function GeneralSettings({ boardId }: Props) {
   const { mutate: updateBoard, isPending } = useUpdateBoard(boardId)
 
   if (status === "pending") {
-    return <Skeleton className="h-full w-full" />
+    return <Skeleton variant="rectangular" width="100%" height="100%" />
   }
 
   if (status === "error") {

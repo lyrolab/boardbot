@@ -4,5 +4,4 @@ import { DataSource } from "typeorm"
 
 export default NestFactory.create(AppModule)
   .then((app) => app.get(DataSource))
-  .then((dataSource) => Promise.all([dataSource, dataSource.destroy()]))
-  .then(([dataSource]) => dataSource)
+  .then((dataSource) => dataSource.destroy().then(() => dataSource))

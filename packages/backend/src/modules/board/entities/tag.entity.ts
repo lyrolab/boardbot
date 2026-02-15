@@ -4,6 +4,7 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Relation,
   UpdateDateColumn,
 } from "typeorm"
 import { Board } from "./board.entity"
@@ -26,7 +27,7 @@ export class Tag {
     onDelete: "CASCADE",
     orphanedRowAction: "delete",
   })
-  board: Board
+  board: Relation<Board>
 
   @CreateDateColumn()
   createdAt: Date
