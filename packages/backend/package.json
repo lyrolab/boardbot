@@ -32,7 +32,7 @@
     "@ai-sdk/openai": "^3.0.29",
     "@jorgebodega/typeorm-factory": "^2.1.0",
     "@keyv/redis": "^4.3.1",
-    "@lyrolab/nest-shared": "file:../../../nest-shared/lyrolab-nest-shared-0.0.0-semantically-released.tgz",
+    "@lyrolab/nest-shared": "^1.8.0",
     "@nestjs/axios": "^4.0.0",
     "@nestjs/bullmq": "^11.0.2",
     "@nestjs/cache-manager": "^3.0.0",
