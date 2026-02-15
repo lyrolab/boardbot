@@ -3,7 +3,7 @@ import {
   JobProcessorInterface,
   QueueService,
 } from "@lyrolab/nest-shared/queue"
-import { Injectable } from "@nestjs/common"
+import { Injectable, Logger } from "@nestjs/common"
 import { Job } from "bullmq"
 import { BoardRepository } from "src/modules/board/repositories/board.repository"
 import { PostRepository } from "src/modules/board/repositories/post.repository"
@@ -21,6 +21,7 @@ export type SyncBoardJobParams = z.infer<typeof syncBoardJobSchema>
 @JobProcessor(SyncBoardJob.JOB_NAME)
 export class SyncBoardJob implements JobProcessorInterface {
   public static readonly JOB_NAME = "sync-board"
+  private readonly logger = new Logger(SyncBoardJob.name)
 
   constructor(
     private readonly boardRepository: BoardRepository,
@@ -33,13 +34,20 @@ export class SyncBoardJob implements JobProcessorInterface {
     const { boardId } = syncBoardJobSchema.parse(job.data)
 
     const board = await this.boardRepository.findOneOrFail(boardId)
+    this.logger.log(`Syncing board "${board.title}" (${boardId})`)
     await this.boardSyncService.syncBoard(board)
 
     if (!board.autoTriggerModeration) {
+      this.logger.log(
+        `Board "${board.title}" has auto-moderation disabled, skipping post processing`,
+      )
       return
     }
 
     const pendingPosts = await this.postRepository.findPending(boardId)
+    this.logger.log(
+      `Board "${board.title}": ${pendingPosts.length} pending posts to process`,
+    )
     for (const post of pendingPosts) {
       await this.queueService.add(
         ProcessPostJob.JOB_NAME,
