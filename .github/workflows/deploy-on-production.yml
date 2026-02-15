@@ -1,0 +1,55 @@
+name: Deploy on Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to deploy. If not provided, the latest commit on main will be deployed.'
+        required: false
+
+jobs:
+  deploy:
+    name: Deploy on Production
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout main
+      uses: actions/checkout@v4
+      with:
+        ref: main
+        fetch-depth: 0
+
+    - name: Set Kubernetes context
+      uses: azure/k8s-set-context@v2
+      with:
+        method: kubeconfig
+        kubeconfig: ${{ secrets.KUBECONFIG_PRODUCTION }}
+
+    - name: Add Helm repository
+      run: |
+        helm repo add lyrolab https://lyrolab.github.io/helm-charts
+        helm repo update
+
+    - name: Set image tag
+      id: image-tag
+      env:
+        INPUTS_VERSION: ${{ inputs.version }}
+      run: |
+        if [ -z "$INPUTS_VERSION" ]; then
+          echo "tag=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+        else
+          echo "tag=$INPUTS_VERSION" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Deploy on Production
+      run: |
+        kubectl apply -f ./k8s/secrets/sealed-secrets-production.yaml
+        helm upgrade --install boardbot lyrolab/app-chart \
+          --namespace boardbot-production \
+          --create-namespace \
+          --values k8s/values/values.yaml \
+          --values k8s/values/values-production.yaml \
+          --set defaults.image.tag=sha-${{ steps.image-tag.outputs.tag }} \
+          --wait --timeout=10m
+        kubectl rollout status deployment boardbot-backend -n boardbot-production
+        kubectl rollout status deployment boardbot-frontend -n boardbot-production

@@ -117,3 +117,37 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  deploy:
+    name: Deploy on Preprod
+    needs: [build-and-push-backend, build-and-push-frontend]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout main
+        uses: actions/checkout@v4
+
+      - name: Set Kubernetes context
+        uses: azure/k8s-set-context@v2
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBECONFIG_PREPROD }}
+
+      - name: Add Helm repository
+        run: |
+          helm repo add lyrolab https://lyrolab.github.io/helm-charts
+          helm repo update
+
+      - name: Deploy on Preprod
+        run: |
+          kubectl apply -f ./k8s/secrets/sealed-secrets-preprod.yaml
+          helm upgrade --install boardbot lyrolab/app-chart \
+            --namespace boardbot-preprod \
+            --create-namespace \
+            --values k8s/values/values.yaml \
+            --values k8s/values/values-preprod.yaml \
+            --set defaults.image.tag=sha-${{ github.sha }} \
+            --wait --timeout=10m
+          kubectl rollout status deployment boardbot-backend -n boardbot-preprod
+          kubectl rollout status deployment boardbot-frontend -n boardbot-preprod
