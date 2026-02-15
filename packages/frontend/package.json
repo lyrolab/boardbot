@@ -65,10 +65,10 @@
     "@tanstack/router-generator": "~1.114.35"
   },
   "lint-staged": {
-    "*.{js,ts,json,css,scss,md}": [
+    "*.{js,jsx,ts,tsx,json,css,scss,md}": [
       "prettier --write"
     ],
-    "*.{js,ts}": [
+    "*.{js,jsx,ts,tsx}": [
       "eslint --fix"
     ]
   }
